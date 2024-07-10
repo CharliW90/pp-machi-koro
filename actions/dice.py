@@ -1,31 +1,32 @@
 import inquirer
 import random
-from reference import shortcuts, MyTheme
+from reference import MyTheme
 
-def rollDice(player):
+def rollDice(game, player):
   doubleDice = player.abilities.doubleDice
-  shortcuts['notify'](f"Time to roll the dice, {player.name}!")
+  game.notify(f"Time to roll the dice, {player.name}!")
   options = [
     inquirer.List('dice',
                   message=f"{player.colorize}How many dice do you want to roll?{player.reset}",
                   choices=[('One', 1)],
-                  ignore=lambda x: doubleDice), # if doubleDice is true, ignore this List
+                  ignore=lambda x: doubleDice), # type: ignore | if doubleDice is true, ignore this List
     inquirer.List('dice',
                   message=f"{player.colorize}How many dice do you want to roll?{player.reset}",
                   choices=[('One', 1), ('Two', 2)],
-                  ignore=lambda x: not doubleDice), # if doubleDice is false, ignore this List
+                  ignore=lambda x: not doubleDice), # type: ignore | if doubleDice is false, ignore this List
   ]
 
   action = inquirer.prompt(options, theme=MyTheme(player))
-  player.declareAction(f"{player.name} rolled {action['dice']} dice")
+  player.declareAction(f"{player.name} rolled {action['dice']} dice") # type: ignore
   rolls = []
-  for x in range(action['dice']):
+  for x in range(action['dice']): # type: ignore
     rolls.append(roll())
   for die in rolls:
     player.declareAction(diceFace(die))
   rolled = sum(rolls)
   player.declareAction(f"> {rolled} <")
-  return rolled
+  handleDiceResult(game, rolled)
+  return
 
 def roll():
   return random.randint(1,6)
@@ -44,3 +45,4 @@ def handleDiceResult(game, diceResult):
     player.activate(game, "green", diceResult)
   for player in game.players:
     player.activate(game, "purple", diceResult)
+  return
