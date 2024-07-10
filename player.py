@@ -24,10 +24,13 @@ class Player:
       if card.built == True:
         landmarks += 1
     return f"{self.name} has {cash} cash, and has built {landmarks} landmarks"
+  
+  def declareAction(self, str):
+    print(f"{self.colorize}{str}{self.reset}")
 
   def beginTurn(self):
     self.current = True
-    print(f"It is {self.name}'s turn!")
+    self.declareAction(f"It is {self.name}'s turn!")
 
   def endTurn(self):
     self.current = False
