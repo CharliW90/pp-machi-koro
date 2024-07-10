@@ -44,65 +44,76 @@ class Deck(CardStacks):
       stack = getattr(self, pile)
       stack.append(card)
   
-  def contents(self):
+  def contents(self, cash = 100):
     allCards = []
     if len(self.wheatFields) > 0:
       card = self.wheatFields[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.wheatFields)}",
         ])
     if len(self.ranches) > 0:
       card = self.ranches[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.ranches)}",
         ])
     if len(self.bakeries) > 0:
       card = self.bakeries[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.bakeries)}",
         ])
     if len(self.cafes) > 0:
       card = self.cafes[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.cafes)}",
         ])
     if len(self.convenienceStores) > 0:
       card = self.convenienceStores[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.convenienceStores)}",
         ])
     if len(self.forests) > 0:
       card = self.forests[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.forests)}",
         ])
     if len(self.majorEstablishments) > 0:
       stadiums = []
-      plural = "s" if card.cost > 1 else ""
       tvStations = []
       businessCentres = []
       for card in self.majorEstablishments:
@@ -115,73 +126,89 @@ class Deck(CardStacks):
       if len(stadiums) > 0:
         card = stadiums[0]
         plural = "s" if card.cost > 1 else ""
+        style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+        reset = "\x1b[0m"
         allCards.append([
           f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
           f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-          f"{card.cost} coin{plural}",
+          f"{style}{card.cost} coin{plural}{reset}",
           f"Qty: {len(stadiums)}",
           ])
       if len(tvStations) > 0:
         card = tvStations[0]
         plural = "s" if card.cost > 1 else ""
+        style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+        reset = "\x1b[0m"
         allCards.append([
           f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
           f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-          f"{card.cost} coin{plural}",
+          f"{style}{card.cost} coin{plural}{reset}",
           f"Qty: {len(tvStations)}",
           ])
       if len(businessCentres) > 0:
         card = businessCentres[0]
         plural = "s" if card.cost > 1 else ""
+        style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+        reset = "\x1b[0m"
         allCards.append([
           f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
           f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-          f"{card.cost} coin{plural}",
+          f"{style}{card.cost} coin{plural}{reset}",
           f"Qty: {len(businessCentres)}",
           ])
     if len(self.furnitureFactories) > 0:
       card = self.furnitureFactories[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.furnitureFactories)}",
         ])
     if len(self.mines) > 0:
       card = self.mines[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.mines)}",
         ])
     if len(self.familyRestaurants) > 0:
       card = self.familyRestaurants[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.familyRestaurants)}",
         ])
     if len(self.appleOrchards) > 0:
       card = self.appleOrchards[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.appleOrchards)}",
         ])
     if len(self.farmersMarkets) > 0:
       card = self.farmersMarkets[0]
       plural = "s" if card.cost > 1 else ""
+      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
+      reset = "\x1b[0m"
       allCards.append([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{card.cost} coin{plural}",
+        f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {len(self.farmersMarkets)}",
         ])
     return allCards
