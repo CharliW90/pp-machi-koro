@@ -1,6 +1,7 @@
 import inquirer
 from tabulate import tabulate
 import random
+from reference import reference
 from coins.bank import *
 from player import Player
 from cards.stacks import Deck
@@ -38,6 +39,7 @@ class Game:
       self.play()
   
   def play(self):
+    print(reference)
     playerNum = self.round % self.playerCount
     activePlayer = self.players[playerNum]
     activePlayer.beginTurn()
@@ -106,4 +108,4 @@ def buildAction(game, player):
   cash = player.getBalance()
   print(f"You have {cash} cash - what would you like to do?")
   options = game.displayCards(cash)
-  print(options)
+  print(options) # inquirer list of options from these

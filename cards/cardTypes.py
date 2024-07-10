@@ -1,8 +1,10 @@
+from reference import reference
+
 class BlueCard:
   def __init__(self):
     self.colour = "blue"
-    self.colorize = colors[self.colour]
-    self.reset = colors['reset']
+    self.colorize = reference["ansiColours"][self.colour]
+    self.reset = reference["ansiColours"]["reset"]
     self.detail = "Blue cards trigger for everyone, on everyone's turn.\nThey are the second card type to be processed."
     self.type = "Primary"
     self.order = 1
@@ -19,8 +21,8 @@ class BlueCard:
 class GreenCard:
   def __init__(self):
     self.colour = "green"
-    self.colorize = colors[self.colour]
-    self.reset = colors['reset']
+    self.colorize = reference["ansiColours"][self.colour]
+    self.reset = reference["ansiColours"]["reset"]
     self.detail = "Green cards trigger for the current player only.\nThey are the third card type to be processed."
     self.type = "Secondary"
     self.order = 2
@@ -37,8 +39,8 @@ class GreenCard:
 class RedCard:
   def __init__(self):
     self.colour = "red"
-    self.colorize = colors[self.colour]
-    self.reset = colors['reset']
+    self.colorize = reference["ansiColours"][self.colour]
+    self.reset = reference["ansiColours"]["reset"]
     self.detail = "Red Cards trigger for everyone except the current player.\nThey are the first card type to be processed."
     self.type = "Restaurant"
     self.order = 0
@@ -55,8 +57,8 @@ class RedCard:
 class PurpleCard:
   def __init__(self):
     self.colour = "purple"
-    self.colorize = colors[self.colour]
-    self.reset = colors['reset']
+    self.colorize = reference["ansiColours"][self.colour]
+    self.reset = reference["ansiColours"]["reset"]
     self.detail = "Purple cards trigger for the current player only.\nThey are the last card type to be processed."
     self.type = "Major Establishment"
     self.order = 3
@@ -73,8 +75,8 @@ class PurpleCard:
 class LandmarkCard:
   def __init__(self):
     self.colour = "orange"
-    self.colorize = colors[self.colour]
-    self.reset = colors['reset']
+    self.colorize = reference["ansiColours"][self.colour]
+    self.reset = reference["ansiColours"]["reset"]
     self.detail = "Orange cards do not trigger, they grant special abilities.\nBuilding all 4 landmarks achieves victory."
     self.type = "Landmark"
     self.built = False
@@ -89,12 +91,3 @@ class LandmarkCard:
     self.built = True
     print("Built " + self.title)
     return self.ability()
-
-colors = {
-  'blue': "\033[38;2;1;14;74m",
-  'green': "\033[38;2;5;74;1m",
-  'red': "\033[38;2;74;1;1m",
-  'purple': "\033[38;2;46;1;74m",
-  'orange': "\033[38;2;74;56;1m",
-  'reset': "\033[39m"
-}
