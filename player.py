@@ -1,3 +1,4 @@
+from tabulate import tabulate
 from reference import reference
 from coins.transactions import *
 from coins.coinage import CoinPiles
@@ -17,7 +18,7 @@ class Player:
     self.cards = Hand()
     self.abilities = Abilities()
   
-  def __repr__(self):
+  def __str__(self):
     cash = self.coins.total()
     landmarks = 0
     for card in self.cards.landmarks:
@@ -30,10 +31,15 @@ class Player:
 
   def beginTurn(self):
     self.current = True
+    self.buildActionTaken = False
     self.declareAction(f"It is {self.name}'s turn!")
 
   def endTurn(self):
     self.current = False
+
+  def viewHand(self):
+    hand = self.cards.contents()
+    print(tabulate(hand, ["Name", "Action", "Owned"]))
 
   def getBalance(self):
     return self.coins.total()
@@ -49,29 +55,34 @@ class Player:
   def give(self, total):
     return giving(self, total)
   
+  def giveAll(self):
+    return giving(self, self.getBalance())
+  
   def build(self, card, bank):
     if self.buildActionTaken:
       print(f"You can only take one build action per turn!")
-      return
-    if(card.type == "Major Establishment"):
-      for majorEstablishment in self.cards.majorEstablishments:
-        if majorEstablishment.title == card.title:
-          print(f"You already have a {card.title} and can only purchase one {card.title} per game.")
-          return
-    cash = self.coins.total()
-    if cash >= card.cost:
-      print(f"{self.name} can afford {card.title}")
-      payment = calcPayment(self.coins, card.cost)
-      self.receive(bank.takePayment(self.give(payment), card.cost))
-      if card.type == "Landmark":
-        self.abilities.update(card.build())
-      else:
-        self.cards.add(card)
-      self.buildActionTaken = True
-      print(f"{self.name} has purchased {card.title} for {card.cost} cash\n{self}")
     else:
-      print(f"{self.name} cannot afford {card.title}")
-      return card
+      cash = self.coins.total()
+      if(card.type == "Major Establishment"):
+        stack = getattr(self.cards, 'purple')
+        for majorEstablishment in stack:
+          if majorEstablishment.title == card.title:
+            self.declareAction(f"You already have a {card.title} and can only purchase one {card.title} per game.")
+      elif cash >= card.cost:
+        payment = calcPayment(self.coins, card.cost)
+        self.receive(bank.takePayment(self.give(payment), card.cost))
+        if card.type == "Landmark":
+          stack = getattr(self.cards, 'landmarks')
+          ability = card.build()
+          self.abilities.update(ability)
+        else:
+          self.cards.add(card)
+        self.buildActionTaken = True
+        self.declareAction(f"{self.name} has purchased {card.title} for {card.cost} cash\n{self}")
+      else:
+        print(f"{self.name} cannot afford {card.title}")
+
+    return self.buildActionTaken
 
   def hasWon(self):
     for card in self.cards.landmarks:
