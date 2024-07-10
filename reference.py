@@ -1,13 +1,13 @@
 from inquirer.themes import Default, term
 
 rgbColours = {
-  'red': [208,13,13],
-  'green': [13,156,13],
-  'blue': [13,13,208],
-  'purple': [104,13,208],
-  'orange': [208,104,13],
-  'yellow': [208, 208, 13],
-  'bright': [208, 52, 208]
+  'red': [208,0,0],
+  'green': [0,208,0],
+  'blue': [0,0,255],
+  'purple': [208,0,255],
+  'orange': [255,104,0],
+  'yellow': [208, 208, 0],
+  'cyan': [52, 255, 208]
 }
 
 ansiColours = {
@@ -17,7 +17,7 @@ ansiColours = {
   'purple': f"\033[38;2;{';'.join(str(x) for x in rgbColours['purple'])};74m",
   'orange': f"\033[38;2;{';'.join(str(x) for x in rgbColours['orange'])};74m",
   'yellow': f"\033[38;2;{';'.join(str(x) for x in rgbColours['yellow'])};74m",
-  'bright': f"\033[38;2;{';'.join(str(x) for x in rgbColours['bright'])};74m",
+  'cyan': f"\033[38;2;{';'.join(str(x) for x in rgbColours['cyan'])};74m",
   'reset': f"\033[39m"
 }
 
@@ -28,13 +28,12 @@ hexColours = {
   'purple': '#%02x%02x%02x' % (*rgbColours['purple'],),
   'orange': '#%02x%02x%02x' % (*rgbColours['orange'],),
   'yellow': '#%02x%02x%02x' % (*rgbColours['yellow'],),
-  'bright': '#%02x%02x%02x' % (*rgbColours['bright'],)
+  'cyan': '#%02x%02x%02x' % (*rgbColours['cyan'],)
 }
 
 shortcuts = {
   'notificationStart': f"\n{ansiColours['yellow']}==> ",
-  'notificationEnd': f"{ansiColours['reset']}\n",
-  'notify': lambda str: print(f"\n{ansiColours['yellow']}==> {str}{ansiColours['reset']}\n")
+  'notificationEnd': f"{ansiColours['reset']}\n"
 }
 
 reference = {"rgbColours": rgbColours, "ansiColours": ansiColours, "hexColours": hexColours}
