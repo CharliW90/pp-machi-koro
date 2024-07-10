@@ -7,7 +7,7 @@ from actions.dice import rollDice, handleDiceResult
 from actions.build import buildAction, handleBuilding
 
 class Game:
-  def __init__(self, playernames):
+  def __init__(self, playernames, rounds = None):
     self.name = "Machi Koro!"
     self.playerCount = len(playernames)
     self.players = []
@@ -16,6 +16,7 @@ class Game:
     self.bank = Bank()
     self.deck = Deck(self.playerCount)
     self.round = 0
+    self.limitRounds = rounds
 
   def __str__(self):
     players = [player.name for player in self.players]
@@ -83,6 +84,7 @@ class Game:
     self.bank.check(self)
     playerNum = self.round % self.playerCount
     activePlayer = self.players[playerNum]
+    self.round += 1
     activePlayer.beginTurn()
     takeTurn(self, activePlayer)
 
@@ -91,12 +93,15 @@ class Game:
       return
     else:
       activePlayer.endTurn()
-      self.round += 1
-      if self.round < 12:
-        return self.play()
+      if self.limitRounds:
+        if self.round < self.limitRounds:
+          self.notify(f"This is round {self.round + 1} of {self.limitRounds}")
+          return self.play()
+        else:
+          self.notify(f"You have reached the limit of {self.limitRounds} rounds.  Game over.")
+          return
       else:
-        print("12 rounds completed")
-        return
+        return self.play()
 
 def takeTurn(game, player):
   rollDice(game, player)
