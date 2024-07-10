@@ -38,10 +38,10 @@ class Bank:
   def check(self, game):
     ones = len(self.coins.coppers)
     fives = len(self.coins.silvers)
-    if not ones or not fives:
-      if not ones:
+    if ones < 5 or fives < 2:
+      if ones < 5:
         self.declareAction(f"{self.name} has {ones} copper One coins remaining - exchanging up with players...")
-      elif not fives:
+      elif fives < 2:
         self.declareAction(f"{self.name} has {fives} silver Five coins remaining - exchanging up with players...")
       for player in game.players:
         print(len(player.coins.coppers), len(player.coins.silvers), len(player.coins.golds))
