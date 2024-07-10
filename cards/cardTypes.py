@@ -12,7 +12,7 @@ class BlueCard:
     self.title = f"A {self.colour} card"
     self.description = f"A template for {self.type} cards"
 
-  def __repr__(self):
+  def __str__(self):
     return f"{self.colorize}{self.title} + '\n\n' + {self.description}{self.reset}"
 
   def activate(self, diceRoll):
@@ -35,7 +35,7 @@ class GreenCard:
     self.title = f"A {self.colour} card"
     self.description = f"A template for {self.type} cards"
 
-  def __repr__(self):
+  def __str__(self):
     return f"{self.colorize}{self.title} + '\n\n' + {self.description}{self.reset}"
 
   def activate(self, diceRoll):
@@ -58,7 +58,7 @@ class RedCard:
     self.title = f"A {self.colour} card"
     self.description = f"A template for {self.type} cards"
 
-  def __repr__(self):
+  def __str__(self):
     return f"{self.colorize}{self.title} + '\n\n' + {self.description}{self.reset}"
 
   def activate(self, diceRoll):
@@ -81,7 +81,7 @@ class PurpleCard:
     self.title = f"A {self.colour} card"
     self.description = f"A template for {self.type} cards"
 
-  def __repr__(self):
+  def __str__(self):
     return f"{self.colorize}{self.title} + '\n\n' + {self.description}{self.reset}"
 
   def activate(self, diceRoll):
@@ -104,7 +104,7 @@ class LandmarkCard:
     self.description = f"A template for {self.type} cards"
     self.built = False
 
-  def __repr__(self):
+  def __str__(self):
     if self.built:
       return f"{self.title}\n\n{self.description}"
     else:

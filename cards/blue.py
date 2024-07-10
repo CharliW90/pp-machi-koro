@@ -7,6 +7,7 @@ class WheatField(BlueCard):
     self.description = "Get 1 coin from the bank.\n(anyone's turn)"
     self.industry = "field"
     self.cost = 1
+    self.zIndex = 0
     self.triggers.extend([1])
 
   def activate(self, dice):
@@ -19,6 +20,7 @@ class Ranch(BlueCard):
     self.description = "Get 1 coin from the bank.\n(anyone's turn)"
     self.industry = "farm"
     self.cost = 1
+    self.zIndex = 1
     self.triggers.extend([2])
 
   def activate(self, dice):
@@ -31,6 +33,7 @@ class Forest(BlueCard):
     self.description = "Get 1 coin from the bank.\n(anyone's turn)"
     self.industry = "industrial"
     self.cost = 3
+    self.zIndex = 5
     self.triggers.extend([5])
 
   def activate(self, dice):
@@ -43,6 +46,7 @@ class Mine(BlueCard):
     self.description = "Get 5 coins from the bank.\n(anyone's turn)"
     self.industry = "industrial"
     self.cost = 6
+    self.zIndex = 11
     self.triggers.extend([9])
 
   def activate(self, dice):
@@ -55,6 +59,7 @@ class AppleOrchard(BlueCard):
     self.description = "Get 3 coins from the bank.\n(anyone's turn)"
     self.industry = "field"
     self.cost = 3
+    self.zIndex = 13
     self.triggers.extend([10])
 
   def activate(self, dice):

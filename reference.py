@@ -6,7 +6,8 @@ rgbColours = {
   'blue': [13,13,208],
   'purple': [104,13,208],
   'orange': [208,104,13],
-  'yellow': [208, 208, 13]
+  'yellow': [208, 208, 13],
+  'bright': [208, 52, 208]
 }
 
 ansiColours = {
@@ -16,6 +17,7 @@ ansiColours = {
   'purple': f"\033[38;2;{';'.join(str(x) for x in rgbColours['purple'])};74m",
   'orange': f"\033[38;2;{';'.join(str(x) for x in rgbColours['orange'])};74m",
   'yellow': f"\033[38;2;{';'.join(str(x) for x in rgbColours['yellow'])};74m",
+  'bright': f"\033[38;2;{';'.join(str(x) for x in rgbColours['bright'])};74m",
   'reset': f"\033[39m"
 }
 
@@ -25,7 +27,8 @@ hexColours = {
   'blue': '#%02x%02x%02x' % (*rgbColours['blue'],),
   'purple': '#%02x%02x%02x' % (*rgbColours['purple'],),
   'orange': '#%02x%02x%02x' % (*rgbColours['orange'],),
-  'yellow': '#%02x%02x%02x' % (*rgbColours['yellow'],)
+  'yellow': '#%02x%02x%02x' % (*rgbColours['yellow'],),
+  'bright': '#%02x%02x%02x' % (*rgbColours['bright'],)
 }
 
 shortcuts = {
@@ -39,8 +42,8 @@ reference = {"rgbColours": rgbColours, "ansiColours": ansiColours, "hexColours":
 class MyTheme(Default):
   def __init__(self, player):
     super().__init__()
-    self.Question.mark_color = term.color_rgb(*rgbColours[player.colour])
-    self.Question.brackets_color = term.color_rgb(*rgbColours[player.colour])
-    self.Question.default_color = term.on_color_rgb(*rgbColours[player.colour])
-    self.List.selection_color = term.on_color_rgb(*rgbColours[player.colour])
-    self.List.selection_cursor = f"{player.name} =>"
+    self.Question.mark_color = term.color_rgb(*rgbColours[player.colour]) # type: ignore
+    self.Question.brackets_color = term.color_rgb(*rgbColours[player.colour]) # type: ignore
+    self.Question.default_color = term.on_color_rgb(*rgbColours[player.colour]) # type: ignore
+    self.List.selection_color = term.on_color_rgb(*rgbColours[player.colour]) # type: ignore
+    self.List.selection_cursor = f"{player.name} =>" # type: ignore

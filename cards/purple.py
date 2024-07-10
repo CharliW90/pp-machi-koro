@@ -7,6 +7,7 @@ class Stadium(PurpleCard):
     self.description = "Take 2 coins from eachopponent.\n(your turn only)"
     self.industry = "major"
     self.cost = 6
+    self.zIndex = 6
 
   def activate(self, dice):
     print(self.title + ": triggered on Dice roll: " + str(dice))
@@ -18,6 +19,7 @@ class TVStation(PurpleCard):
     self.description = "Take 5 coins from an opponent.\n(your turn only)"
     self.industry = "major"
     self.cost = 7
+    self.zIndex = 7
 
   def activate(self, dice):
     print(self.title + ": triggered on Dice roll: " + str(dice))
@@ -29,6 +31,7 @@ class BusinessCentre(PurpleCard):
     self.description = "Exchange 1 of your non-major establishments for 1 an opponent owns.\n(your turn only)"
     self.industry = "major"
     self.cost = 8
+    self.zIndex = 8
 
   def activate(self, dice):
     print(self.title + ": triggered on Dice roll: " + str(dice))
