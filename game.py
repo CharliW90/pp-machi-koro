@@ -1,10 +1,10 @@
-import inquirer
 from tabulate import tabulate
-import random
 from reference import reference, shortcuts, MyTheme
 from coins.bank import *
 from player import Player
 from cards.stacks import Deck
+from actions.dice import rollDice, handleDiceResult
+from actions.build import buildAction, handleBuilding
 
 class Game:
   def __init__(self, playernames):
@@ -21,31 +21,46 @@ class Game:
     players = [player.name for player in self.players]
     return f"This is a game of {self.name}.\nIt has {self.playerCount} players - {', '.join(players)}.\nWe are on round {self.round}"
 
-  def displayCardsToPlayer(self, player):
-    cash = player.getBalance()
+  def listAffordableCards(self, player):
     availableCards = self.deck.contents()
     affordableCards = []
-
     playersLandmarks = player.cards.landmarks
     for landmark in playersLandmarks:
+      style = "\x1b[9;2m" if landmark.cost > player.getBalance() else "\x1b[3;32m"
+      reset = "\x1b[0m"
       availableCards.append([
         f"{landmark.colorize}{landmark.title}{landmark.reset}\n{landmark.colorize}- Permanent Ability{landmark.reset}",
         f"{landmark.colorize}{landmark.description.splitlines()[0]}{landmark.reset}\n{landmark.colorize}(your turn only){landmark.reset}",
-        f"{landmark.cost} coin",
+        f"{style}{landmark.cost} coins{reset}",
         f"Qty: {int(not landmark.built)}",
         ])
-    
     for [title, description, cost, qty] in availableCards:
       available = int(qty.split(': ')[1])
-      price = int(cost.split(' ')[0])
-      if price <= cash and available > 0:
+      price = int(repr(cost).split("m")[1].split(' ')[0])
+      if price <= player.getBalance() and available > 0:
         cardTitle = title.splitlines()[0]
-        cleanTitle = repr(cardTitle).split("74m")[1].split("\\")[0] # strip away the ANSI colour codes
+        cleanTitle = repr(cardTitle).split("m")[1].split("\\")[0] # strip away the ANSI colour codes
         affordableCards.append((f"{cardTitle}: Purchase Price: {cost} - BUY?", cleanTitle))
-    
-    print(tabulate(availableCards, ["Name", "Action", "Cost", "Remaining"]))
-    shortcuts['notify'](f"You have {cash} cash - what would you like to do?")
     return affordableCards
+
+  def displayCardsToPlayer(self, player):
+    availableCards = self.deck.contents(player.getBalance())
+    playersLandmarks = player.cards.landmarks
+    for landmark in playersLandmarks:
+      style = "\x1b[9;2m" if landmark.cost > player.getBalance() else "\x1b[3;32m"
+      reset = "\x1b[0m"
+      availableCards.append([
+        f"{landmark.colorize}{landmark.title}{landmark.reset}\n{landmark.colorize}- Permanent Ability{landmark.reset}",
+        f"{landmark.colorize}{landmark.description.splitlines()[0]}{landmark.reset}\n{landmark.colorize}(your turn only){landmark.reset}",
+        f"{style}{landmark.cost} coins{reset}",
+        f"Qty: {int(not landmark.built)}",
+        ])
+    print(tabulate(availableCards, ["Name", "Action", "Cost", "Remaining"]))
+    return
+
+  def getCardFromStack(self, cardTitle):
+    card = self.deck.remove(cardTitle)
+    return card
 
   def start(self):
     if self.playerCount > 4 or self.playerCount < 2:
@@ -75,60 +90,5 @@ class Game:
 def takeTurn(game, player):
   diceResult = rollDice(player)
   handleDiceResult(game, diceResult)
-  building = buildAction(game, player)
-
-def handleDiceResult(game, diceResult):
-  for player in game.players:
-    player.activate(game, "red", diceResult)
-  for player in game.players:
-    player.activate(game, "blue", diceResult)
-    player.activate(game, "green", diceResult)
-  for player in game.players:
-    player.activate(game, "purple", diceResult)
-
-def rollDice(player):
-  doubleDice = player.abilities.doubleDice
-  shortcuts['notify']("Time to roll the dice!")
-  options = [
-    inquirer.List('dice',
-                  message="How many dice do you want to roll?",
-                  choices=[('One', 1)],
-                  ignore=lambda x: doubleDice), # if doubleDice is true, ignore this List
-    inquirer.List('dice',
-                  message="How many dice do you want to roll?",
-                  choices=[('One', 1), ('Two', 2)],
-                  ignore=lambda x: not doubleDice), # if doubleDice is false, ignore this List
-  ]
-
-  action = inquirer.prompt(options, theme=MyTheme(player))
-  print(f"{player.name} rolled {action['dice']} dice")
-  rolls = []
-  for x in range(action['dice']):
-    rolls.append(roll())
-  for die in rolls:
-    diceFace(die)
-  rolled = sum(rolls)
-  print(f"> {rolled} <")
-  return rolled
-
-def roll():
-  return random.randint(1,6)
-
-def diceFace(die):  # credit: https://codegolf.stackexchange.com/a/2603
-  r = die-1
-  C='o '
-  s='-----\n|'+C[r<1]+' '+C[r<3]+'|\n|'+C[r<5]
-  print(s+C[r&1]+s[::-1])
-
-def buildAction(game, player):
-  affordableCards = game.displayCardsToPlayer(player)
-  affordableCards.insert(0,("Build Nothing", "Nothing"))
-  
-  options = [
-    inquirer.List('build',
-                  message="Build an establishment?",
-                  choices=affordableCards)
-  ]
-
-  action = inquirer.prompt(options, theme=MyTheme(player))
-  print(action['build'])
+  building = buildAction(game, player, True)
+  handleBuilding(game, player, building)
