@@ -1,14 +1,19 @@
 import inquirer
-from reference import shortcuts, MyTheme
+from reference import MyTheme
 
-def buildAction(game, player, offerToShowDeck):
+def buildAction(game, player, settings):
   affordableCards = game.listAffordableCards(player)
+  showHand = settings.get("offerToShowHand")
+  showDeck = settings.get("offerToShowDeck")
   affordableCards.insert(0,("Build Nothing", "Nothing"))
-  if offerToShowDeck:
-    shortcuts['notify'](f"Time to build an establishment, {player.name}!  You have {player.getBalance()} coins")
+  if showDeck:
     affordableCards.insert(0,("Look at available cards", "Display"))
+  if showHand:
+    affordableCards.insert(0,("Look at your cards", "Look"))
+  if showDeck and showHand:
+    game.notify(f"Time to build an establishment, {player.name}!  You have {player.getBalance()} coins")
   else:
-    shortcuts['notify'](f"Time to make a decision, {player.name}!  You have {player.getBalance()} coins")
+    game.notify(f"Time to make a decision, {player.name}!  You have {player.getBalance()} coins")
   options = [
     inquirer.List('build',
                   message=f"{player.colorize}Build an establishment?{player.reset}",
@@ -16,19 +21,29 @@ def buildAction(game, player, offerToShowDeck):
   ]
 
   action = inquirer.prompt(options, theme=MyTheme(player))
-  return action['build']
+  choice = action['build'] # type: ignore
+  built = handleBuilding(game, player, choice, settings)
+  return built
 
-def handleBuilding(game, player, cardTitle):
+def handleBuilding(game, player, cardTitle, settings):
   if cardTitle == 'Nothing':
-    player.declareAction(f"{player.name} chose to build nothing this round - holding onto their {player.getBalance()} coins!")
+    cash = player.getBalance()
+    statement = f" - holding onto their {cash} coins!" if cash > 1 else "."
+    player.declareAction(f"{player.name} built nothing this round{statement}")
+    return
+  elif cardTitle == 'Look':
+    settings["offerToShowHand"] = False
+    player.viewHand()
+    buildAction(game, player, settings)
     return
   elif cardTitle == 'Display':
+    settings["offerToShowDeck"] = False
     game.displayCardsToPlayer(player)
-    finalDecision = buildAction(game, player, False)
-    card = game.getCardFromStack(finalDecision)
-    print(card)
-    return finalDecision
+    buildAction(game, player, settings)
+    return
   else:
-    card = game.getCardFromStack(cardTitle)
-    print(card)
-    return cardTitle
+    card = game.takeCardFromStack(cardTitle)
+    built = player.build(card, game.bank)
+    if not built:
+      raise ChildProcessError("Something went wrong when trying to build - sorry!")
+    return
