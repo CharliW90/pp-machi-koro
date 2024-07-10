@@ -32,7 +32,7 @@ hexColours = {
 }
 
 shortcuts = {
-  'notificationStart': f"\n{ansiColours['yellow']}==> ",
+  'notificationStart': f"{ansiColours['yellow']}==> ",
   'notificationEnd': f"{ansiColours['reset']}\n"
 }
 
