@@ -1,5 +1,5 @@
 from tabulate import tabulate
-from reference import reference, shortcuts, MyTheme
+from reference import shortcuts
 from coins.bank import *
 from player import Player
 from cards.stacks import Deck
@@ -17,9 +17,17 @@ class Game:
     self.deck = Deck(self.playerCount)
     self.round = 0
 
-  def __repr__(self):
+  def __str__(self):
     players = [player.name for player in self.players]
     return f"This is a game of {self.name}.\nIt has {self.playerCount} players - {', '.join(players)}.\nWe are on round {self.round}"
+
+  def notify(self, str):
+    if "\n" in str:
+      lines = str.splitlines()
+      for line in lines:
+        print(f"{shortcuts['notificationStart']}{line}{shortcuts['notificationEnd']}")
+    else:
+      print(f"{shortcuts['notificationStart']}{str}{shortcuts['notificationEnd']}")
 
   def listAffordableCards(self, player):
     availableCards = self.deck.contents()
@@ -31,15 +39,15 @@ class Game:
       availableCards.append([
         f"{landmark.colorize}{landmark.title}{landmark.reset}\n{landmark.colorize}- Permanent Ability{landmark.reset}",
         f"{landmark.colorize}{landmark.description.splitlines()[0]}{landmark.reset}\n{landmark.colorize}(your turn only){landmark.reset}",
-        f"{style}{landmark.cost} coins{reset}",
+        f"{landmark.colorize}{landmark.title}{landmark.reset}\n{style}{landmark.cost} coins{reset}",
         f"Qty: {int(not landmark.built)}",
         ])
     for [title, description, cost, qty] in availableCards:
       available = int(qty.split(': ')[1])
-      price = int(repr(cost).split("m")[1].split(' ')[0])
+      price = int(repr(cost).split("2m")[1].split(' ')[0])
       if price <= player.getBalance() and available > 0:
         cardTitle = title.splitlines()[0]
-        cleanTitle = repr(cardTitle).split("m")[1].split("\\")[0] # strip away the ANSI colour codes
+        cleanTitle = repr(cardTitle).split("74m")[1].split("\\")[0] # strip away the ANSI colour codes
         affordableCards.append((f"{cardTitle}: Purchase Price: {cost} - BUY?", cleanTitle))
     return affordableCards
 
@@ -58,8 +66,9 @@ class Game:
     print(tabulate(availableCards, ["Name", "Action", "Cost", "Remaining"]))
     return
 
-  def getCardFromStack(self, cardTitle):
-    card = self.deck.remove(cardTitle)
+  def takeCardFromStack(self, cardTitle):
+    card, pile, qty = self.deck.remove(cardTitle)
+    self.notify(f"Took a {card.title} from the {pile} pile - there are now {qty} cards remaining in this pile")
     return card
 
   def start(self):
@@ -71,24 +80,25 @@ class Game:
       self.play()
   
   def play(self):
+    self.bank.check(self)
     playerNum = self.round % self.playerCount
     activePlayer = self.players[playerNum]
     activePlayer.beginTurn()
     takeTurn(self, activePlayer)
 
     if activePlayer.hasWon():
-      shortcuts['notify'](f"{activePlayer.name} has won!  Congratulations!!\n\nThis game of {self.name} took {self.round} rounds to play.")
+      self.notify(f"{activePlayer.name} has won!  Congratulations!!\n\nThis game of {self.name} took {self.round} rounds to play.")
       return
     else:
       activePlayer.endTurn()
       self.round += 1
-      if self.round < 5:
+      if self.round < 12:
         return self.play()
       else:
-        print("5 rounds completed")
+        print("12 rounds completed")
+        return
 
 def takeTurn(game, player):
-  diceResult = rollDice(player)
-  handleDiceResult(game, diceResult)
-  building = buildAction(game, player, True)
-  handleBuilding(game, player, building)
+  rollDice(game, player)
+  buildAction(game, player, {'offerToShowHand': True, 'offerToShowDeck': True})
+  return
