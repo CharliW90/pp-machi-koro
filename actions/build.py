@@ -5,11 +5,11 @@ def buildAction(game, player, settings):
   affordableCards = game.listAffordableCards(player)
   showHand = settings.get("offerToShowHand")
   showDeck = settings.get("offerToShowDeck")
-  affordableCards.insert(0,("Build Nothing", "Nothing"))
+  affordableCards.insert(0,(f"[X] {player.colorize}Build Nothing{player.reset}", "Nothing"))
   if showDeck:
-    affordableCards.insert(0,("Look at available cards", "Display"))
+    affordableCards.insert(0,(f"[?] {player.colorize}Look at available cards{player.reset}", "Display"))
   if showHand:
-    affordableCards.insert(0,("Look at your cards", "Look"))
+    affordableCards.insert(0,(f"[?] {player.colorize}Look at your cards{player.reset}", "Look"))
   if showDeck and showHand:
     game.notify(f"Time to build an establishment, {player.name}!  You have {player.getBalance()} coins")
   else:
