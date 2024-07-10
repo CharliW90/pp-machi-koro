@@ -36,11 +36,11 @@ class Deck:
       actual = getattr(self, attribute)
       if isinstance(actual, list):
         cardStacks.append(actual)
-    test = []
+    cardCounts = []
     for stack in cardStacks:
       counts = Counter(card.title for card in stack)
-      test.extend([title, count] for title, count in counts.items())
-    for [title, qty] in test:
+      cardCounts.extend([title, count] for title, count in counts.items())
+    for [title, qty] in cardCounts:
       cards = getattr(self, str(lookup(title)))
       card = cards[0]
       plural = "s" if card.cost > 1 else ""
