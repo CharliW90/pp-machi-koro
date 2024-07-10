@@ -1,7 +1,7 @@
 import inquirer
 from tabulate import tabulate
 import random
-from reference import reference
+from reference import reference, shortcuts, MyTheme
 from coins.bank import *
 from player import Player
 from cards.stacks import Deck
@@ -11,8 +11,8 @@ class Game:
     self.name = "Machi Koro!"
     self.playerCount = len(playernames)
     self.players = []
-    for name in playernames:
-      self.players.append(Player(name))
+    for i, name in enumerate(playernames):
+      self.players.append(Player(name, i))
     self.bank = Bank()
     self.deck = Deck(self.playerCount)
     self.round = 0
@@ -21,13 +21,30 @@ class Game:
     players = [player.name for player in self.players]
     return f"This is a game of {self.name}.\nIt has {self.playerCount} players - {', '.join(players)}.\nWe are on round {self.round}"
 
-  def displayCards(self, cash):
+  def displayCardsToPlayer(self, player):
+    cash = player.getBalance()
+    availableCards = self.deck.contents()
     affordableCards = []
-    cards = self.deck.contents()
-    print(tabulate(cards, ["Name", "Action", "Cost", "Remaining"]))
-    for [title, description, cost, qty] in self.deck.contents():
-      if cost <= cash:
-        affordableCards.append((title, f"Purchase Price: {cost} - BUY?"))
+
+    playersLandmarks = player.cards.landmarks
+    for landmark in playersLandmarks:
+      availableCards.append([
+        f"{landmark.colorize}{landmark.title}{landmark.reset}\n{landmark.colorize}- Permanent Ability{landmark.reset}",
+        f"{landmark.colorize}{landmark.description.splitlines()[0]}{landmark.reset}\n{landmark.colorize}(your turn only){landmark.reset}",
+        f"{landmark.cost} coin",
+        f"Qty: {int(not landmark.built)}",
+        ])
+    
+    for [title, description, cost, qty] in availableCards:
+      available = int(qty.split(': ')[1])
+      price = int(cost.split(' ')[0])
+      if price <= cash and available > 0:
+        cardTitle = title.splitlines()[0]
+        cleanTitle = repr(cardTitle).split("74m")[1].split("\\")[0] # strip away the ANSI colour codes
+        affordableCards.append((f"{cardTitle}: Purchase Price: {cost} - BUY?", cleanTitle))
+    
+    print(tabulate(availableCards, ["Name", "Action", "Cost", "Remaining"]))
+    shortcuts['notify'](f"You have {cash} cash - what would you like to do?")
     return affordableCards
 
   def start(self):
@@ -39,14 +56,13 @@ class Game:
       self.play()
   
   def play(self):
-    print(reference)
     playerNum = self.round % self.playerCount
     activePlayer = self.players[playerNum]
     activePlayer.beginTurn()
     takeTurn(self, activePlayer)
 
     if activePlayer.hasWon():
-      print(f"{activePlayer.name} has won!  Congratulations!!\n\nThis game of {self.name} took {self.round} rounds to play.")
+      shortcuts['notify'](f"{activePlayer.name} has won!  Congratulations!!\n\nThis game of {self.name} took {self.round} rounds to play.")
       return
     else:
       activePlayer.endTurn()
@@ -72,7 +88,7 @@ def handleDiceResult(game, diceResult):
 
 def rollDice(player):
   doubleDice = player.abilities.doubleDice
-  print(f"What would you like to do?")
+  shortcuts['notify']("Time to roll the dice!")
   options = [
     inquirer.List('dice',
                   message="How many dice do you want to roll?",
@@ -84,7 +100,7 @@ def rollDice(player):
                   ignore=lambda x: not doubleDice), # if doubleDice is false, ignore this List
   ]
 
-  action = inquirer.prompt(options)
+  action = inquirer.prompt(options, theme=MyTheme(player))
   print(f"{player.name} rolled {action['dice']} dice")
   rolls = []
   for x in range(action['dice']):
@@ -105,7 +121,14 @@ def diceFace(die):  # credit: https://codegolf.stackexchange.com/a/2603
   print(s+C[r&1]+s[::-1])
 
 def buildAction(game, player):
-  cash = player.getBalance()
-  print(f"You have {cash} cash - what would you like to do?")
-  options = game.displayCards(cash)
-  print(options) # inquirer list of options from these
+  affordableCards = game.displayCardsToPlayer(player)
+  affordableCards.insert(0,("Build Nothing", "Nothing"))
+  
+  options = [
+    inquirer.List('build',
+                  message="Build an establishment?",
+                  choices=affordableCards)
+  ]
+
+  action = inquirer.prompt(options, theme=MyTheme(player))
+  print(action['build'])

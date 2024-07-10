@@ -1,10 +1,16 @@
+from reference import reference
 from coins.transactions import *
 from coins.coinage import CoinPiles
 from cards.stacks import Hand, Abilities
 
+playerColours = ['red','green','blue','purple']
+
 class Player:
-  def __init__(self, name):
+  def __init__(self, name, i):
     self.name = name
+    self.colour = playerColours[i]
+    self.colorize = reference['ansiColours'][self.colour]
+    self.reset = reference["ansiColours"]["reset"]
     self.current = False
     self.buildActionTaken = False
     self.coins = CoinPiles(3, 0, 0)

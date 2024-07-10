@@ -79,6 +79,7 @@ class LandmarkCard:
     self.reset = reference["ansiColours"]["reset"]
     self.detail = "Orange cards do not trigger, they grant special abilities.\nBuilding all 4 landmarks achieves victory."
     self.type = "Landmark"
+    self.triggers = []
     self.built = False
 
   def __repr__(self):
