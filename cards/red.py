@@ -1,3 +1,4 @@
+import time
 from cards.cardTypes import RedCard
 
 class Cafe(RedCard):
@@ -11,6 +12,7 @@ class Cafe(RedCard):
     self.triggers.extend([3])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class FamilyRestaurant(RedCard):
@@ -24,4 +26,5 @@ class FamilyRestaurant(RedCard):
     self.triggers.extend([9, 10])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))

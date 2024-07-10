@@ -1,3 +1,4 @@
+import time
 from cards.cardTypes import GreenCard
 
 class Bakery(GreenCard):
@@ -11,6 +12,7 @@ class Bakery(GreenCard):
     self.triggers.extend([2, 3])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class ConvenienceStore(GreenCard):
@@ -24,6 +26,7 @@ class ConvenienceStore(GreenCard):
     self.triggers.extend([4])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class CheeseFactory(GreenCard):
@@ -37,6 +40,7 @@ class CheeseFactory(GreenCard):
     self.triggers.extend([7])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class FurnitureFactory(GreenCard):
@@ -50,6 +54,7 @@ class FurnitureFactory(GreenCard):
     self.triggers.extend([8])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class FarmersMarket(GreenCard):
@@ -63,4 +68,5 @@ class FarmersMarket(GreenCard):
     self.triggers.extend([11, 12])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))

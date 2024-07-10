@@ -1,3 +1,4 @@
+import time
 from reference import reference
 
 class BlueCard:
@@ -21,6 +22,7 @@ class BlueCard:
   def trigger(self, player, diceRoll):
     if diceRoll in self.triggers:
       print(f"Triggered {self.title} for {player.name}")
+      time.sleep(0.5)
       self.activate(diceRoll)
 
 class GreenCard:
@@ -44,6 +46,7 @@ class GreenCard:
   def trigger(self, player, diceRoll):
     if player.current and diceRoll in self.triggers:
       print(f"Triggered {self.title} for {player.name}")
+      time.sleep(0.5)
       self.activate(diceRoll)
 
 class RedCard:
@@ -67,6 +70,7 @@ class RedCard:
   def trigger(self, player, diceRoll):
     if not player.current and diceRoll in self.triggers:
       print(f"Triggered {self.title} for {player.name}")
+      time.sleep(0.5)
       self.activate(diceRoll)
 
 class PurpleCard:
@@ -90,6 +94,7 @@ class PurpleCard:
   def trigger(self, player, diceRoll):
     if player.current and diceRoll in self.triggers:
       print(f"Triggered {self.title} for {player.name}")
+      time.sleep(0.5)
       self.activate(diceRoll)
 
 class LandmarkCard:

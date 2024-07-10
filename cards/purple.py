@@ -1,3 +1,4 @@
+import time
 from cards.cardTypes import PurpleCard
 
 class Stadium(PurpleCard):
@@ -10,6 +11,7 @@ class Stadium(PurpleCard):
     self.zIndex = 6
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class TVStation(PurpleCard):
@@ -22,6 +24,7 @@ class TVStation(PurpleCard):
     self.zIndex = 7
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class BusinessCentre(PurpleCard):
@@ -34,4 +37,5 @@ class BusinessCentre(PurpleCard):
     self.zIndex = 8
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))

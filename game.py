@@ -1,14 +1,15 @@
+import time
 from tabulate import tabulate
 from reference import shortcuts
 from coins.bank import *
 from player import Player
 from cards.stacks import Deck
-from actions.dice import rollDice, handleDiceResult
-from actions.build import buildAction, handleBuilding
+from actions.dice import rollDice
+from actions.build import buildAction
 
 class Game:
   def __init__(self, playernames, rounds = None):
-    self.name = "Machi Koro!"
+    self.name = "Machi Koro"
     self.playerCount = len(playernames)
     self.players = []
     for i, name in enumerate(playernames):
@@ -19,8 +20,10 @@ class Game:
     self.limitRounds = rounds
 
   def __str__(self):
-    players = [player.name for player in self.players]
-    return f"This is a game of {self.name}.\nIt has {self.playerCount} players - {', '.join(players)}.\nWe are on round {self.round}"
+    players = []
+    for player in self.players:
+      players.append(f"{player.colorize}{player.name}{player.reset}")
+    return f"This is a game of {self.name}!\nIt has {self.playerCount} players - {', '.join(players)}.\nWe are on round {self.round}"
 
   def notify(self, str):
     if "\n" in str:
@@ -76,8 +79,9 @@ class Game:
     if self.playerCount > 4 or self.playerCount < 2:
       raise ValueError("This is a game for 2 to 4 players only!")
     else:
-      print(f"Let's play ${self.name}")
+      self.notify(f"{self}")
       self.deck.initialise()
+      time.sleep(1)
       self.play()
   
   def play(self):
@@ -86,6 +90,7 @@ class Game:
     activePlayer = self.players[playerNum]
     self.round += 1
     activePlayer.beginTurn()
+    time.sleep(1)
     takeTurn(self, activePlayer)
 
     if activePlayer.hasWon():
@@ -105,5 +110,7 @@ class Game:
 
 def takeTurn(game, player):
   rollDice(game, player)
+  time.sleep(1)
   buildAction(game, player, {'offerToShowHand': True, 'offerToShowDeck': True})
+  time.sleep(1)
   return

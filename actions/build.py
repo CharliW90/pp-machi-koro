@@ -1,3 +1,4 @@
+import time
 import inquirer
 from reference import MyTheme
 
@@ -30,20 +31,24 @@ def handleBuilding(game, player, cardTitle, settings):
     cash = player.getBalance()
     statement = f" - holding onto their {cash} coins!" if cash > 1 else "."
     player.declareAction(f"{player.name} built nothing this round{statement}")
+    time.sleep(1)
     return
   elif cardTitle == 'Look':
     settings["offerToShowHand"] = False
     player.viewHand()
     buildAction(game, player, settings)
+    time.sleep(1)
     return
   elif cardTitle == 'Display':
     settings["offerToShowDeck"] = False
     game.displayCardsToPlayer(player)
     buildAction(game, player, settings)
+    time.sleep(1)
     return
   else:
     card = game.takeCardFromStack(cardTitle)
     built = player.build(card, game.bank)
     if not built:
       raise ChildProcessError("Something went wrong when trying to build - sorry!")
+    time.sleep(1)
     return

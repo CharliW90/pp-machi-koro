@@ -1,3 +1,4 @@
+import time
 from reference import reference
 from coins.coinage import CoinPiles
 from coins.transactions import giving, receiving
@@ -44,6 +45,7 @@ class Bank:
       elif fives < 2:
         self.declareAction(f"{self.name} has {fives} silver Five coins remaining - exchanging up with players...")
       for player in game.players:
+        time.sleep(1)
         print(len(player.coins.coppers), len(player.coins.silvers), len(player.coins.golds))
         coins = player.giveAll()
         player.receive(self.exchange(coins))

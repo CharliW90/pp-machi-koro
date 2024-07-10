@@ -1,3 +1,4 @@
+import time
 from tabulate import tabulate
 from reference import reference
 from coins.transactions import *
@@ -27,6 +28,7 @@ class Player:
     return f"{self.name} has {cash} cash, and has built {landmarks} landmarks"
   
   def declareAction(self, str):
+    time.sleep(0.2)
     print(f"{self.colorize}{str}{self.reset}")
 
   def beginTurn(self):

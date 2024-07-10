@@ -1,5 +1,5 @@
-import inquirer
 import random
+import inquirer
 from reference import MyTheme
 
 def rollDice(game, player):

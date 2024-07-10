@@ -1,3 +1,4 @@
+import time
 from cards.cardTypes import BlueCard
 
 class WheatField(BlueCard):
@@ -11,6 +12,7 @@ class WheatField(BlueCard):
     self.triggers.extend([1])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class Ranch(BlueCard):
@@ -24,6 +26,7 @@ class Ranch(BlueCard):
     self.triggers.extend([2])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class Forest(BlueCard):
@@ -37,6 +40,7 @@ class Forest(BlueCard):
     self.triggers.extend([5])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class Mine(BlueCard):
@@ -50,6 +54,7 @@ class Mine(BlueCard):
     self.triggers.extend([9])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
 
 class AppleOrchard(BlueCard):
@@ -63,4 +68,5 @@ class AppleOrchard(BlueCard):
     self.triggers.extend([10])
 
   def activate(self, dice):
+    time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
