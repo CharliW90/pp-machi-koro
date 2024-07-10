@@ -4,8 +4,8 @@ from cards.red import *
 from cards.purple import *
 from cards.landmark import *
 
-class CardStacks:
-  def __init__(self):
+class Deck:
+  def __init__(self, playerCount):
     self.wheatFields = []
     self.ranches = []
     self.bakeries = []
@@ -19,29 +19,13 @@ class CardStacks:
     self.familyRestaurants = []
     self.appleOrchards = []
     self.farmersMarkets = []
-
-  def add(self, card):
-    pile = lookup(card.title)
-    self[pile].append(card)
-    print(f"Added {card.name} to the {pile or 'major establishments'} pile - there are now {len(self[pile])} cards in this pile")
-    return len(self[pile])
-  
-  def remove(self, name):
-    pile = lookup(name)
-    card = self[pile].pop()
-    print(f"Removed {card.name} from the {pile} pile - there are now {len(self[pile])} cards in this pile")
-    return card
-
-class Deck(CardStacks):
-  def __init__(self, playerCount):
-    super().__init__()
     self.playerCount = playerCount
 
   def initialise(self):
     cards = startingDeck(self.playerCount)
     for card in cards:
       pile = lookup(card.title)
-      stack = getattr(self, pile)
+      stack = getattr(self, str(pile))
       stack.append(card)
   
   def contents(self, cash = 100):
@@ -213,6 +197,20 @@ class Deck(CardStacks):
         ])
     return allCards
 
+  def add(self, card):
+    pile = lookup(card.title)
+    stack = getattr(self, str(pile))
+    stack.append(card)
+    print(f"Added {card.title} to the {pile or 'major establishments'} pile - there are now {len(stack)} cards in this pile")
+    return len(stack)
+  
+  def remove(self, name):
+    pile = lookup(name)
+    stack = getattr(self, str(pile))
+    card = stack.pop()
+    print(f"Removed {card.title} from the {pile} pile - there are now {len(stack)} cards in this pile")
+    return card
+
 class Hand():
   def __init__(self):
     self.blue = [WheatField()]
@@ -227,8 +225,8 @@ class Hand():
   
   def remove(self, colour, name):
     stack = getattr(self, colour)
-    for card, i in enumerate(stack):
-      if card.name == name:
+    for i, card in enumerate(stack):
+      if card.title == name:
         stack.pop(i)
         return card
     return ValueError(f"No {name} card")
