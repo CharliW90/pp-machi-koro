@@ -9,16 +9,16 @@ class Bank:
     self.colour = 'cyan'
     self.colorize = reference['ansiColours'][self.colour]
     self.reset = reference["ansiColours"]["reset"]
-    self.coins = CoinPiles(24, 24, 12)
-    self.total = 282
+    self.coins = CoinPiles(42, 24, 12)
+    self.total = self.coins.total()
     
   def __str__(self):
     self.updateTotal()
     output = (
     f"{self.name} contains {self.total} in coinage:\n"
-    f"{len(self.coins.coppers)} Copper Ones, valuing {sum([coin.value for coin in self.coins.coppers])}\n"
-    f"{len(self.coins.silvers)} Silver Fives, valuing {sum([coin.value for coin in self.coins.silvers])}\n"
-    f"{len(self.coins.golds)} Gold Tens, valuing {sum([coin.value for coin in self.coins.golds])}"
+    f"{len(self.coins.coppers)} Copper 'Ones', valuing {sum([coin.value for coin in self.coins.coppers])}\n"
+    f"{len(self.coins.silvers)} Silver 'Fives', valuing {sum([coin.value for coin in self.coins.silvers])}\n"
+    f"{len(self.coins.golds)} Gold 'Tens', valuing {sum([coin.value for coin in self.coins.golds])}"
     )
     return output
   
