@@ -1,24 +1,58 @@
 import time
 from tabulate import tabulate
 from reference import shortcuts
-from coins.bank import *
-from player import Player
+from coins.bank import Bank
+from player import Player, reset as resetPlayers
 from cards.stacks import Deck
 from actions.dice import rollDice
 from actions.build import buildAction
 
 class Game:
-  def __init__(self, playernames, rounds = None):
-    self.name = "Machi Koro"
-    self.playerCount = len(playernames)
-    self.players = []
-    for i, name in enumerate(playernames):
-      self.players.append(Player(name, i))
-    self.bank = Bank()
-    self.deck = Deck(self.playerCount)
-    self.round = 0
-    self.limitRounds = rounds
+  name = "Machi Koro"
 
+  def __init__(self, playernames, rounds = None):
+    self.players = playernames
+    self.playerCount = playernames
+    self.limitRounds = rounds
+    self._initialised = True
+    self.bank = Bank()
+    self.deck = Deck()
+    self.round = 0
+    self._initialised = False
+    self._inProgress = False
+
+  @property
+  def players(self):
+    return self.__players
+  @players.setter
+  def players(self, names):
+    if self._initialised: raise Exception("Sorry, but you can't edit games")
+    if not isinstance(names, list): raise ValueError(f"Player names must be provided as a List - {names} is a {type(names)}")
+    if not 2 <= len(names) <= 4: raise ValueError(f"This is a game for 2 to 4 players only!  You have requested {len(names)} players.")
+    generatedPlayers = []
+    for i, name in enumerate(names):
+      if not isinstance(name, (str, int)): raise ValueError(f"Provided names must be plain strings - {name} is a {type(name)}.")
+      generatedPlayers.append(Player(str(name), i))
+    self.__players = generatedPlayers
+  
+  @property
+  def playerCount(self):
+    return self.__playerCount
+  @playerCount.setter
+  def playerCount(self, names):
+    if self._initialised: raise Exception("Sorry, but you can't edit games")
+    if not 2 <= len(names) <= 4: raise ValueError(f"This is a game for 2 to 4 players only!  You have requested {len(names)} players.")
+    self.__playerCount = len(names)
+
+  @property
+  def rounds(self):
+    return self.__rounds
+  @rounds.setter
+  def rounds(self, value):
+    if self._initialised: raise Exception("Sorry, but you can't edit games")
+    if value > 100: raise ValueError(f"{value} rounds is too high - if you don't want to limit the number of rounds playable, simply omit this parameter.")
+    self.__rounds = value
+  
   def __str__(self):
     players = []
     for player in self.players:
@@ -76,17 +110,15 @@ class Game:
     return card
 
   def start(self):
-    if self.playerCount > 4 or self.playerCount < 2:
-      raise ValueError("This is a game for 2 to 4 players only!")
-    else:
-      self.deck.initialise()
-      self.notify(f"{self}")
-      time.sleep(0.5)
-      for player in self.players:
-        player.receive(self.bank.givePlayer(3))
-        time.sleep(0.2)
-      time.sleep(0.5)
-      self.play()
+    self.inProgress = True
+    self.deck.generate(self)
+    self.notify(f"{self}")
+    time.sleep(0.5)
+    for player in self.players:
+      player.receive(self.bank.givePlayer(3))
+      time.sleep(0.2)
+    time.sleep(0.5)
+    self.play()
   
   def play(self):
     self.bank.check(self)
@@ -111,6 +143,10 @@ class Game:
           return
       else:
         return self.play()
+
+  def endGame(self):
+    self.notify("Ending game...")
+    self.notify(resetPlayers())
 
 def takeTurn(game, player):
   rollDice(game, player)
