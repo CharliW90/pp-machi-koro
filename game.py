@@ -79,9 +79,13 @@ class Game:
     if self.playerCount > 4 or self.playerCount < 2:
       raise ValueError("This is a game for 2 to 4 players only!")
     else:
-      self.notify(f"{self}")
       self.deck.initialise()
-      time.sleep(1)
+      self.notify(f"{self}")
+      time.sleep(0.5)
+      for player in self.players:
+        player.receive(self.bank.givePlayer(3))
+        time.sleep(0.2)
+      time.sleep(0.5)
       self.play()
   
   def play(self):

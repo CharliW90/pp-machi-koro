@@ -15,7 +15,7 @@ class Player:
     self.reset = reference["ansiColours"]["reset"]
     self.current = False
     self.buildActionTaken = False
-    self.coins = CoinPiles(3, 0, 0)
+    self.coins = CoinPiles(0, 0, 0)
     self.cards = Hand()
     self.abilities = Abilities()
   
