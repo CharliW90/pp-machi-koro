@@ -24,15 +24,24 @@ class CoinPiles:
     self.golds = []
     for gold in range(golds):
       self.golds.append(Ten())
+    self._index = 0
   
+  def __iter__(self):
+    return self
+  
+  def __next__(self):
+    sequence = [self.coppers, self.silvers, self.golds]
+    if self._index < len(sequence):
+      iteration = sequence[self._index]
+      self._index += 1
+      return iteration
+    else:
+      self._index = 0
+      raise StopIteration
+
   def total(self):
-    coppers = 0
-    silvers = 0
-    golds = 0
-    for coin in self.coppers:
-      coppers += coin.value
-    for coin in self.silvers:
-      silvers += coin.value
-    for coin in self.golds:
-      golds += coin.value
-    return coppers + silvers + golds
+    total = 0
+    for stack in self:
+      for coin in stack:
+        total += coin.value
+    return total
