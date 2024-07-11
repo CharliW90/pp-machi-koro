@@ -6,7 +6,7 @@ from cards.purple import *
 from cards.landmark import *
 
 class Deck:
-  def __init__(self, playerCount):
+  def __init__(self):
     self.wheatFields = []
     self.ranches = []
     self.bakeries = []
@@ -20,14 +20,10 @@ class Deck:
     self.familyRestaurants = []
     self.appleOrchards = []
     self.farmersMarkets = []
-    self.playerCount = playerCount
 
-  def initialise(self):
-    cards = startingDeck(self.playerCount)
-    for card in cards:
-      pile = lookup(card.title)
-      stack = getattr(self, str(pile))
-      stack.append(card)
+  def generate(self, game):
+    if game.inProgress: raise Exception("Game is already in progress - cannot generate a new starting deck.")
+    generateStartingDeck(self, game.playercount)
   
   def contents(self, cash = 100):
     cardStacks = []
@@ -174,23 +170,21 @@ def lookup(name):
       print(f"Error: {name} is not one of the expected names")
       return
 
-def startingDeck(playerCount):
-  cards = []
+def generateStartingDeck(deck, playerCount):
   for x in range(6):
-    cards.append(WheatField())
-    cards.append(Ranch())
-    cards.append(Bakery())
-    cards.append(Cafe())
-    cards.append(ConvenienceStore())
-    cards.append(Forest())
-    cards.append(CheeseFactory())
-    cards.append(FurnitureFactory())
-    cards.append(Mine())
-    cards.append(FamilyRestaurant())
-    cards.append(AppleOrchard())
-    cards.append(FarmersMarket())
+    deck.wheatFields.append(WheatField())
+    deck.wheatFields.append(Ranch())
+    deck.cafes.append(Bakery())
+    deck.bakeries.append(Cafe())
+    deck.forests.append(ConvenienceStore())
+    deck.convenienceStores.append(Forest())
+    deck.cheeseFactories.append(CheeseFactory())
+    deck.furnitureFactories.append(FurnitureFactory())
+    deck.mines.append(Mine())
+    deck.familyRestaurants.append(FamilyRestaurant())
+    deck.appleOrchards.append(AppleOrchard())
+    deck.farmersMarkets.append(FarmersMarket())
   for x in range(playerCount):
-    cards.append(Stadium())
-    cards.append(TVStation())
-    cards.append(BusinessCentre())
-  return cards
+    deck.majorEstablishments.append(Stadium())
+    deck.majorEstablishments.append(TVStation())
+    deck.majorEstablishments.append(BusinessCentre())
