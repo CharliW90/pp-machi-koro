@@ -26,11 +26,11 @@ def giving(self, total):
 
     totalGiving = sum([coin.value for coin in given])
     if remaining > 0:
-      self.declareAction(f"{self.name} is giving {totalGiving}. {total} requested (payment was short by {remaining}) ==>")
+      self.declareAction(f"{self.name} is giving {totalGiving} coins. {total} requested (payment was short by {remaining}) ==>")
     elif remaining < 0:
-      self.declareAction(f"{self.name} is giving {totalGiving}. {total} requested (requires {abs(remaining)} change) ==>")
+      self.declareAction(f"{self.name} is giving {totalGiving} coins. {total} requested (requires {abs(remaining)} change) ==>")
     else:
-      self.declareAction(f"{self.name} is giving {totalGiving} ==>")
+      self.declareAction(f"{self.name} is giving {totalGiving} coins ==>")
     return given
 
 def receiving(self, coins):
@@ -44,7 +44,7 @@ def receiving(self, coins):
     elif coin.colour == "Gold":
       self.coins.golds.append(coin)
   if received > 0:
-    self.declareAction(f"==> {self.name} received {sum([coin.value for coin in coins])} cash")
+    self.declareAction(f"==> {self.name} received {sum([coin.value for coin in coins])} coins")
   return received
 
 def calcPayment(coins, total):
