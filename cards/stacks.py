@@ -1,4 +1,5 @@
 from collections import Counter
+from reference import shortcuts
 from cards.blue import *
 from cards.green import *
 from cards.red import *
@@ -25,30 +26,28 @@ class Deck:
     cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
     cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
     
-    allCards = []       # here we will store a multiline f-string per card
+    allCards = ()       # here we will store a multiline f-string per card - tuple because immutable and indexable
     allCardIndexes = [] # here we will store the zIndex per card
-    mapOfCards = {}     # here we will map the zIndex of a card to its position in the allCards
+    mapOfCards = {}     # here we will map the zIndex of a card to its position in allCards tuple
+
     for [title, qty] in cardCounts:
       cards = getattr(self, str(lookup(title)))
       card = cards[0]
       mapOfCards[str(card.zIndex)] = len(allCards)
       allCardIndexes.append(card.zIndex)
-      plural = "s" if card.cost > 1 else ""
-      style = "\x1b[9;2m" if card.cost > cash else "\x1b[3;32m"
-      reset = "\x1b[0m"
-      allCards.append([
+
+      style = shortcuts['affordable'] if card.cost <= cash else shortcuts['unaffordable']
+      styleReset = shortcuts['reset']
+
+      allCards += ([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-        f"{style}{card.cost} coin{plural}{reset}",
+        f"{style}{card.cost} coin{'s' if card.cost > 1 else ''}{styleReset}",
         f"Qty: {qty}",
-        ])
+        ],)   # <= that comma makes this a tuple, and you can add a tuple to a tuple
       
-    sortedCards = []
     allCardIndexes.sort()
-    for index in allCardIndexes:
-      cardsIndex = mapOfCards[str(index)]
-      card = allCards[cardsIndex]
-      sortedCards.append(card)
+    sortedCards = [allCards[mapOfCards[str(index)]] for index in allCardIndexes]
     return sortedCards
 
   def add(self, card):
