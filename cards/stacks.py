@@ -22,7 +22,7 @@ class Deck:
     self.appleOrchards = [AppleOrchard() for _ in range(6)]
     self.farmersMarkets = [FarmersMarket() for _ in range(6)]
   
-  def contents(self, cash = 100) -> list[tuple]:
+  def contents(self, cash = 100) -> list:
     cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
     cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
     
@@ -92,7 +92,7 @@ class Hand():
       raise ValueError(f"No {name} card")
     raise ValueError(f"Player hands do not include {colour} cards")
 
-  def contents(self) -> list[tuple]:
+  def contents(self) -> list:
     cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
     cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
     
