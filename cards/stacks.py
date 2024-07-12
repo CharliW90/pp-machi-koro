@@ -22,11 +22,7 @@ class Deck:
     self.farmersMarkets = [FarmersMarket() for _ in range(6)]
   
   def contents(self, cash = 100):
-    cardStacks = []
-    for attribute in dir(self):
-      actual = getattr(self, attribute)
-      if isinstance(actual, list):
-        cardStacks.append(actual)
+    cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
     cardCounts = []
     for stack in cardStacks:
       counts = Counter(card.title for card in stack)
