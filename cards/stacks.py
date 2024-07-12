@@ -22,8 +22,8 @@ class Deck:
     self.farmersMarkets = []
 
   def generate(self, game):
-    if game.inProgress: raise Exception("Game is already in progress - cannot generate a new starting deck.")
-    generateStartingDeck(self, game.playercount)
+    if game._inProgress: raise Exception("Game is already in progress - cannot generate a new starting deck.")
+    generateStartingDeck(self, game.playerCount)
   
   def contents(self, cash = 100):
     cardStacks = []
@@ -111,7 +111,7 @@ class Hand():
         card = [card for card in stack if card.title == title][0]
         mapOfCards[str(card.zIndex)] = len(allCards)
         allCardIndexes.append(card.zIndex)
-        if card.type == "Landmark":
+        if card.cardType == "Landmark":
           if card.built:
             allCards.append([
               f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> Landmark Card <{card.reset}",
@@ -173,7 +173,7 @@ def lookup(name):
 def generateStartingDeck(deck, playerCount):
   for x in range(6):
     deck.wheatFields.append(WheatField())
-    deck.wheatFields.append(Ranch())
+    deck.ranches.append(Ranch())
     deck.cafes.append(Bakery())
     deck.bakeries.append(Cafe())
     deck.forests.append(ConvenienceStore())
