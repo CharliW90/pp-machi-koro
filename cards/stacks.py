@@ -31,7 +31,7 @@ class Deck:
     mapOfCards = {}     # here we will map the zIndex of a card to its position in allCards tuple
 
     for title, qty in cardCounts:
-      card = getattr(self, str(lookup(title)))[0]
+      card = [card for stack in cardStacks for card in stack if card.title == title][0]
 
       mapOfCards[str(card.zIndex)] = len(allCards)
       allCardIndexes.append(card.zIndex)
