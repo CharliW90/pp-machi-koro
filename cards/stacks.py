@@ -1,6 +1,5 @@
 from collections import Counter
 from reference import shortcuts
-from cards import Card
 from .blue import *
 from .green import *
 from .red import *
@@ -51,7 +50,7 @@ class Deck:
     sortedCards = [allCards[mapOfCards[str(index)]] for index in allCardIndexes]
     return sortedCards
 
-  def add(self, card: Card) -> int:
+  def add(self, card: Blues | Greens | Reds | Purples) -> int:
     pile = lookup(card.title)
     if pile:
       stack = getattr(self, str(pile))
@@ -60,7 +59,7 @@ class Deck:
       return len(stack)
     raise ValueError(f"Cannot add a {card.title} card to the Deck")
   
-  def remove(self, name: str) -> Card:
+  def remove(self, name: str) -> Blues | Greens | Reds | Purples:
     pile = lookup(name)
     if pile:
       stack = getattr(self, str(pile))
@@ -77,14 +76,14 @@ class Hand():
     self.purple = []
     self.landmarks = [TrainStation(), ShoppingMall(), AmusementPark(), RadioTower()]
   
-  def add(self, card: Card) -> int:
+  def add(self, card: Blues | Greens | Reds | Purples) -> int:
     stack = getattr(self, card.colour, None)
     if stack:
       stack.append(card)
       return len(stack)
     raise ValueError(f"Cannot add {card.colour} cards to a player's hand")
   
-  def remove(self, colour:str, name:str) -> Card:
+  def remove(self, colour:str, name:str) -> Blues | Greens | Reds | Purples:
     stack = getattr(self, colour, None)
     if stack:
       for i, card in enumerate(stack):

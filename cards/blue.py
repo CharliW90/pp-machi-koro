@@ -1,4 +1,5 @@
 import time
+from typing import Union
 from .cardTypes import BlueCard
 
 class WheatField(BlueCard):
@@ -75,3 +76,5 @@ class AppleOrchard(BlueCard):
   def activate(self, dice):
     time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
+
+Blues = Union[WheatField, Ranch, Forest, Mine, AppleOrchard]

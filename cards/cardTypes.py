@@ -1,4 +1,5 @@
 import time
+from typing import Union
 from reference import reference
 
 class BlueCard:

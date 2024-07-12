@@ -1,3 +1,4 @@
+from typing import Union
 from .cardTypes import LandmarkCard
 
 class TrainStation(LandmarkCard):
@@ -61,3 +62,5 @@ class Abilities():
   def update(self, abilityName):
     setattr(self, abilityName, True)
     return getattr(self, abilityName)
+
+Landmarks = Union[TrainStation, ShoppingMall, AmusementPark, RadioTower]

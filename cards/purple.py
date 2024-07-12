@@ -1,4 +1,5 @@
 import time
+from typing import Union
 from .cardTypes import PurpleCard
 
 class Stadium(PurpleCard):
@@ -45,3 +46,5 @@ class BusinessCentre(PurpleCard):
   def activate(self, dice):
     time.sleep(0.2)
     print(self.title + ": triggered on Dice roll: " + str(dice))
+
+Purples = Union[Stadium, TVStation, BusinessCentre]
