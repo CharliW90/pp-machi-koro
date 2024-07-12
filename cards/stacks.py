@@ -23,13 +23,11 @@ class Deck:
   
   def contents(self, cash = 100):
     cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
-    cardCounts = []
-    for stack in cardStacks:
-      counts = Counter(card.title for card in stack)
-      cardCounts.extend([title, count] for title, count in counts.items())
-    allCards = []
-    allCardIndexes = []
-    mapOfCards = {}
+    cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
+    
+    allCards = []       # here we will store a multiline f-string per card
+    allCardIndexes = [] # here we will store the zIndex per card
+    mapOfCards = {}     # here we will map the zIndex of a card to its position in the allCards
     for [title, qty] in cardCounts:
       cards = getattr(self, str(lookup(title)))
       card = cards[0]
@@ -44,6 +42,7 @@ class Deck:
         f"{style}{card.cost} coin{plural}{reset}",
         f"Qty: {qty}",
         ])
+      
     sortedCards = []
     allCardIndexes.sort()
     for index in allCardIndexes:
