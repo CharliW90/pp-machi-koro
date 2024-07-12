@@ -1,5 +1,5 @@
 import time
-from cards.cardTypes import BlueCard
+from .cardTypes import BlueCard
 
 class WheatField(BlueCard):
   cost = 1

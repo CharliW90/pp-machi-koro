@@ -1,5 +1,5 @@
 import time
-from cards.cardTypes import RedCard
+from .cardTypes import RedCard
 
 class Cafe(RedCard):
   cost = 2

@@ -1,5 +1,5 @@
 import time
-from cards.cardTypes import PurpleCard
+from .cardTypes import PurpleCard
 
 class Stadium(PurpleCard):
   cost = 6

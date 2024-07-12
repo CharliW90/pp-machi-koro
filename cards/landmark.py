@@ -1,4 +1,4 @@
-from cards.cardTypes import LandmarkCard
+from .cardTypes import LandmarkCard
 
 class TrainStation(LandmarkCard):
   cost = 4
@@ -50,7 +50,7 @@ class RadioTower(LandmarkCard):
   
   def ability(self):
     return "reRolls"
-  
+
 class Abilities():
   def __init__(self):
     self.doubleDice = False

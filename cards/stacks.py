@@ -1,20 +1,21 @@
 from collections import Counter
 from reference import shortcuts
-from cards.blue import *
-from cards.green import *
-from cards.red import *
-from cards.purple import *
-from cards.landmark import *
+from cards import Card
+from .blue import *
+from .green import *
+from .red import *
+from .purple import *
+from .landmark import *
 
 class Deck:
-  def __init__(self, players):
+  def __init__(self, playerCount:int):
     self.wheatFields = [WheatField() for _ in range(6)]
     self.ranches = [Ranch() for _ in range(6)]
     self.bakeries = [Bakery() for _ in range(6)]
     self.cafes = [Cafe() for _ in range(6)]
     self.convenienceStores = [ConvenienceStore() for _ in range(6)]
     self.forests = [Forest() for _ in range(6)]
-    self.majorEstablishments = [card for card in [Stadium(), TVStation(), BusinessCentre()] for _ in range(players)]
+    self.majorEstablishments = [card for card in [Stadium(), TVStation(), BusinessCentre()] for _ in range(playerCount)]
     self.cheeseFactories = [CheeseFactory() for _ in range(6)]
     self.furnitureFactories = [FurnitureFactory() for _ in range(6)]
     self.mines = [Mine() for _ in range(6)]
@@ -22,7 +23,7 @@ class Deck:
     self.appleOrchards = [AppleOrchard() for _ in range(6)]
     self.farmersMarkets = [FarmersMarket() for _ in range(6)]
   
-  def contents(self, cash = 100) -> list:
+  def contents(self, cash = 100) -> list[tuple]:
     cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
     cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
     
@@ -50,18 +51,23 @@ class Deck:
     sortedCards = [allCards[mapOfCards[str(index)]] for index in allCardIndexes]
     return sortedCards
 
-  def add(self, card):
+  def add(self, card: Card) -> int:
     pile = lookup(card.title)
-    stack = getattr(self, str(pile))
-    stack.append(card)
-    print(f"Added {card.title} to the {pile or 'major establishments'} pile - there are now {len(stack)} cards in this pile")
-    return len(stack)
+    if pile:
+      stack = getattr(self, str(pile))
+      stack.append(card)
+      print(f"Added {card.title} to the {pile} pile - there are now {len(stack)} cards in this pile")
+      return len(stack)
+    raise ValueError(f"Cannot add a {card.title} card to the Deck")
   
-  def remove(self, name):
+  def remove(self, name: str) -> Card:
     pile = lookup(name)
-    stack = getattr(self, str(pile))
-    card = stack.pop()
-    return card, pile, len(stack)
+    if pile:
+      stack = getattr(self, str(pile))
+      card = stack.pop()
+      print(f"Removed {card.title} from the {pile} pile - there are now {len(stack)} cards in this pile")
+      return card
+    raise ValueError(f"Cannot remove a {name} card from the Deck")
 
 class Hand():
   def __init__(self):
@@ -71,19 +77,23 @@ class Hand():
     self.purple = []
     self.landmarks = [TrainStation(), ShoppingMall(), AmusementPark(), RadioTower()]
   
-  def add(self, card):
-    stack = getattr(self, card.colour)
-    stack.append(card)
+  def add(self, card: Card) -> int:
+    stack = getattr(self, card.colour, None)
+    if stack:
+      stack.append(card)
+      return len(stack)
+    raise ValueError(f"Cannot add {card.colour} cards to a player's hand")
   
-  def remove(self, colour, name):
-    stack = getattr(self, colour)
-    for i, card in enumerate(stack):
-      if card.title == name:
-        stack.pop(i)
-        return card
-    return ValueError(f"No {name} card")
+  def remove(self, colour:str, name:str) -> Card:
+    stack = getattr(self, colour, None)
+    if stack:
+      for i, card in enumerate(stack):
+        if card.title == name:
+          return stack.pop(i)
+      raise ValueError(f"No {name} card")
+    raise ValueError(f"Player hands do not include {colour} cards")
 
-  def contents(self) -> list:
+  def contents(self) -> list[tuple]:
     cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
     cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
     
@@ -121,7 +131,7 @@ class Hand():
     sortedCards = [allCards[mapOfCards[str(index)]] for index in allCardIndexes]
     return sortedCards
 
-def lookup(name):
+def lookup(name: str) -> str | None:
   match name:
     case "Wheat Field":
       return "wheatFields"

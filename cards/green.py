@@ -1,5 +1,5 @@
 import time
-from cards.cardTypes import GreenCard
+from .cardTypes import GreenCard
 
 class Bakery(GreenCard):
   cost = 1
