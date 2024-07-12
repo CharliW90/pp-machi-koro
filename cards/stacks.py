@@ -59,13 +59,13 @@ class Deck:
       return len(stack)
     raise ValueError(f"Cannot add a {card.title} card to the Deck")
   
-  def remove(self, name: str) -> Blues | Greens | Reds | Purples:
+  def remove(self, name: str) -> tuple[Blues | Greens | Reds | Purples, str, int]:
     pile = lookup(name)
     if pile:
       stack = getattr(self, str(pile))
       card = stack.pop()
       print(f"Removed {card.title} from the {pile} pile - there are now {len(stack)} cards in this pile")
-      return card
+      return card, pile, len(stack)
     raise ValueError(f"Cannot remove a {name} card from the Deck")
 
 class Hand():
