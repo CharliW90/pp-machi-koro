@@ -22,7 +22,7 @@ class Deck:
     self.appleOrchards = [AppleOrchard() for _ in range(6)]
     self.farmersMarkets = [FarmersMarket() for _ in range(6)]
   
-  def contents(self, cash = 100):
+  def contents(self, cash = 100) -> list:
     cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
     cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
     
@@ -30,9 +30,9 @@ class Deck:
     allCardIndexes = [] # here we will store the zIndex per card
     mapOfCards = {}     # here we will map the zIndex of a card to its position in allCards tuple
 
-    for [title, qty] in cardCounts:
-      cards = getattr(self, str(lookup(title)))
-      card = cards[0]
+    for title, qty in cardCounts:
+      card = getattr(self, str(lookup(title)))[0]
+
       mapOfCards[str(card.zIndex)] = len(allCards)
       allCardIndexes.append(card.zIndex)
 
@@ -83,49 +83,42 @@ class Hand():
         return card
     return ValueError(f"No {name} card")
 
-  def contents(self):
-    allCards = []
-    cardStacks = []
-    for attribute in dir(self):
-      actual = getattr(self, attribute)
-      if isinstance(actual, list):
-        cardStacks.append(actual)
-    cardCounts = []
-    allCardIndexes = []
-    mapOfCards = {}
-    for stack in cardStacks:
-      counts = Counter(card.title for card in stack)
-      cardCounts.extend([title, count] for title, count in counts.items())
-      
-      for title, count in counts.items():
-        card = [card for card in stack if card.title == title][0]
-        mapOfCards[str(card.zIndex)] = len(allCards)
-        allCardIndexes.append(card.zIndex)
-        if card.cardType == "Landmark":
-          if card.built:
-            allCards.append([
-              f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> Landmark Card <{card.reset}",
-              f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-              f"{card.colorize}Built!{card.reset}",
-              ])
-          else:
-            allCards.append([
-              f"\x1b[9;2m{card.colorize}{card.title}{card.reset}\x1b[0m\n{card.colorize}> Unbuilt Landmark <{card.reset}",
-              f"\x1b[9;2m{card.colorize}{card.description.splitlines()[0]}{card.reset}\x1b[0m\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-              f"{card.colorize}Not yet built...{card.reset}",
-              ])
-        else:
-          allCards.append([
-            f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
+  def contents(self) -> list:
+    cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
+    cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
+    
+    allCards = ()       # here we will store a multiline f-string per card - tuple because immutable and indexable
+    allCardIndexes = [] # here we will store the zIndex per card
+    mapOfCards = {}     # here we will map the zIndex of a card to its position in allCards tuple
+
+    for title, qty in cardCounts:
+      card = [card for stack in cardStacks for card in stack if card.title == title][0]
+
+      mapOfCards[str(card.zIndex)] = len(allCards)
+      allCardIndexes.append(card.zIndex)
+
+      if card.cardType == "Landmark":
+        if card.built:
+          allCards += ([
+            f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> Landmark Card <{card.reset}",
             f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
-            f"{card.colorize}Qty: {count}{card.reset}",
-            ])
-    sortedCards = []
+            f"{card.colorize}Built!{card.reset}",
+            ],)   # <= that comma makes this a tuple, and you can add a tuple to a tuple
+        else:
+          allCards += ([
+            f"\x1b[9;2m{card.colorize}{card.title}{card.reset}\x1b[0m\n{card.colorize}> Unbuilt Landmark <{card.reset}",
+            f"\x1b[9;2m{card.colorize}{card.description.splitlines()[0]}{card.reset}\x1b[0m\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
+            f"{card.colorize}Not yet built...{card.reset}",
+            ],)   # <= that comma makes this a tuple, and you can add a tuple to a tuple
+      else:
+        allCards += ([
+          f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
+          f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
+          f"{card.colorize}Qty: {qty}{card.reset}",
+          ],)     # <= that comma makes this a tuple, and you can add a tuple to a tuple
+    
     allCardIndexes.sort()
-    for index in allCardIndexes:
-      cardsIndex = mapOfCards[str(index)]
-      card = allCards[cardsIndex]
-      sortedCards.append(card)
+    sortedCards = [allCards[mapOfCards[str(index)]] for index in allCardIndexes]
     return sortedCards
 
 def lookup(name):
