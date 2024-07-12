@@ -6,24 +6,20 @@ from cards.purple import *
 from cards.landmark import *
 
 class Deck:
-  def __init__(self):
-    self.wheatFields = []
-    self.ranches = []
-    self.bakeries = []
-    self.cafes = []
-    self.convenienceStores = []
-    self.forests = []
-    self.majorEstablishments = []
-    self.cheeseFactories = []
-    self.furnitureFactories = []
-    self.mines = []
-    self.familyRestaurants = []
-    self.appleOrchards = []
-    self.farmersMarkets = []
-
-  def generate(self, game):
-    if game._inProgress: raise Exception("Game is already in progress - cannot generate a new starting deck.")
-    generateStartingDeck(self, game.playerCount)
+  def __init__(self, players):
+    self.wheatFields = [WheatField() for _ in range(6)]
+    self.ranches = [Ranch() for _ in range(6)]
+    self.bakeries = [Bakery() for _ in range(6)]
+    self.cafes = [Cafe() for _ in range(6)]
+    self.convenienceStores = [ConvenienceStore() for _ in range(6)]
+    self.forests = [Forest() for _ in range(6)]
+    self.majorEstablishments = [card for card in [Stadium(), TVStation(), BusinessCentre()] for _ in range(players)]
+    self.cheeseFactories = [CheeseFactory() for _ in range(6)]
+    self.furnitureFactories = [FurnitureFactory() for _ in range(6)]
+    self.mines = [Mine() for _ in range(6)]
+    self.familyRestaurants = [FamilyRestaurant() for _ in range(6)]
+    self.appleOrchards = [AppleOrchard() for _ in range(6)]
+    self.farmersMarkets = [FarmersMarket() for _ in range(6)]
   
   def contents(self, cash = 100):
     cardStacks = []
@@ -169,22 +165,3 @@ def lookup(name):
     case _:
       print(f"Error: {name} is not one of the expected names")
       return
-
-def generateStartingDeck(deck, playerCount):
-  for x in range(6):
-    deck.wheatFields.append(WheatField())
-    deck.ranches.append(Ranch())
-    deck.cafes.append(Bakery())
-    deck.bakeries.append(Cafe())
-    deck.forests.append(ConvenienceStore())
-    deck.convenienceStores.append(Forest())
-    deck.cheeseFactories.append(CheeseFactory())
-    deck.furnitureFactories.append(FurnitureFactory())
-    deck.mines.append(Mine())
-    deck.familyRestaurants.append(FamilyRestaurant())
-    deck.appleOrchards.append(AppleOrchard())
-    deck.farmersMarkets.append(FarmersMarket())
-  for x in range(playerCount):
-    deck.majorEstablishments.append(Stadium())
-    deck.majorEstablishments.append(TVStation())
-    deck.majorEstablishments.append(BusinessCentre())
