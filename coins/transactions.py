@@ -1,4 +1,9 @@
-def giving(self, total):
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+  from coinage import Coin, CoinPiles
+
+def giving(self, total: int) -> list[Coin]:
   given = []
   if total == 0:
     return given
@@ -33,7 +38,7 @@ def giving(self, total):
       self.declareAction(f"{self.name} is giving {totalGiving} coins ==>")
     return given
 
-def receiving(self, coins):
+def receiving(self, coins: list[Coin]) -> int:
   received = 0
   for coin in coins:
     received += coin.value
@@ -47,11 +52,11 @@ def receiving(self, coins):
     self.declareAction(f"==> {self.name} received {sum([coin.value for coin in coins])} coins")
   return received
 
-def calcPayment(coins, total):
+def calcPayment(coins: CoinPiles, total: int) -> int:
   payment = 0
   remaining = total
   while remaining > 0:
-    if remaining >=10 and len(coins.gold) > 0:
+    if remaining >=10 and len(coins.golds) > 0:
       payment += 10
       remaining -= 10
     elif remaining >=5 and len(coins.silvers) > 0:

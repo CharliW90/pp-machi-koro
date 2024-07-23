@@ -1,10 +1,17 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+  from coins import Coin
+  from game import Game
+
 import time
 from reference import reference
-from coins.coinage import CoinPiles
-from coins.transactions import giving, receiving
+from .coinage import CoinPiles, Coin
+from .transactions import giving, receiving
+
 
 class Bank:
-  def __init__(self):
+  def __init__(self) -> None:
     self.name = "The Bank"
     self.colour = 'cyan'
     self.colorize = reference['ansiColours'][self.colour]
@@ -12,46 +19,42 @@ class Bank:
     self.coins = CoinPiles(42, 24, 12)
     self.total = self.coins.total()
     
-  def __str__(self):
-    self.updateTotal()
-    output = (
-    f"{self.name} contains {self.total} in coinage:\n"
-    f"{len(self.coins.coppers)} Copper 'Ones', valuing {sum([coin.value for coin in self.coins.coppers])}\n"
-    f"{len(self.coins.silvers)} Silver 'Fives', valuing {sum([coin.value for coin in self.coins.silvers])}\n"
-    f"{len(self.coins.golds)} Gold 'Tens', valuing {sum([coin.value for coin in self.coins.golds])}"
+  def __str__(self) -> str:
+    return (
+      f"{self.name} contains {self.total} in coinage:\n"
+      f"{len(self.coins.coppers)} Copper 'Ones', valuing {sum([coin.value for coin in self.coins.coppers])}\n"
+      f"{len(self.coins.silvers)} Silver 'Fives', valuing {sum([coin.value for coin in self.coins.silvers])}\n"
+      f"{len(self.coins.golds)} Gold 'Tens', valuing {sum([coin.value for coin in self.coins.golds])}"
     )
-    return output
   
-  def declareAction(self, str):
-    print(f"{self.colorize}{str}{self.reset}")
+  def declareAction(self, action: str) -> None:
+    print(f"{self.colorize}{action}{self.reset}")
 
-  def updateTotal(self):
-    self.total = self.coins.total()
-
-  def givePlayer(self, total):
+  def givePlayer(self, total: int) -> list[Coin]:
     return giving(self, total)
 
-  def takePayment(self, coins, totalToPay):
+  def takePayment(self, coins: list[Coin], totalToPay: int) -> list[Coin]:
     payment = receiving(self, coins) # put payment into bank's coin pile
-    self.updateTotal()
     return giving(self, payment-totalToPay) # give change, if any
 
-  def check(self, game):
+  def check(self, game: Game) -> None:
     ones = len(self.coins.coppers)
     fives = len(self.coins.silvers)
     if ones < 5 or fives < 2:
       if ones < 5:
-        self.declareAction(f"{self.name} has {ones} copper One coins remaining - exchanging up with players...")
+        plural = "" if ones == 1 else "s"
+        self.declareAction(f"{self.name} has {ones} copper One coin{plural} remaining - exchanging up with players...")
       elif fives < 2:
-        self.declareAction(f"{self.name} has {fives} silver Five coins remaining - exchanging up with players...")
+        plural = "" if fives == 1 else "s"
+        self.declareAction(f"{self.name} has {fives} silver Five coin{plural} remaining - exchanging up with players...")
       for player in game.players:
-        time.sleep(1)
-        print(len(player.coins.coppers), len(player.coins.silvers), len(player.coins.golds))
+        time.sleep(0.2)
         coins = player.giveAll()
+        time.sleep(0.5)
         player.receive(self.exchange(coins))
-        print(len(player.coins.coppers), len(player.coins.silvers), len(player.coins.golds))
+        time.sleep(0.3)
 
-  def exchange(self, coins):
+  def exchange(self, coins: list[Coin]) -> list[Coin]:
     intake = receiving(self, coins) # put all coins into the bank's coin pile
     return self.givePlayer(intake) # give back the same value in coins, starting with highest denomination
 
