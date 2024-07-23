@@ -102,10 +102,10 @@ class Hand():
   
   def add(self, card: Blues | Greens | Reds | Purples) -> int:
     """
-    Adds an establishment card to the Deck - returns the number of cards now in that pile.
+    Adds an establishment card to the Hand - returns the number of cards now in that pile.
     """
     stack = getattr(self, card.colour, None)
-    if stack:
+    if stack is not None:
       stack.append(card)
       return len(stack)
     raise ValueError(f"Cannot add {card.colour} cards to a player's hand")
@@ -115,7 +115,7 @@ class Hand():
     Removes an establishment card from the Hand - finds the card by name, removes it, and returns it.
     """
     stack = getattr(self, colour, None)
-    if stack:
+    if stack is not None:
       for i, card in enumerate(stack):
         if card.title == name:
           return stack.pop(i)
