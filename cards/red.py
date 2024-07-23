@@ -14,7 +14,7 @@ class Cafe(RedCard):
 
   def activate(self, game, diceRoll) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class FamilyRestaurant(RedCard):
   cost = 3
@@ -29,6 +29,6 @@ class FamilyRestaurant(RedCard):
 
   def activate(self, game, diceRoll) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 Reds = Union[Cafe, FamilyRestaurant]

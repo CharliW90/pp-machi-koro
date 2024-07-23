@@ -14,7 +14,7 @@ class Stadium(PurpleCard):
 
   def activate(self, game, diceRoll) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class TVStation(PurpleCard):
   cost = 7
@@ -29,7 +29,7 @@ class TVStation(PurpleCard):
 
   def activate(self, game, diceRoll) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class BusinessCentre(PurpleCard):
   cost = 8
@@ -44,6 +44,6 @@ class BusinessCentre(PurpleCard):
 
   def activate(self, game, diceRoll) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 Purples = Union[Stadium, TVStation, BusinessCentre]

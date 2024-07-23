@@ -14,7 +14,7 @@ class WheatField(BlueCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class Ranch(BlueCard):
   cost = 1
@@ -29,7 +29,7 @@ class Ranch(BlueCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class Forest(BlueCard):
   cost = 3
@@ -44,7 +44,7 @@ class Forest(BlueCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class Mine(BlueCard):
   cost = 6
@@ -59,7 +59,7 @@ class Mine(BlueCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class AppleOrchard(BlueCard):
   cost = 3
@@ -74,6 +74,6 @@ class AppleOrchard(BlueCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 Blues = Union[WheatField, Ranch, Forest, Mine, AppleOrchard]

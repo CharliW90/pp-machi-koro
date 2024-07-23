@@ -14,7 +14,7 @@ class Bakery(GreenCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class ConvenienceStore(GreenCard):
   cost = 2
@@ -29,7 +29,7 @@ class ConvenienceStore(GreenCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class CheeseFactory(GreenCard):
   cost = 5
@@ -44,7 +44,7 @@ class CheeseFactory(GreenCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class FurnitureFactory(GreenCard):
   cost = 3
@@ -59,7 +59,7 @@ class FurnitureFactory(GreenCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 class FarmersMarket(GreenCard):
   cost = 2
@@ -74,6 +74,6 @@ class FarmersMarket(GreenCard):
 
   def activate(self, game, diceRoll: int) -> None:
     print(self.title + ": triggered on Dice roll: " + str(diceRoll))
-    raise NotImplemented
+    raise NotImplementedError("Not yet implemented the logic here")
 
 Greens = Union[Bakery, ConvenienceStore, CheeseFactory, FurnitureFactory, FarmersMarket]
