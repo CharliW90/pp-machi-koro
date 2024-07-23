@@ -7,6 +7,12 @@ from .purple import *
 from .landmark import *
 
 class Deck:
+  """
+  This is a class to hold lists representing stacks of cards.
+  These stacks of cards represent the deck of cards in the game, and are organised into stacks of same cards.
+  The game starts with 6 of each Establishment card, and one of each Major Establishment per player in the game. The deck does not hold any Landmark cards.
+  The stacks can be added to and removed from, or their contents can be described.
+  """
   def __init__(self, playerCount:int):
     self.wheatFields = [WheatField() for _ in range(6)]
     self.ranches = [Ranch() for _ in range(6)]
@@ -22,7 +28,11 @@ class Deck:
     self.appleOrchards = [AppleOrchard() for _ in range(6)]
     self.farmersMarkets = [FarmersMarket() for _ in range(6)]
   
-  def contents(self, cash = 100) -> list:
+  def contents(self, cash: int = 100) -> list:
+    """
+    Returns a list of descriptions of the cards in the Deck, incl. the name, dice rolls that trigger it, description, cost and the quantity left in the pile.
+    When printed to the console, the strings are colour coded depending on card colour and affordability.
+    """
     cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
     cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
     
@@ -51,6 +61,9 @@ class Deck:
     return sortedCards
 
   def add(self, card: Blues | Greens | Reds | Purples) -> int:
+    """
+    Adds an establishment card to the Deck - returns the number of cards now in that pile.
+    """
     pile = lookup(card.title)
     if pile:
       stack = getattr(self, str(pile))
@@ -60,23 +73,37 @@ class Deck:
     raise ValueError(f"Cannot add a {card.title} card to the Deck")
   
   def remove(self, name: str) -> tuple[Blues | Greens | Reds | Purples, str, int]:
+    """
+    Removes an establishment card from the Deck - finds the card by name, removes it, and returns it along with the name of the pile it was taken from, and the number of cards now in that pile.
+    """
     pile = lookup(name)
     if pile:
       stack = getattr(self, str(pile))
+      if len(stack) == 0:
+        raise ValueError(f"Cannot remove a {name} card from the {pile} pile - there are none left!")
       card = stack.pop()
       print(f"Removed {card.title} from the {pile} pile - there are now {len(stack)} cards in this pile")
       return card, pile, len(stack)
-    raise ValueError(f"Cannot remove a {name} card from the Deck")
+    raise AttributeError(f"Cannot remove a {name} card from the Deck - no pile exists for these cards.")
 
 class Hand():
+  """
+  This is a class to hold lists representing stacks of cards.
+  These stacks of cards represent a player's hand of cards, and are organised into stacks based of each colour.
+  Players start with a Wheat Field card, a Bakery card. Players also have a stack containing one of each Landmark card (unbuilt).
+  The stacks can be added to and removed from, or their contents can be described.
+  """
   def __init__(self):
-    self.blue = [WheatField()]
-    self.green = [Bakery()]
+    self.blue = [WheatField()]  # this card is not drawn from the Deck, it is in addition to the 6 in the Deck
+    self.green = [Bakery()]     # this card is not drawn from the Deck, it is in addition to the 6 in the Deck
     self.red = []
     self.purple = []
     self.landmarks = [TrainStation(), ShoppingMall(), AmusementPark(), RadioTower()]
   
   def add(self, card: Blues | Greens | Reds | Purples) -> int:
+    """
+    Adds an establishment card to the Deck - returns the number of cards now in that pile.
+    """
     stack = getattr(self, card.colour, None)
     if stack:
       stack.append(card)
@@ -84,6 +111,9 @@ class Hand():
     raise ValueError(f"Cannot add {card.colour} cards to a player's hand")
   
   def remove(self, colour:str, name:str) -> Blues | Greens | Reds | Purples:
+    """
+    Removes an establishment card from the Hand - finds the card by name, removes it, and returns it.
+    """
     stack = getattr(self, colour, None)
     if stack:
       for i, card in enumerate(stack):
@@ -93,6 +123,10 @@ class Hand():
     raise ValueError(f"Player hands do not include {colour} cards")
 
   def contents(self) -> list:
+    """
+    Returns a list of descriptions of the cards in the Deck, incl. the name, dice rolls that trigger it, description, cost and the quantity left in the pile.
+    When printed to the console, the strings are colour coded depending on card colour and affordability.
+    """
     cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
     cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
     
@@ -131,6 +165,10 @@ class Hand():
     return sortedCards
 
 def lookup(name: str) -> str | None:
+  """
+  This function provides a simple translation from 'card title' to 'stack name' for finding a card in the Deck.
+  It is mostly converting a string of words to a single camelCase word, but also handles the fact that majorEstablishments containing three different cards
+  """
   match name:
     case "Wheat Field":
       return "wheatFields"

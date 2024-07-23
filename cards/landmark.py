@@ -10,7 +10,7 @@ class TrainStation(LandmarkCard):
     self.title = "Train Station"
     self.description = "You may roll 1 or 2 dice.\n(Ability)"
 
-  def ability(self):
+  def ability(self) -> str:
     return "doubleDice"
 
 
@@ -23,7 +23,7 @@ class ShoppingMall(LandmarkCard):
     self.title = "Shopping Mall"
     self.description = "Your Restaurant and Store establishments earn +1 coin each when activated.\n(Ability)"
     
-  def ability(self):
+  def ability(self) -> str:
     return "plusOne"
 
 
@@ -36,7 +36,7 @@ class AmusementPark(LandmarkCard):
     self.title = "Amusement Park"
     self.description = "If you roll a double, take another turn after this one.\n(Ability)"
   
-  def ability(self):
+  def ability(self) -> str:
     return "doubleTurns"
 
 
@@ -49,7 +49,7 @@ class RadioTower(LandmarkCard):
     self.title = "Radio Tower"
     self.description = "Once per turn, you may choose to reroll the dice.\n(Ability)"
   
-  def ability(self):
+  def ability(self) -> str:
     return "reRolls"
 
 class Abilities():

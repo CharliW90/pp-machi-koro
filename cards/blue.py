@@ -1,4 +1,3 @@
-import time
 from typing import Union
 from .cardTypes import BlueCard
 
@@ -13,9 +12,9 @@ class WheatField(BlueCard):
     self.industry = "field"
     self.triggers = [1]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class Ranch(BlueCard):
   cost = 1
@@ -28,9 +27,9 @@ class Ranch(BlueCard):
     self.industry = "farm"
     self.triggers = [2]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class Forest(BlueCard):
   cost = 3
@@ -43,9 +42,9 @@ class Forest(BlueCard):
     self.industry = "industrial"
     self.triggers = [5]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class Mine(BlueCard):
   cost = 6
@@ -58,9 +57,9 @@ class Mine(BlueCard):
     self.industry = "industrial"
     self.triggers = [9]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class AppleOrchard(BlueCard):
   cost = 3
@@ -73,8 +72,8 @@ class AppleOrchard(BlueCard):
     self.industry = "field"
     self.triggers = [10]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 Blues = Union[WheatField, Ranch, Forest, Mine, AppleOrchard]

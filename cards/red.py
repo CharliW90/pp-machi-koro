@@ -1,4 +1,3 @@
-import time
 from typing import Union
 from .cardTypes import RedCard
 
@@ -13,9 +12,9 @@ class Cafe(RedCard):
     self.industry = "restaurant"
     self.triggers = [3]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class FamilyRestaurant(RedCard):
   cost = 3
@@ -28,8 +27,8 @@ class FamilyRestaurant(RedCard):
     self.industry = "restaurant"
     self.triggers = [9, 10]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 Reds = Union[Cafe, FamilyRestaurant]

@@ -1,4 +1,3 @@
-import time
 from typing import Union
 from .cardTypes import GreenCard
 
@@ -13,9 +12,9 @@ class Bakery(GreenCard):
     self.industry = "store"
     self.triggers = [2, 3]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class ConvenienceStore(GreenCard):
   cost = 2
@@ -28,9 +27,9 @@ class ConvenienceStore(GreenCard):
     self.industry = "store"
     self.triggers = [4]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class CheeseFactory(GreenCard):
   cost = 5
@@ -43,9 +42,9 @@ class CheeseFactory(GreenCard):
     self.industry = "factory"
     self.triggers = [7]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class FurnitureFactory(GreenCard):
   cost = 3
@@ -58,9 +57,9 @@ class FurnitureFactory(GreenCard):
     self.industry = "factory"
     self.triggers = [8]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class FarmersMarket(GreenCard):
   cost = 2
@@ -73,8 +72,8 @@ class FarmersMarket(GreenCard):
     self.industry = "market"
     self.triggers = [11, 12]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll: int) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 Greens = Union[Bakery, ConvenienceStore, CheeseFactory, FurnitureFactory, FarmersMarket]

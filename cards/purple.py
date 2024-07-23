@@ -1,4 +1,3 @@
-import time
 from typing import Union
 from .cardTypes import PurpleCard
 
@@ -9,13 +8,13 @@ class Stadium(PurpleCard):
   def __init__(self):
     super().__init__()
     self.title = "Stadium"
-    self.description = "Take 2 coins from eachopponent.\n(your turn only)"
+    self.description = "Take 2 coins from each opponent.\n(your turn only)"
     self.industry = "major"
     self.triggers = [6]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class TVStation(PurpleCard):
   cost = 7
@@ -28,9 +27,9 @@ class TVStation(PurpleCard):
     self.industry = "major"
     self.triggers = [6]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 class BusinessCentre(PurpleCard):
   cost = 8
@@ -43,8 +42,8 @@ class BusinessCentre(PurpleCard):
     self.industry = "major"
     self.triggers = [6]
 
-  def activate(self, dice):
-    time.sleep(0.2)
-    print(self.title + ": triggered on Dice roll: " + str(dice))
+  def activate(self, game, diceRoll) -> None:
+    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    raise NotImplemented
 
 Purples = Union[Stadium, TVStation, BusinessCentre]
