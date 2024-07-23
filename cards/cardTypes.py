@@ -129,4 +129,3 @@ class LandmarkCard:
 
   def ability(self) -> str:
     return f"This is {self.title} - it has not been used to create an actual card yet."
-  raise NotImplemented("This is a template for cards to be built from - the ability function should be implemented on the child Class")
