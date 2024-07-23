@@ -33,7 +33,12 @@ hexColours = {
 
 shortcuts = {
   'notificationStart': f"{ansiColours['yellow']}==> ",
-  'notificationEnd': f"{ansiColours['reset']}\n"
+  'notificationEnd': f"{ansiColours['reset']}\n",
+  'unaffordable': "\x1b[9;2m",
+  'affordable': "\x1b[3;32m",
+  'reset': "\x1b[0m",
+  'blinkStart': "\033[5m",
+  'blinkEnd': "\033[0m"
 }
 
 reference = {"rgbColours": rgbColours, "ansiColours": ansiColours, "hexColours": hexColours}
