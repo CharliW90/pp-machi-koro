@@ -13,7 +13,7 @@ class WheatField(BlueCard):
     self.triggers = [1]
 
   def activate(self, game, diceRoll: int) -> None:
-    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class Ranch(BlueCard):
@@ -28,7 +28,7 @@ class Ranch(BlueCard):
     self.triggers = [2]
 
   def activate(self, game, diceRoll: int) -> None:
-    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class Forest(BlueCard):
@@ -43,7 +43,7 @@ class Forest(BlueCard):
     self.triggers = [5]
 
   def activate(self, game, diceRoll: int) -> None:
-    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class Mine(BlueCard):
@@ -58,7 +58,7 @@ class Mine(BlueCard):
     self.triggers = [9]
 
   def activate(self, game, diceRoll: int) -> None:
-    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class AppleOrchard(BlueCard):
@@ -73,7 +73,7 @@ class AppleOrchard(BlueCard):
     self.triggers = [10]
 
   def activate(self, game, diceRoll: int) -> None:
-    print(self.title + ": triggered on Dice roll: " + str(diceRoll))
+    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 Blues = Union[WheatField, Ranch, Forest, Mine, AppleOrchard]

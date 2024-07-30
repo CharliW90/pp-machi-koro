@@ -29,7 +29,7 @@ class BlueCard:
 
   def activate(self, game: Game, diceRoll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
-    raise NotImplemented("This is a template for cards to be built from - the activate function should be implemented on the child Class")
+    raise NotImplementedError("This is a template for cards to be built from - the activate function should be implemented on the child Class")
 
 class GreenCard:
   colour = "green"
@@ -53,7 +53,7 @@ class GreenCard:
 
   def activate(self, game: Game, diceRoll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
-    raise NotImplemented("This is a template for cards to be built from - the activate function should be implemented on the child Class")
+    raise NotImplementedError("This is a template for cards to be built from - the activate function should be implemented on the child Class")
 
 class RedCard:
   colour = "red"
@@ -77,7 +77,7 @@ class RedCard:
 
   def activate(self, game: Game, diceRoll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
-    raise NotImplemented("This is a template for cards to be built from - the activate function should be implemented on the child Class")
+    raise NotImplementedError("This is a template for cards to be built from - the activate function should be implemented on the child Class")
 
 class PurpleCard:
   colour = "purple"
@@ -101,7 +101,7 @@ class PurpleCard:
 
   def activate(self, game: Game, diceRoll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
-    raise NotImplemented("This is a template for cards to be built from - the activate function should be implemented on the child Class")
+    raise NotImplementedError("This is a template for cards to be built from - the activate function should be implemented on the child Class")
 
 class LandmarkCard:
   colour = "orange"
