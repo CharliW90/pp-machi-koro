@@ -39,7 +39,7 @@ class TestCoinage:
   def test_CoinPiles_x100(self):
     for _ in range(100):
       # Arrange
-      quantities = randomQuantities()
+      quantities = random_quantities()
       copper, silver, gold = quantities
 
       # Act
@@ -58,12 +58,12 @@ class TestCoinage:
       for i, pile in enumerate(piles):
         assert len(pile) == quantities[i]
 
-def randomQuantities() -> list:
-  lowNumber = random.randint(0, 3)
-  highNumber = random.randint(36, 48)
-  anyNumber = random.randint(3, 36)
+def random_quantities() -> list:
+  low_number = random.randint(0, 3)
+  high_number = random.randint(36, 48)
+  any_number = random.randint(3, 36)
 
-  quantities = [lowNumber, highNumber, anyNumber]
+  quantities = [low_number, high_number, any_number]
   random.shuffle(quantities)
 
   return quantities
@@ -79,46 +79,47 @@ class TestBank:
     assert hasattr(test, "colour")
     assert test.colour == "cyan"
     assert hasattr(test, "colorize")
-    assert test.colorize == reference['ansiColours']['cyan']
+    assert test.colorize == reference['ansi_colours']['cyan']
     assert hasattr(test, "reset")
-    assert test.reset == reference['ansiColours']['reset']
+    assert test.reset == reference['ansi_colours']['reset']
     assert hasattr(test, "coins")
     assert isinstance(test.coins, CoinPiles)
     assert test.coins.total() == 282
     assert hasattr(test, "total")
     assert test.total == 282
-    assert hasattr(test, "declareAction")
-    assert hasattr(test, "givePlayer")
-    assert hasattr(test, "takePayment")
+    assert hasattr(test, "declare_action")
+    assert hasattr(test, "give_player")
+    assert hasattr(test, "take_payment")
     assert hasattr(test, "check")
     assert hasattr(test, "exchange")
 
-    assert str(test) == "The Bank contains 282 in coinage:\n42 Copper 'Ones', valuing 42\n24 Silver 'Fives', valuing 120\n12 Gold 'Tens', valuing 120"
+    assert str(test) == "This is The Bank, containing 282 in cash."
+    assert repr(test) == "Bank(The Bank contains 282 in coinage:[\n\t42 Copper 'Ones', valuing 42,\n\t24 Silver 'Fives', valuing 120,\n\t12 Gold 'Tens', valuing 120])"
     
-  def test_Bank_functionsDeclare(self, capsys):
+  def test_Bank_functions_declare_action(self, capsys):
     # Arrange
-    expectedMessage = f"{reference['ansiColours']['cyan']}Hello World!{reference['ansiColours']['reset']}"
+    expectedMessage = f"{reference['ansi_colours']['cyan']}Hello World!{reference['ansi_colours']['reset']}"
     test = Bank()
 
     # Act
-    test.declareAction("Hello World!")
+    test.declare_action("Hello World!")
 
     # Assert
     console = capsys.readouterr()
-    consoleLines = console.out.splitlines()
-    assert len(consoleLines) == 1
-    assert consoleLines[0] == expectedMessage
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 1
+    assert console_lines[0] == expectedMessage
 
   @patch("coins.bank.giving")
-  def test_Bank_functionsGivePlayer(self, mocked_giving):
+  def test_Bank_functions_give_player(self, mocked_giving):
     # Arrange
-    mockCoins = randomCoins()
+    mockCoins = random_coins()
     mocked_giving.return_value = mockCoins
     give = sum(coin.value for coin in mockCoins)
     test = Bank()
 
     # Act
-    output = test.givePlayer(give)
+    output = test.give_player(give)
 
     # Assert
     assert output == mockCoins
@@ -126,137 +127,137 @@ class TestBank:
   
   @patch("coins.bank.giving")
   @patch("coins.bank.receiving")
-  def test_Bank_functionsTakePayment(self, mocked_receiving, mocked_giving):
+  def test_Bank_functions_take_payment(self, mocked_receiving, mocked_giving):
     # Arrange
-    mockCoins = randomCoins()
+    mockCoins = random_coins()
     mocked_giving.return_value = mockCoins
-    mockPayment = randomCoins()
-    mockPayValue = sum(coin.value for coin in mockPayment)
-    mocked_receiving.return_value = mockPayValue
+    mock_payment = random_coins()
+    mock_pay_value = sum(coin.value for coin in mock_payment)
+    mocked_receiving.return_value = mock_pay_value
     receive = random.randint(0,99)
     test = Bank()
 
     # Act
-    output = test.takePayment(mockPayment, receive)
+    output = test.take_payment(mock_payment, receive)
 
     # Assert
     assert output == mockCoins
-    mocked_receiving.assert_called_once_with(test, mockPayment)
-    mocked_giving.assert_called_once_with(test, mockPayValue-receive)
+    mocked_receiving.assert_called_once_with(test, mock_payment)
+    mocked_giving.assert_called_once_with(test, mock_pay_value-receive)
 
   @patch("coins.bank.giving")
   @patch("coins.bank.receiving")
   @patch("coins.bank.time")
-  def test_Bank_functionsCheck_fullBalance(self, mocked_time, mocked_receiving, mocked_giving, capsys):
+  def test_Bank_functions_check_need_nothing(self, mocked_time, mocked_receiving, mocked_giving, capsys):
     # Arrange
     mocked_time.sleep = lambda x: None
     mockCoin = One()
     mocked_receiving.return_value = 1
     mocked_giving.return_value = [mockCoin]
     test = Bank()
-    mockPlayer = create_autospec(Player)
-    mockGame = create_autospec(Game)
-    mockGame.players = [mockPlayer]
+    mock_player = create_autospec(Player)
+    mock_game = create_autospec(Game)
+    mock_game.players = [mock_player]
 
     # Act
-    test.check(mockGame)
+    test.check(mock_game)
 
     # Assert
-    assert len(mockGame.players) == 1
+    assert len(mock_game.players) == 1
     assert len(test.coins.coppers) > 5
     assert len(test.coins.silvers) > 2
-    assert not mockPlayer.giveAll.called
-    assert not mockPlayer.receive.called
+    assert not mock_player.give_all.called
+    assert not mock_player.receive.called
 
     console = capsys.readouterr()
-    consoleLines = console.out.splitlines()
-    assert len(consoleLines) == 0
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 0
 
   @patch("coins.bank.giving")
   @patch("coins.bank.receiving")
   @patch("coins.bank.time")
-  def test_Bank_functionsCheck_needOnes(self, mocked_time, mocked_receiving, mocked_giving, capsys):
+  def test_Bank_functions_check_need_Ones(self, mocked_time, mocked_receiving, mocked_giving, capsys):
     # Arrange
     mocked_time.sleep = lambda x: None
     mockCoin = One()
     mocked_receiving.return_value = 1
     mocked_giving.return_value = [mockCoin]
     test = Bank()
-    mockPlayer = create_autospec(Player)
-    mockPlayer.coins = randomCoins()
-    mockGame = create_autospec(Game)
-    mockGame.players = [mockPlayer]
+    mock_player = create_autospec(Player)
+    mock_player.coins = random_coins()
+    mock_game = create_autospec(Game)
+    mock_game.players = [mock_player]
     coppers = random.randint(0, 4)
     test.coins.coppers = [One() for _ in range(coppers)]
 
     # Act
-    test.check(mockGame)
+    test.check(mock_game)
 
     # Assert
-    assert len(mockGame.players) == 1
+    assert len(mock_game.players) == 1
     assert len(test.coins.coppers) < 5
     assert len(test.coins.silvers) > 2
-    mockPlayer.giveAll.assert_called_once_with()
-    mockPlayer.receive.assert_called_once_with(test.exchange(mockPlayer.coins))
-    mockPlayer.receive.assert_called_once_with([mockCoin])
+    mock_player.give_all.assert_called_once_with()
+    mock_player.receive.assert_called_once_with(test.exchange(mock_player.coins))
+    mock_player.receive.assert_called_once_with([mockCoin])
 
     console = capsys.readouterr()
-    consoleLines = console.out.splitlines()
-    assert len(consoleLines) == 1
-    assert consoleLines[0] == f"{reference['ansiColours']['cyan']}The Bank has {coppers} copper One coin{'' if coppers == 1 else 's'} remaining - exchanging up with players...{reference['ansiColours']['reset']}"
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 1
+    assert console_lines[0] == f"{reference['ansi_colours']['cyan']}The Bank has {coppers} copper One coin{'' if coppers == 1 else 's'} remaining - exchanging up with players...{reference['ansi_colours']['reset']}"
 
   @patch("coins.bank.giving")
   @patch("coins.bank.receiving")
   @patch("coins.bank.time")
-  def test_Bank_functionsCheck_needFives(self, mocked_time, mocked_receiving, mocked_giving, capsys):
+  def test_Bank_functions_check_need_Fives(self, mocked_time, mocked_receiving, mocked_giving, capsys):
     # Arrange
     mocked_time.sleep = lambda x: None
     mockCoin = One()
     mocked_receiving.return_value = 1
     mocked_giving.return_value = [mockCoin]
     test = Bank()
-    mockPlayer = create_autospec(Player)
-    mockPlayer.coins = randomCoins()
-    mockGame = create_autospec(Game)
-    mockGame.players = [mockPlayer]
+    mock_player = create_autospec(Player)
+    mock_player.coins = random_coins()
+    mock_game = create_autospec(Game)
+    mock_game.players = [mock_player]
     silvers = random.randint(0, 1)
     test.coins.silvers = [Five() for _ in range(silvers)]
 
     # Act
-    test.check(mockGame)
+    test.check(mock_game)
 
     # Assert
-    assert len(mockGame.players) == 1
+    assert len(mock_game.players) == 1
     assert len(test.coins.coppers) > 5
     assert len(test.coins.silvers) < 2
-    mockPlayer.giveAll.assert_called_once_with()
-    mockPlayer.receive.assert_called_once_with(test.exchange(mockPlayer.coins))
-    mockPlayer.receive.assert_called_once_with([mockCoin])
+    mock_player.give_all.assert_called_once_with()
+    mock_player.receive.assert_called_once_with(test.exchange(mock_player.coins))
+    mock_player.receive.assert_called_once_with([mockCoin])
 
     console = capsys.readouterr()
-    consoleLines = console.out.splitlines()
-    assert len(consoleLines) == 1
-    assert consoleLines[0] == f"{reference['ansiColours']['cyan']}The Bank has {silvers} silver Five coin{'' if silvers == 1 else 's'} remaining - exchanging up with players...{reference['ansiColours']['reset']}"
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 1
+    assert console_lines[0] == f"{reference['ansi_colours']['cyan']}The Bank has {silvers} silver Five coin{'' if silvers == 1 else 's'} remaining - exchanging up with players...{reference['ansi_colours']['reset']}"
 
   @patch("coins.bank.giving")
   @patch("coins.bank.receiving")
-  def test_Bank_functionsExchange(self, mocked_receiving, mocked_giving, capsys):
+  def test_Bank_functions_exchange(self, mocked_receiving, mocked_giving):
     # Arrange
-    swapThis = randomCoins()
-    forThat = randomCoins()
-    mocked_receiving.return_value = sum(coin.value for coin in swapThis)
-    mocked_giving.return_value = forThat
+    swap_this = random_coins()
+    for_that = random_coins()
+    mocked_receiving.return_value = sum(coin.value for coin in swap_this)
+    mocked_giving.return_value = for_that
     test = Bank()
 
     # Act
-    output = test.exchange(swapThis)
+    output = test.exchange(swap_this)
 
     # Assert
-    assert output == forThat
-    mocked_receiving.assert_called_once_with(test, swapThis)
-    mocked_giving.assert_called_once_with(test, sum(coin.value for coin in swapThis))
+    assert output == for_that
+    mocked_receiving.assert_called_once_with(test, swap_this)
+    mocked_giving.assert_called_once_with(test, sum(coin.value for coin in swap_this))
 
-def randomCoins() -> list[Coin]:
+def random_coins() -> list[Coin]:
   ones = [One() for _ in range(random.randint(0,12))]
   fives = [Five() for _ in range(random.randint(0,12))]
   tens = [Ten() for _ in range(random.randint(0,12))]
