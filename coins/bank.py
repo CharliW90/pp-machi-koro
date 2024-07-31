@@ -27,7 +27,7 @@ class Bank:
       f"{len(self.coins.golds)} Gold 'Tens', valuing {sum([coin.value for coin in self.coins.golds])}"
     )
   
-  def declareAction(self, action: str) -> None:
+  def declare_action(self, action: str) -> None:
     print(f"{self.colorize}{action}{self.reset}")
 
   def give_player(self, total: int) -> list[Coin]:
@@ -43,10 +43,10 @@ class Bank:
     if ones < 5 or fives < 2:
       if ones < 5:
         plural = "" if ones == 1 else "s"
-        self.declareAction(f"{self.name} has {ones} copper One coin{plural} remaining - exchanging up with players...")
+        self.declare_action(f"{self.name} has {ones} copper One coin{plural} remaining - exchanging up with players...")
       elif fives < 2:
         plural = "" if fives == 1 else "s"
-        self.declareAction(f"{self.name} has {fives} silver Five coin{plural} remaining - exchanging up with players...")
+        self.declare_action(f"{self.name} has {fives} silver Five coin{plural} remaining - exchanging up with players...")
       for player in game.players:
         time.sleep(0.2)
         coins = player.give_all()
