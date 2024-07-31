@@ -8,52 +8,52 @@ import random
 import inquirer
 from reference import MyTheme
 
-def rollDice(game:Game, player:Player) -> None:
-  doubleDice = player.abilities.doubleDice
+def roll_dice(game:Game, player:Player) -> None:
+  double_dice = player.abilities.double_dice
   game.notify(f"Time to roll the dice, {player.name}!")
   options = [
     inquirer.List('dice',
                   message=f"{player.colorize}How many dice do you want to roll?{player.reset}",
                   choices=[('One', 1)],
-                  ignore=lambda x: doubleDice), # type: ignore | if doubleDice is true, ignore this List
+                  ignore=lambda x: double_dice), # type: ignore | if double_dice is true, ignore this List
     inquirer.List('dice',
                   message=f"{player.colorize}How many dice do you want to roll?{player.reset}",
                   choices=[('One', 1), ('Two', 2)],
-                  ignore=lambda x: not doubleDice), # type: ignore | if doubleDice is false, ignore this List
+                  ignore=lambda x: not double_dice), # type: ignore | if double_dice is false, ignore this List
   ]
 
   action = inquirer.prompt(options, theme=MyTheme(player))
-  player.declareAction(f"{player.name} rolled {action['dice']} dice") # type: ignore
+  player.declare_action(f"{player.name} rolled {action['dice']} dice") # type: ignore
 
   rolls = []
-  diceFaces = []
-  for x in range(action['dice']): # type: ignore
+  dice_faces = []
+  for _ in range(action['dice']): # type: ignore
     thisRoll = roll()
     rolls.append(thisRoll)
-    diceFaces.append(diceFace(thisRoll))
+    dice_faces.append(dice_face(thisRoll))
   
-  diceString = "\n".join([f"{line1}  ::  {line2}" for line1, line2 in zip(diceFaces[0].splitlines(), diceFaces[1].splitlines())]) if len(diceFaces) == 2 else diceFaces[0]
-  player.declareAction(diceString)
+  dice_string = "\n".join([f"{line1}  ::  {line2}" for line1, line2 in zip(dice_faces[0].splitlines(), dice_faces[1].splitlines())]) if len(dice_faces) == 2 else dice_faces[0]
+  player.declare_action(dice_string)
   rolled = sum(rolls)
-  player.declareAction(f"> {rolled} <")
-  handleDiceResult(game, rolled)
+  player.declare_action(f"> {rolled} <")
+  handle_dice_result(game, rolled)
   return
 
 def roll() -> int:
   return random.randint(1,6)
 
-def diceFace(die: int) -> str:  # credit: https://codegolf.stackexchange.com/a/2603
+def dice_face(die: int) -> str:  # credit: https://codegolf.stackexchange.com/a/2603
   r = die-1
   C='o '
   s='-----\n|'+C[r<1]+' '+C[r<3]+'|\n|'+C[r<5]
   return(s+C[r&1]+s[::-1])
 
-def handleDiceResult(game: Game, diceResult: int) -> None:
+def handle_dice_result(game: Game, dice_result: int) -> None:
   for player in game.players:
-    if not player.current: player.activate(game, "red", diceResult)
+    if not player.current: player.activate(game, "red", dice_result)
   for player in game.players:
-    player.activate(game, "blue", diceResult)
-    if player.current: player.activate(game, "green", diceResult)
+    player.activate(game, "blue", dice_result)
+    if player.current: player.activate(game, "green", dice_result)
   for player in game.players:
-    if player.current: player.activate(game, "purple", diceResult)
+    if player.current: player.activate(game, "purple", dice_result)
   return

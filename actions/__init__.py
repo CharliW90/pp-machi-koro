@@ -1,2 +1,2 @@
-from .build import buildAction, handleBuilding
-from .dice import rollDice, roll, handleDiceResult, diceFace
+from .build import build_action, handle_building
+from .dice import roll_dice, roll, handle_dice_result, dice_face
