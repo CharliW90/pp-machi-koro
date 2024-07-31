@@ -6,89 +6,137 @@ if TYPE_CHECKING:
 
 from tabulate import tabulate
 from reference import reference
-from coins import CoinPiles, Coin, giving, receiving, calcPayment
+from coins import CoinPiles, Coin, giving, receiving, calculate_payment
 from cards import Hand, Abilities, Blues, Greens, Reds, Purples, Landmarks
 
-playerColours = ['red','green','blue','purple']
-playerNames = []
+player_colours = ['red','green','blue','purple']
+player_names = []
 
 def reset():
-  playerNames.clear()
+  player_names.clear()
   return("playerNames reset!")
 
 class Player:
-  def __init__(self, name, i):
-    self._initialised = False
+  def __init__(self, name: str, i: int):
+    self.initialised = False
     self.name = name
     self.colour = i
     self.colorize = self.colour
-    self.reset = reference["ansiColours"]["reset"]
-    self.current = False
-    self.buildActionTaken = False
-    self.coins = CoinPiles(0, 0, 0)
-    self.cards = Hand()
-    self.abilities = Abilities()
+    self.turn_order = 0
+    self.reset: str = reference["ansi_colours"]["reset"]
+    self.current: bool = False
+    self.build_action_taken: bool = False
+    self.coins: CoinPiles = CoinPiles(0, 0, 0)
+    self.cards: Hand = Hand()
+    self.abilities: Abilities = Abilities()
 
   @property
-  def name(self):
+  def initialised(self) -> bool:
+    return self.__initialised
+  @initialised.setter
+  def initialised(self, trigger: bool):
+    if hasattr(self, "initialised"):
+      if self.initialised: raise Exception("Player already initialised - cannot initialise again.")
+    self.__initialised = trigger
+
+  @property
+  def name(self) -> str:
     return self.__name
   @name.setter
-  def name(self, string):
-    if self._initialised: raise Exception("Sorry, but you can't edit players")
-    if not isinstance(string, (str, int)): raise ValueError(f"Provided names must be plain strings - {string} is a {type(string)}.")
-    if len(str(string)) < 1: raise ValueError("Name cannot be blank!")
-    if str(string) in playerNames: raise Exception(f"Cannot have duplicate player names - {str(string)} has already been used.\n{playerNames}")
-    playerNames.append(str(string))
-    self.__name = str(string)
+  def name(self, string: str):
+    if self.initialised: raise Exception("Sorry, but you can't edit players")
+    if not isinstance(string, str): raise ValueError(f"Provided names must be plain strings - {string} is a {type(string).__name__}.")
+    string = string.strip()
+    if len(string) < 1: raise ValueError("Name cannot be blank!")
+    if len(string) > 48: raise ValueError("Name too long - max length 48 characters!")
+    if '\\' in repr(string): raise ValueError("Name cannot contain escape characters!")
+    if string in player_names: raise Exception(f"Cannot have duplicate player names - {string} has already been used.\n{player_names}")
+    player_names.append(string)
+    self.__name = string
 
   @property
-  def colour(self):
+  def colour(self) -> str:
     return self.__colour
   @colour.setter
-  def colour(self, i):
-    if self._initialised: raise Exception("Sorry, but you can't edit players")
-    if i > 3: raise ValueError("Somehow you're trying to generate more players than are allowed in a game - this class should not be called independently of the Game class.")
-    self.__colour = playerColours[i]
+  def colour(self, i: int):
+    if self.initialised: raise Exception("Sorry, but you can't edit players")
+    if not isinstance(i, int) or isinstance(i, bool): raise ValueError(f"Provided number must be integer - {i} is a {type(i).__name__}.")
+    if 0 > i or i > 3: raise ValueError(f"Attempting to set colour based on int {i} is not possible - int must be between 0 and {len(player_colours)-1}")
+    self.__colour = player_colours[i]
   
   @property
-  def colorize(self):
+  def colorize(self) -> str:
     return self.__colorize
   @colorize.setter
-  def colorize(self, colour):
-    if self._initialised: raise Exception("Sorry, but you can't edit players")
-    if not colour in playerColours: raise ValueError("Somehow the colour for colorize is not one of the valid player colours")
-    self.__colorize = reference["ansiColours"][colour]
+  def colorize(self, colour: str):
+    if self.initialised: raise Exception("Sorry, but you can't edit players")
+    if not isinstance(colour, str): raise ValueError(f"Provided colour must be plain string - {colour} is a {type(colour).__name__}.")
+    if not colour in player_colours: raise ValueError("Somehow the colour for colorize is not one of the valid player colours")
+    self.__colorize = reference["ansi_colours"][colour]
+
+  @property
+  def turn_order(self):
+    return self.__turn_order
+  @turn_order.setter
+  def turn_order(self, order: int):
+    if self.initialised: raise Exception("Sorry, but you can't edit players")
+    if not isinstance(order, int) or isinstance(order, bool): raise ValueError(f"Provided number must be integer - {order} is a {type(order).__name__}.")
+    if 0 <= order < len(player_names):
+      self.__turn_order = order
+    else:
+      raise ValueError(f"Cannot assign {order} as a turn order - in a game of {len(player_names)} players possible turn orders are {' / '.join([str(num) for num in range(len(player_names))])}.")
   
   def __str__(self) -> str:
+    return f"Player {self.turn_order+1}: {self.name}"
+
+  def __repr__(self) -> str:
     cash = self.coins.total()
-    landmarks = 0
-    for card in self.cards.landmarks:
-      if card.built == True:
-        landmarks += 1
-    return f"{self.name} has {cash} cash, and has built {landmarks} landmarks"
+    landmarks = sum(card.built for card in self.cards.landmarks)
+    return f"Player([{self.turn_order}]{self.name}; {'is ' if self.current else 'is not '}the current player; {self.colour}; {cash} cash; {landmarks} landmarks"
   
-  def declareAction(self, action: str) -> None:
+  def __eq__(self, other: Player) -> bool:
+    return self.name == other.name
+  
+  def __ne__(self, other: Player) -> bool:
+    return self.name != other.name
+
+  # The below are defined as what may be considered as the opposite of expected,
+  # however a 'less than' turn order should be considered a 'greater than' player
+  # i.e. player 1 should be greater than player 2, so 1 > 2 is our logic
+  def __lt__(self, other: Player) -> bool:
+    return self.turn_order > other.turn_order
+  
+  def __gt__(self, other: Player) -> bool:
+    return self.turn_order < other.turn_order
+  
+  def __le__(self, other: Player) -> bool:
+    return self.turn_order >= other.turn_order
+  
+  def __ge__(self, other: Player) -> bool:
+    return self.turn_order <= other.turn_order
+  
+  def declare_action(self, action: str) -> None:
     print(f"{self.colorize}{action}{self.reset}")
 
-  def beginTurn(self) -> None:
+  def begin_turn(self) -> None:
     self.current = True
-    self.buildActionTaken = False
-    self.declareAction(f"It is {self.name}'s turn!")
+    self.build_action_taken = False
+    self.declare_action(f"It is {self.name}'s turn!")
 
-  def endTurn(self) -> None:
+  def end_turn(self) -> None:
     self.current = False
 
-  def viewHand(self) -> None:
+  def view_hand(self) -> None:
     hand = self.cards.contents()
     print(tabulate(hand, ["Name", "Action", "Owned"]))
 
-  def getBalance(self) -> int:
+  def get_balance(self) -> int:
     return self.coins.total()
   
-  def activate(self, game: Game, colour: str, diceRoll) -> None:
+  def activate(self, game: Game, colour: str, dice_roll) -> None:
     stack = getattr(self.cards, colour)
     for card in stack:
-      card.trigger(game, self, diceRoll)
+      card.trigger(game, self, dice_roll)
 
   def receive(self, coins: list[Coin]) -> int:
     return receiving(self, coins)
@@ -96,28 +144,28 @@ class Player:
   def give(self, total: int) -> list[Coin]:
     return giving(self, total)
   
-  def giveAll(self) -> list[Coin]:
-    return giving(self, self.getBalance())
+  def give_all(self) -> list[Coin]:
+    return giving(self, self.get_balance())
   
   def build(self, card: Blues | Greens | Reds | Purples | Landmarks, bank: Bank) -> bool:
-    if self.buildActionTaken:
+    if self.build_action_taken:
       print(f"You can only take one build action per turn!")
-      return self.buildActionTaken
+      return self.build_action_taken
     else:
       cash = self.coins.total()
-      if(card.cardType == "Major Establishment"):
+      if(card.card_type == "Major Establishment"):
         stack = getattr(self.cards, 'purple')
-        for majorEstablishment in stack:
-          if majorEstablishment.title == card.title:
-            self.declareAction(f"You already have a {card.title} and can only purchase one {card.title} per game.")
-            return self.buildActionTaken
+        for major_establishment in stack:
+          if major_establishment.title == card.title:
+            self.declare_action(f"You already have a {card.title} and can only purchase one {card.title} per game.")
+            return self.build_action_taken
 
       if cash < card.cost:
         print(f"{self.name} cannot afford {card.title}")
-        return self.buildActionTaken
+        return self.build_action_taken
 
-      payment = calcPayment(self.coins, card.cost)
-      self.receive(bank.takePayment(self.give(payment), card.cost))
+      payment = calculate_payment(self.coins, card.cost)
+      self.receive(bank.take_payment(self.give(payment), card.cost))
       if isinstance(card, Landmarks):
         stack = getattr(self.cards, 'landmarks')
         ability = card.build(self)
@@ -125,11 +173,11 @@ class Player:
       else:
         self.cards.add(card)
 
-      self.buildActionTaken = True
-      self.declareAction(f"{self.name} has purchased {card.title} for {card.cost} cash\n{self}")
-      return self.buildActionTaken
+      self.build_action_taken = True
+      self.declare_action(f"{self.name} has purchased {card.title} for {card.cost} cash\n{self}")
+      return self.build_action_taken
 
-  def hasWon(self) -> bool:
+  def has_won(self) -> bool:
     """Checks to see if the player has built all 4 of their landmark cards
     returns False if any are not built, otherwise True"""
     for card in self.cards.landmarks:
