@@ -26,7 +26,8 @@ class Game:
     return self.__initialised
   @initialised.setter
   def initialised(self, trigger: bool):
-    if self.initialised: raise Exception("Game already initialised - cannot initialise again.")
+    if hasattr(self, "initialised"):
+      if self.initialised: raise Exception("Game already initialised - cannot initialise again.")
     self.__initialised = trigger
 
   @property
@@ -34,7 +35,8 @@ class Game:
     return self.__in_progress
   @in_progress.setter
   def in_progress(self, trigger: bool):
-    if self.in_progress: raise Exception("Game already initialised - cannot initialise again.")
+    if hasattr(self, "in_progress"):
+      if self.in_progress: raise Exception("Game already in progress - cannot set value again.")
     self.__in_progress = trigger
 
   @property
