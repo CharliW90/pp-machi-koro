@@ -8,7 +8,7 @@ from .card_types import PurpleCard
 
 class Stadium(PurpleCard):
   cost = 6
-  zIndex = 6
+  z_index = 6
 
   def __init__(self):
     super().__init__()
@@ -23,7 +23,7 @@ class Stadium(PurpleCard):
 
 class TVStation(PurpleCard):
   cost = 7
-  zIndex = 7
+  z_index = 7
 
   def __init__(self):
     super().__init__()
@@ -38,7 +38,7 @@ class TVStation(PurpleCard):
 
 class BusinessCentre(PurpleCard):
   cost = 8
-  zIndex = 8
+  z_index = 8
 
   def __init__(self):
     super().__init__()

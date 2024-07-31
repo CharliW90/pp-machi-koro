@@ -1,10 +1,19 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+  from .blue import Blues
+  from .green import Greens
+  from .red import Reds
+  from .purple import Purples
+  from .landmark import Landmarks
+
 from collections import Counter
-from reference import shortcuts
-from .blue import *
-from .green import *
-from .red import *
-from .purple import *
-from .landmark import *
+from reference import reference
+from .blue import WheatField, Ranch, Forest, Mine, AppleOrchard
+from .green import Bakery, ConvenienceStore, CheeseFactory, FurnitureFactory, FarmersMarket
+from .red import Cafe, FamilyRestaurant
+from .purple import Stadium, TVStation, BusinessCentre
+from .landmark import TrainStation, ShoppingMall, AmusementPark, RadioTower
 
 class Deck:
   """
@@ -13,7 +22,7 @@ class Deck:
   The game starts with 6 of each Establishment card, and one of each Major Establishment per player in the game. The deck does not hold any Landmark cards.
   The stacks can be added to and removed from, or their contents can be described.
   """
-  def __init__(self, playerCount:int):
+  def __init__(self, playerCount: int):
     self.wheat_fields = [WheatField() for _ in range(6)]
     self.ranches = [Ranch() for _ in range(6)]
     self.bakeries = [Bakery() for _ in range(6)]
@@ -45,17 +54,17 @@ class Deck:
     card_counts = [[title, count] for stack in card_stacks for title, count in Counter(card.title for card in stack).items()]
     
     all_cards = ()       # here we will store a multiline f-string per card - tuple because immutable and indexable
-    all_card_indexes = [] # here we will store the zIndex per card
-    map_of_cards = {}     # here we will map the zIndex of a card to its position in allCards tuple
+    all_card_indexes = [] # here we will store the z_index per card
+    map_of_cards = {}     # here we will map the z_index of a card to its position in allCards tuple
 
     for title, qty in card_counts:
       card = [card for stack in card_stacks for card in stack if card.title == title][0]
 
-      map_of_cards[str(card.zIndex)] = len(all_cards)
-      all_card_indexes.append(card.zIndex)
+      map_of_cards[str(card.z_index)] = len(all_cards)
+      all_card_indexes.append(card.z_index)
 
-      style = shortcuts['affordable'] if card.cost <= cash else shortcuts['unaffordable']
-      styleReset = shortcuts['reset']
+      style = reference['shortcuts']['affordable'] if card.cost <= cash else reference['shortcuts']['unaffordable']
+      styleReset = reference['shortcuts']['reset']
 
       all_cards += ([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
@@ -142,14 +151,14 @@ class Hand:
     card_counts = [[title, count] for stack in card_stacks for title, count in Counter(card.title for card in stack).items()]
     
     all_cards = ()       # here we will store a multiline f-string per card - tuple because immutable and indexable
-    all_card_indexes = [] # here we will store the zIndex per card
-    map_of_cards = {}     # here we will map the zIndex of a card to its position in allCards tuple
+    all_card_indexes = [] # here we will store the z_index per card
+    map_of_cards = {}     # here we will map the z_index of a card to its position in allCards tuple
 
     for title, qty in card_counts:
       card = [card for stack in card_stacks for card in stack if card.title == title][0]
 
-      map_of_cards[str(card.zIndex)] = len(all_cards)
-      all_card_indexes.append(card.zIndex)
+      map_of_cards[str(card.z_index)] = len(all_cards)
+      all_card_indexes.append(card.z_index)
 
       if card.cardType == "Landmark":
         if card.built:

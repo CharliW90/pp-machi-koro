@@ -8,7 +8,7 @@ from .card_types import RedCard
 
 class Cafe(RedCard):
   cost = 2
-  zIndex = 3
+  z_index = 3
 
   def __init__(self):
     super().__init__()
@@ -23,7 +23,7 @@ class Cafe(RedCard):
 
 class FamilyRestaurant(RedCard):
   cost = 3
-  zIndex = 12
+  z_index = 12
 
   def __init__(self):
     super().__init__()

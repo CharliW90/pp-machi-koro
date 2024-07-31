@@ -8,7 +8,7 @@ from .card_types import GreenCard
 
 class Bakery(GreenCard):
   cost = 1
-  zIndex = 2
+  z_index = 2
   
   def __init__(self):
     super().__init__()
@@ -23,7 +23,7 @@ class Bakery(GreenCard):
 
 class ConvenienceStore(GreenCard):
   cost = 2
-  zIndex = 4
+  z_index = 4
   
   def __init__(self):
     super().__init__()
@@ -38,7 +38,7 @@ class ConvenienceStore(GreenCard):
 
 class CheeseFactory(GreenCard):
   cost = 5
-  zIndex = 9
+  z_index = 9
   
   def __init__(self):
     super().__init__()
@@ -53,7 +53,7 @@ class CheeseFactory(GreenCard):
 
 class FurnitureFactory(GreenCard):
   cost = 3
-  zIndex = 10
+  z_index = 10
   
   def __init__(self):
     super().__init__()
@@ -68,7 +68,7 @@ class FurnitureFactory(GreenCard):
 
 class FarmersMarket(GreenCard):
   cost = 2
-  zIndex = 14
+  z_index = 14
   
   def __init__(self):
     super().__init__()

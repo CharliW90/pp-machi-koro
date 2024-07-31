@@ -8,7 +8,7 @@ from .card_types import BlueCard
 
 class WheatField(BlueCard):
   cost = 1
-  zIndex = 0
+  z_index = 0
 
   def __init__(self):
     super().__init__()
@@ -23,7 +23,7 @@ class WheatField(BlueCard):
 
 class Ranch(BlueCard):
   cost = 1
-  zIndex = 1
+  z_index = 1
 
   def __init__(self):
     super().__init__()
@@ -38,7 +38,7 @@ class Ranch(BlueCard):
 
 class Forest(BlueCard):
   cost = 3
-  zIndex = 5
+  z_index = 5
   
   def __init__(self):
     super().__init__()
@@ -53,7 +53,7 @@ class Forest(BlueCard):
 
 class Mine(BlueCard):
   cost = 6
-  zIndex = 11
+  z_index = 11
 
   def __init__(self):
     super().__init__()
@@ -68,7 +68,7 @@ class Mine(BlueCard):
 
 class AppleOrchard(BlueCard):
   cost = 3
-  zIndex = 13
+  z_index = 13
   
   def __init__(self):
     super().__init__()

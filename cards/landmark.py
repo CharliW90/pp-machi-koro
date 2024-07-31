@@ -3,7 +3,7 @@ from .card_types import LandmarkCard
 
 class TrainStation(LandmarkCard):
   cost = 4
-  zIndex = 15
+  z_index = 15
 
   def __init__(self):
     super().__init__()
@@ -16,7 +16,7 @@ class TrainStation(LandmarkCard):
 
 class ShoppingMall(LandmarkCard):
   cost = 10
-  zIndex = 16
+  z_index = 16
 
   def __init__(self):
     super().__init__()
@@ -29,7 +29,7 @@ class ShoppingMall(LandmarkCard):
 
 class AmusementPark(LandmarkCard):
   cost = 16
-  zIndex = 17
+  z_index = 17
 
   def __init__(self):
     super().__init__()
@@ -42,7 +42,7 @@ class AmusementPark(LandmarkCard):
 
 class RadioTower(LandmarkCard):
   cost = 22
-  zIndex = 18
+  z_index = 18
 
   def __init__(self):
     super().__init__()
