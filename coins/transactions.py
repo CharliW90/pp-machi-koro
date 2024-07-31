@@ -29,13 +29,13 @@ def giving(self, total: int) -> list[Coin]:
         remaining = 0
         print(f"{self.name} has no more coins to give.")
 
-    totalGiving = sum([coin.value for coin in given])
+    total_giving = sum([coin.value for coin in given])
     if remaining > 0:
-      self.declareAction(f"{self.name} is giving {totalGiving} coins. {total} requested (payment was short by {remaining}) ==>")
+      self.declare_action(f"{self.name} is giving {total_giving} coins. {total} requested (payment was short by {remaining}) ==>")
     elif remaining < 0:
-      self.declareAction(f"{self.name} is giving {totalGiving} coins. {total} requested (requires {abs(remaining)} change) ==>")
+      self.declare_action(f"{self.name} is giving {total_giving} coins. {total} requested (requires {abs(remaining)} change) ==>")
     else:
-      self.declareAction(f"{self.name} is giving {totalGiving} coins ==>")
+      self.declare_action(f"{self.name} is giving {total_giving} coins ==>")
     return given
 
 def receiving(self, coins: list[Coin]) -> int:
@@ -49,10 +49,10 @@ def receiving(self, coins: list[Coin]) -> int:
     elif coin.colour == "Gold":
       self.coins.golds.append(coin)
   if received > 0:
-    self.declareAction(f"==> {self.name} received {sum([coin.value for coin in coins])} coins")
+    self.declare_action(f"==> {self.name} received {sum([coin.value for coin in coins])} coins")
   return received
 
-def calcPayment(coins: CoinPiles, total: int) -> int:
+def calculate_payment(coins: CoinPiles, total: int) -> int:
   payment = 0
   remaining = total
   while remaining > 0:

@@ -30,10 +30,10 @@ class Bank:
   def declareAction(self, action: str) -> None:
     print(f"{self.colorize}{action}{self.reset}")
 
-  def givePlayer(self, total: int) -> list[Coin]:
+  def give_player(self, total: int) -> list[Coin]:
     return giving(self, total)
 
-  def takePayment(self, coins: list[Coin], totalToPay: int) -> list[Coin]:
+  def take_payment(self, coins: list[Coin], totalToPay: int) -> list[Coin]:
     payment = receiving(self, coins) # put payment into bank's coin pile
     return giving(self, payment-totalToPay) # give change, if any
 
@@ -49,12 +49,12 @@ class Bank:
         self.declareAction(f"{self.name} has {fives} silver Five coin{plural} remaining - exchanging up with players...")
       for player in game.players:
         time.sleep(0.2)
-        coins = player.giveAll()
+        coins = player.give_all()
         time.sleep(0.5)
         player.receive(self.exchange(coins))
         time.sleep(0.3)
 
   def exchange(self, coins: list[Coin]) -> list[Coin]:
     intake = receiving(self, coins) # put all coins into the bank's coin pile
-    return self.givePlayer(intake) # give back the same value in coins, starting with highest denomination
+    return self.give_player(intake) # give back the same value in coins, starting with highest denomination
 
