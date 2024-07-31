@@ -18,13 +18,16 @@ class Bank:
     self.reset = reference["ansi_colours"]["reset"]
     self.coins = CoinPiles(42, 24, 12)
     self.total = self.coins.total()
-    
+
   def __str__(self) -> str:
+    return f"This is {self.name}, containing {self.total} in cash."
+    
+  def __repr__(self) -> str:
     return (
-      f"{self.name} contains {self.total} in coinage:\n"
-      f"{len(self.coins.coppers)} Copper 'Ones', valuing {sum([coin.value for coin in self.coins.coppers])}\n"
-      f"{len(self.coins.silvers)} Silver 'Fives', valuing {sum([coin.value for coin in self.coins.silvers])}\n"
-      f"{len(self.coins.golds)} Gold 'Tens', valuing {sum([coin.value for coin in self.coins.golds])}"
+      f"Bank({self.name} contains {self.total} in coinage:[\n"
+      f"\t{len(self.coins.coppers)} Copper 'Ones', valuing {sum([coin.value for coin in self.coins.coppers])},\n"
+      f"\t{len(self.coins.silvers)} Silver 'Fives', valuing {sum([coin.value for coin in self.coins.silvers])},\n"
+      f"\t{len(self.coins.golds)} Gold 'Tens', valuing {sum([coin.value for coin in self.coins.golds])}])"
     )
   
   def declare_action(self, action: str) -> None:
