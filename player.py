@@ -50,7 +50,7 @@ class Player:
     if len(string) < 1: raise ValueError("Name cannot be blank!")
     if len(string) > 48: raise ValueError("Name too long - max length 48 characters!")
     if '\\' in repr(string): raise ValueError("Name cannot contain escape characters!")
-    if string in player_names: raise Exception(f"Cannot have duplicate player names - {string} has already been used.\n{player_names}")
+    if string in player_names: raise Exception(f"Cannot have duplicate player names - '{string}' has already been used.\n{player_names}")
     player_names.append(string)
     self.__name = string
 
@@ -87,32 +87,38 @@ class Player:
       raise ValueError(f"Cannot assign {order} as a turn order - in a game of {len(player_names)} players possible turn orders are {' / '.join([str(num) for num in range(len(player_names))])}.")
   
   def __str__(self) -> str:
-    return f"Player {self.turn_order+1}: {self.name}"
+    return f"Player {self.turn_order + 1}: {self.name}"
 
   def __repr__(self) -> str:
     cash = self.coins.total()
     landmarks = sum(card.built for card in self.cards.landmarks)
-    return f"Player([{self.turn_order}]{self.name}; {'is ' if self.current else 'is not '}the current player; {self.colour}; {cash} cash; {landmarks} landmarks"
+    return f"Player([{self.turn_order}] '{self.name}': {'is ' if self.current else 'is not '}the current player; is the {self.colour} player; has {cash} cash; has built {landmarks} landmarks)"
   
   def __eq__(self, other: Player) -> bool:
+    if not isinstance(other, Player): raise TypeError(f"Cannot compare Player with {type(other).__name__}.  Player class objects may only be compared with other Player class objects.")
     return self.name == other.name
   
   def __ne__(self, other: Player) -> bool:
+    if not isinstance(other, Player): raise TypeError(f"Cannot compare Player with {type(other).__name__}.  Player class objects may only be compared with other Player class objects.")
     return self.name != other.name
 
   # The below are defined as what may be considered as the opposite of expected,
   # however a 'less than' turn order should be considered a 'greater than' player
   # i.e. player 1 should be greater than player 2, so 1 > 2 is our logic
   def __lt__(self, other: Player) -> bool:
+    if not isinstance(other, Player): raise TypeError(f"Cannot compare Player with {type(other).__name__}.  Player class objects may only be compared with other Player class objects.")
     return self.turn_order > other.turn_order
   
   def __gt__(self, other: Player) -> bool:
+    if not isinstance(other, Player): raise TypeError(f"Cannot compare Player with {type(other).__name__}.  Player class objects may only be compared with other Player class objects.")
     return self.turn_order < other.turn_order
   
   def __le__(self, other: Player) -> bool:
+    if not isinstance(other, Player): raise TypeError(f"Cannot compare Player with {type(other).__name__}.  Player class objects may only be compared with other Player class objects.")
     return self.turn_order >= other.turn_order
   
   def __ge__(self, other: Player) -> bool:
+    if not isinstance(other, Player): raise TypeError(f"Cannot compare Player with {type(other).__name__}.  Player class objects may only be compared with other Player class objects.")
     return self.turn_order <= other.turn_order
   
   def declare_action(self, action: str) -> None:
