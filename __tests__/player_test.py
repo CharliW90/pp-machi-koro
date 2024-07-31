@@ -1,9 +1,10 @@
 import pytest
 import re
+import random
 from unittest.mock import patch, Mock, create_autospec, call
 from reference import reference
 
-from player import Player, reset as resetPlayerNames
+from player import Player, reset as reset_player_names
 
 def assess_attributes(*testPlayers: Player) -> None:
   playerColours = ['red','green','blue','purple']
@@ -83,38 +84,36 @@ class TestPlayer:
     ids=['string', 'long_string', 'single_char', 'string with whitespace']
     )
   def test_inputs_acceptable_names(self, valid_name, pos):
+    reset_player_names()
     # Arrange/Act
     test = Player(valid_name, pos)
     # Assert
     assess_attributes(test)
     assert test.name == str(valid_name)
-  
-  resetPlayerNames()
 
   @pytest.mark.parametrize(
     "invalid_name",
-    argvalues=[False, 123, Player('yourNameHere', 0), "", "  ", "new\nline", "return\rcarriage", "tabbed\tname", "deleted_c\bh\ba\br\bs\b", "ThisNameIsInvalidAsItIsGreaterThanFortyEightCharacters", float(0.420), ["string", 123, True], ('this', 'that'), {1, 2, 3}, {'1': 'one', '2': 'two',  '3': 'three'}, b'hello world', None],
+    argvalues=[False, 123, Player('your_name', 0), "", "  ", "new\nline", "return\rcarriage", "tabbed\tname", "deleted_c\bh\ba\br\bs\b", "ThisNameIsInvalidAsItIsGreaterThanFortyEightCharacters", float(0.420), ["string", 123, True], ('this', 'that'), {1, 2, 3}, {'1': 'one', '2': 'two',  '3': 'three'}, b'hello world', None],
     ids=idFn
     )
   def test_inputs_unacceptable_names(self, invalid_name):
+    reset_player_names()
     if not isinstance(invalid_name, str):
       expected_message = re.escape(rf"Provided names must be plain strings - {invalid_name} is a {type(invalid_name).__name__}.")
     else:
       if len(invalid_name) > 48:
         expected_message = "Name too long - max length 48 characters!"
       else:
-        print(repr(invalid_name), "<< encoded name")
         if '\\' in repr(invalid_name):
           expected_message = "Name cannot contain escape characters!"
         else:
           expected_message = "Name cannot be blank!"
     with pytest.raises(ValueError, match=expected_message):
-      resetPlayerNames()
+      reset_player_names()
       Player(invalid_name, 0)
-  
-  resetPlayerNames()
 
   def test_inputs_acceptable_int(self):
+    reset_player_names()
     # Arrange / Act
     test_red = Player('name1', 0)
     test_green = Player('name2', 1)
@@ -124,25 +123,23 @@ class TestPlayer:
     # Assert
     assess_attributes(test_red, test_green, test_blue, test_purple)
 
-  resetPlayerNames()
-
   @pytest.mark.parametrize(
     "invalid_i",
-    argvalues=[False, 'string', Player('yourNameHere', 0), float(0.420), float(1.0), float(4.99999), 4, 123, -2, ["string", 123, True], ('this', 'that'), {1, 2, 3}, {'1': 'one', '2': 'two',  '3': 'three'}, b'hello world', None],
+    argvalues=[False, 'string', Player('player_name', 0), float(0.420), float(1.0), float(4.99999), 4, 123, -2, ["string", 123, True], ('this', 'that'), {1, 2, 3}, {'1': 'one', '2': 'two',  '3': 'three'}, b'hello world', None],
     ids=idFn
     )
   def test_inputs_unacceptable_ints(self, invalid_i):
+    reset_player_names()
     if isinstance(invalid_i, int) and not isinstance(invalid_i, bool):
       expected_message = f"Attempting to set colour based on int {invalid_i} is not possible - int must be between 0 and 3"
     else:
       expected_message = "Provided number must be integer"
     with pytest.raises(ValueError, match=expected_message):
-      resetPlayerNames()
+      reset_player_names()
       Player('name_okay', invalid_i)
-  
-  resetPlayerNames()
 
   def test_player_auto_colorize(self, capsys):
+    reset_player_names()
     # Arrange
     players = [
       Player('should be red', 0),
@@ -173,16 +170,14 @@ class TestPlayer:
     assert consoleLines[2] == text_as_colour('this output should be blue', 'blue')
     assert consoleLines[3] == text_as_colour('this output should be purple', 'purple')
 
-  resetPlayerNames()
-
   @pytest.mark.parametrize(
     "invalid_colour",
     argvalues=[False, 123, Player('yourNameHere', 0), "", "  ", "not_a_valid_colour", float(0.420), ["string", 123, True], ('this', 'that'), {1, 2, 3}, {'1': 'one', '2': 'two',  '3': 'three'}, b'hello world', None],
     ids=idFn
     )
   def test_player_invalid_colorize(self, invalid_colour):
+    reset_player_names()
     # Arrange
-    resetPlayerNames()
     test = Player('name', 0)
 
     # Act / Assert
@@ -199,9 +194,8 @@ class TestPlayer:
     assert test.colour == 'red'
     assert test.colorize == "\033[38;2;208;0;0;74m"
 
-  resetPlayerNames()
-
   def test_player_correct_turn_orders(self, capsys):
+    reset_player_names()
     # Arrange
     players = [
       Player('One', 0),
@@ -245,16 +239,14 @@ class TestPlayer:
     assert consoleLines[2] == "Player 3: Two"
     assert consoleLines[3] == "Player 4: One"
 
-  resetPlayerNames()
-
   @pytest.mark.parametrize(
     "invalid_i",
-    argvalues=[False, 'string', Player('yourNameHere', 0), float(0.420), float(1.0), float(4.99999), 4, 123, -2, ["string", 123, True], ('this', 'that'), {1, 2, 3}, {'1': 'one', '2': 'two',  '3': 'three'}, b'hello world', None],
+    argvalues=[False, 'string', Player('new player', 0), float(0.420), float(1.0), float(4.99999), 4, 123, -2, ["string", 123, True], ('this', 'that'), {1, 2, 3}, {'1': 'one', '2': 'two',  '3': 'three'}, b'hello world', None],
     ids=idFn
     )
   def test_player_incorrect_turn_orders(self, invalid_i):
+    reset_player_names()
     # Arrange
-    resetPlayerNames()
     test = Player('One', 0)
     Player('Two', 1)
     Player('Three', 2)
@@ -268,8 +260,12 @@ class TestPlayer:
       test.turn_order = invalid_i
 
   def test_initialised_locks_player_edits(self):
+    reset_player_names()
     # Arrange
     test = Player('red', 0)
+    Player('anyone', 1)
+    Player('someone', 2)
+    Player('noone', 3)
 
     # Act
     ## can edit these values
@@ -307,4 +303,72 @@ class TestPlayer:
       test.turn_order = 3
     assert test.turn_order == 1
 
+  def test_player_string(self):
+    reset_player_names()
+    # Arrange
+    name = 'test name'
+    test = Player(name, 0)
+    Player('anyone', 1)
+    Player('someone', 2)
+    Player('noone', 3)
 
+    # Act
+    test.turn_order = 2
+
+    # Assert
+    assert str(test) == f"Player 3: test name"
+
+  def test_player_repr(self):
+    reset_player_names()
+    # Arrange
+    name = 'another name'
+    test = Player(name, 0)
+    Player('anyone', 1)
+    Player('someone', 2)
+    Player('noone', 3)
+
+    # Act
+    test.turn_order = 2
+
+    # Assert
+    assert repr(test) == f"Player([2] 'another name': is not the current player; is the red player; has 0 cash; has built 0 landmarks)"
+
+  def test_player_comparison_operators(self):
+    reset_player_names()
+    # Arrange
+    name = 'duplicate name'
+    test_one = Player(name, 0)
+    reset_player_names()  # allows us to have two players with the same name
+    test_two = Player("another_name", 1)
+    test_three = Player(name, 2)
+    test_four = Player("one more name", 3)
+    Player("padding", 0)  # need to create an extra player to pad the 'player names' list back to length 4, otherwise we cannot set turn_order = 3
+
+    # Act
+    test_one.turn_order = 3
+    test_two.turn_order = 2
+    test_three.turn_order = 1
+    test_four.turn_order = 0
+
+    # Assert
+    assert not test_one == test_two
+    assert test_one == test_three   # equal compares names, these have the same name
+    assert not test_one == test_four
+    assert not test_two == test_three
+    assert not test_two == test_four
+    assert not test_three == test_four
+
+    assert test_one != test_two
+    assert not test_one != test_three   # notequal compares names, these have the same name
+    assert test_one != test_four
+    assert test_two != test_three
+    assert test_two != test_four
+    assert test_three != test_four
+
+    assert test_one < test_two < test_three < test_four     # test_one is the last player in turn order, and therefore deemed lowest
+    assert test_four > test_three > test_two > test_one     # test_four is the first player in turn order, and therefore deemed highest
+    assert test_one <= test_two <= test_three <= test_four  # test_two is after test_one in turn order
+    assert test_four >= test_three >= test_two >= test_one  # test_three is after test_two in turn order
+
+    with pytest.raises(TypeError, match="Cannot compare Player with dict.  Player class objects may only be compared with other Player class objects."):
+      assert test_one == {'name': name}
