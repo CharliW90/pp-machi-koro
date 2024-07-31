@@ -9,8 +9,8 @@ from reference import reference
 
 class BlueCard:
   colour = "blue"
-  colorize = reference["ansiColours"]["blue"]
-  reset = reference["ansiColours"]["reset"]
+  colorize = reference["ansi_colours"]["blue"]
+  reset = reference["ansi_colours"]["reset"]
   detail = "Blue cards trigger for everyone, on everyone's turn."
   card_type = "Primary"
 
@@ -33,8 +33,8 @@ class BlueCard:
 
 class GreenCard:
   colour = "green"
-  colorize = reference["ansiColours"]["green"]
-  reset = reference["ansiColours"]["reset"]
+  colorize = reference["ansi_colours"]["green"]
+  reset = reference["ansi_colours"]["reset"]
   detail = "Green cards trigger for the current player only."
   card_type = "Secondary"
 
@@ -57,8 +57,8 @@ class GreenCard:
 
 class RedCard:
   colour = "red"
-  colorize = reference["ansiColours"]["red"]
-  reset = reference["ansiColours"]["reset"]
+  colorize = reference["ansi_colours"]["red"]
+  reset = reference["ansi_colours"]["reset"]
   detail = "Red cards trigger for everyone except the current player."
   card_type = "Restaurant"
 
@@ -81,8 +81,8 @@ class RedCard:
 
 class PurpleCard:
   colour = "purple"
-  colorize = reference["ansiColours"]["purple"]
-  reset = reference["ansiColours"]["reset"]
+  colorize = reference["ansi_colours"]["purple"]
+  reset = reference["ansi_colours"]["reset"]
   detail = "Purple cards trigger for the current player only."
   card_type = "Major Establishment"
 
@@ -105,8 +105,8 @@ class PurpleCard:
 
 class LandmarkCard:
   colour = "orange"
-  colorize = reference["ansiColours"]["orange"]
-  reset = reference["ansiColours"]["reset"]
+  colorize = reference["ansi_colours"]["orange"]
+  reset = reference["ansi_colours"]["reset"]
   detail = "Orange cards do not trigger, they grant special abilities.\nBuilding all 4 landmarks achieves victory."
   card_type = "Landmark"
 

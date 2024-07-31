@@ -14,8 +14,8 @@ class Bank:
   def __init__(self) -> None:
     self.name = "The Bank"
     self.colour = 'cyan'
-    self.colorize = reference['ansiColours'][self.colour]
-    self.reset = reference["ansiColours"]["reset"]
+    self.colorize = reference['ansi_colours'][self.colour]
+    self.reset = reference["ansi_colours"]["reset"]
     self.coins = CoinPiles(42, 24, 12)
     self.total = self.coins.total()
     
