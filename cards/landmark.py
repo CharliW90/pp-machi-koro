@@ -1,5 +1,5 @@
 from typing import Union
-from .cardTypes import LandmarkCard
+from .card_types import LandmarkCard
 
 class TrainStation(LandmarkCard):
   cost = 4
@@ -11,7 +11,7 @@ class TrainStation(LandmarkCard):
     self.description = "You may roll 1 or 2 dice.\n(Ability)"
 
   def ability(self) -> str:
-    return "doubleDice"
+    return "double_dice"
 
 
 class ShoppingMall(LandmarkCard):
@@ -24,7 +24,7 @@ class ShoppingMall(LandmarkCard):
     self.description = "Your Restaurant and Store establishments earn +1 coin each when activated.\n(Ability)"
     
   def ability(self) -> str:
-    return "plusOne"
+    return "plus_one"
 
 
 class AmusementPark(LandmarkCard):
@@ -37,7 +37,7 @@ class AmusementPark(LandmarkCard):
     self.description = "If you roll a double, take another turn after this one.\n(Ability)"
   
   def ability(self) -> str:
-    return "doubleTurns"
+    return "double_turn"
 
 
 class RadioTower(LandmarkCard):
@@ -50,17 +50,17 @@ class RadioTower(LandmarkCard):
     self.description = "Once per turn, you may choose to reroll the dice.\n(Ability)"
   
   def ability(self) -> str:
-    return "reRolls"
+    return "reroll"
 
 class Abilities():
   def __init__(self):
-    self.doubleDice = False
-    self.plusOne = False
-    self.doubleTurns = False
-    self.reRolls = False
+    self.double_dice = False
+    self.plus_one = False
+    self.double_turn = False
+    self.reroll = False
 
-  def update(self, abilityName):
-    setattr(self, abilityName, True)
-    return getattr(self, abilityName)
+  def update(self, ability_name):
+    setattr(self, ability_name, True)
+    return getattr(self, ability_name)
 
 Landmarks = Union[TrainStation, ShoppingMall, AmusementPark, RadioTower]

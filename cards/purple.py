@@ -1,5 +1,10 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+  from game import Game
+
 from typing import Union
-from .cardTypes import PurpleCard
+from .card_types import PurpleCard
 
 class Stadium(PurpleCard):
   cost = 6
@@ -12,8 +17,8 @@ class Stadium(PurpleCard):
     self.industry = "major"
     self.triggers = [6]
 
-  def activate(self, game, diceRoll) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class TVStation(PurpleCard):
@@ -27,8 +32,8 @@ class TVStation(PurpleCard):
     self.industry = "major"
     self.triggers = [6]
 
-  def activate(self, game, diceRoll) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class BusinessCentre(PurpleCard):
@@ -42,8 +47,8 @@ class BusinessCentre(PurpleCard):
     self.industry = "major"
     self.triggers = [6]
 
-  def activate(self, game, diceRoll) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 Purples = Union[Stadium, TVStation, BusinessCentre]

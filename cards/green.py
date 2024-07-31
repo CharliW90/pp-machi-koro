@@ -1,5 +1,10 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+  from game import Game
+
 from typing import Union
-from .cardTypes import GreenCard
+from .card_types import GreenCard
 
 class Bakery(GreenCard):
   cost = 1
@@ -12,8 +17,8 @@ class Bakery(GreenCard):
     self.industry = "store"
     self.triggers = [2, 3]
 
-  def activate(self, game, diceRoll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class ConvenienceStore(GreenCard):
@@ -27,8 +32,8 @@ class ConvenienceStore(GreenCard):
     self.industry = "store"
     self.triggers = [4]
 
-  def activate(self, game, diceRoll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class CheeseFactory(GreenCard):
@@ -42,8 +47,8 @@ class CheeseFactory(GreenCard):
     self.industry = "factory"
     self.triggers = [7]
 
-  def activate(self, game, diceRoll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class FurnitureFactory(GreenCard):
@@ -57,8 +62,8 @@ class FurnitureFactory(GreenCard):
     self.industry = "factory"
     self.triggers = [8]
 
-  def activate(self, game, diceRoll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class FarmersMarket(GreenCard):
@@ -72,8 +77,8 @@ class FarmersMarket(GreenCard):
     self.industry = "market"
     self.triggers = [11, 12]
 
-  def activate(self, game, diceRoll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 Greens = Union[Bakery, ConvenienceStore, CheeseFactory, FurnitureFactory, FarmersMarket]

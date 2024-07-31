@@ -1,5 +1,5 @@
 from typing import Union
-from .cardTypes import BlueCard, GreenCard, RedCard, PurpleCard, LandmarkCard
+from .card_types import BlueCard, GreenCard, RedCard, PurpleCard, LandmarkCard
 from .blue import WheatField, Ranch, Forest, Mine, AppleOrchard, Blues
 from .green  import Bakery, ConvenienceStore, CheeseFactory, FurnitureFactory, FarmersMarket, Greens
 from .red import Cafe, FamilyRestaurant, Reds

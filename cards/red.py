@@ -1,5 +1,10 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+  from game import Game
+
 from typing import Union
-from .cardTypes import RedCard
+from .card_types import RedCard
 
 class Cafe(RedCard):
   cost = 2
@@ -12,8 +17,8 @@ class Cafe(RedCard):
     self.industry = "restaurant"
     self.triggers = [3]
 
-  def activate(self, game, diceRoll) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 class FamilyRestaurant(RedCard):
@@ -27,8 +32,8 @@ class FamilyRestaurant(RedCard):
     self.industry = "restaurant"
     self.triggers = [9, 10]
 
-  def activate(self, game, diceRoll) -> None:
-    print(f"{self.title}: triggered on Dice roll: {diceRoll}")
+  def activate(self, game: Game, dice_roll: int) -> None:
+    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
 Reds = Union[Cafe, FamilyRestaurant]

@@ -14,51 +14,59 @@ class Deck:
   The stacks can be added to and removed from, or their contents can be described.
   """
   def __init__(self, playerCount:int):
-    self.wheatFields = [WheatField() for _ in range(6)]
+    self.wheat_fields = [WheatField() for _ in range(6)]
     self.ranches = [Ranch() for _ in range(6)]
     self.bakeries = [Bakery() for _ in range(6)]
     self.cafes = [Cafe() for _ in range(6)]
-    self.convenienceStores = [ConvenienceStore() for _ in range(6)]
+    self.convenience_stores = [ConvenienceStore() for _ in range(6)]
     self.forests = [Forest() for _ in range(6)]
-    self.majorEstablishments = [card for card in [Stadium(), TVStation(), BusinessCentre()] for _ in range(playerCount)]
-    self.cheeseFactories = [CheeseFactory() for _ in range(6)]
-    self.furnitureFactories = [FurnitureFactory() for _ in range(6)]
+    self.major_establishments = [card for card in [Stadium(), TVStation(), BusinessCentre()] for _ in range(playerCount)]
+    self.cheese_factories = [CheeseFactory() for _ in range(6)]
+    self.furniture_factories = [FurnitureFactory() for _ in range(6)]
     self.mines = [Mine() for _ in range(6)]
-    self.familyRestaurants = [FamilyRestaurant() for _ in range(6)]
-    self.appleOrchards = [AppleOrchard() for _ in range(6)]
-    self.farmersMarkets = [FarmersMarket() for _ in range(6)]
+    self.family_restaurants = [FamilyRestaurant() for _ in range(6)]
+    self.apple_orchards = [AppleOrchard() for _ in range(6)]
+    self.farmers_markets = [FarmersMarket() for _ in range(6)]
+
+  def __len__(self) -> int:
+    stacks = [
+      self.wheat_fields, self.ranches, self.bakeries, self.cafes, self.convenience_stores,
+      self.forests, self.major_establishments, self.cheese_factories, self.furniture_factories,
+      self.mines,self.family_restaurants, self.apple_orchards, self.farmers_markets
+    ]
+    return sum(len(stack) for stack in stacks)
   
   def contents(self, cash: int = 100) -> list:
     """
     Returns a list of descriptions of the cards in the Deck, incl. the name, dice rolls that trigger it, description, cost and the quantity left in the pile.
     When printed to the console, the strings are colour coded depending on card colour and affordability.
     """
-    cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
-    cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
+    card_stacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
+    card_counts = [[title, count] for stack in card_stacks for title, count in Counter(card.title for card in stack).items()]
     
-    allCards = ()       # here we will store a multiline f-string per card - tuple because immutable and indexable
-    allCardIndexes = [] # here we will store the zIndex per card
-    mapOfCards = {}     # here we will map the zIndex of a card to its position in allCards tuple
+    all_cards = ()       # here we will store a multiline f-string per card - tuple because immutable and indexable
+    all_card_indexes = [] # here we will store the zIndex per card
+    map_of_cards = {}     # here we will map the zIndex of a card to its position in allCards tuple
 
-    for title, qty in cardCounts:
-      card = [card for stack in cardStacks for card in stack if card.title == title][0]
+    for title, qty in card_counts:
+      card = [card for stack in card_stacks for card in stack if card.title == title][0]
 
-      mapOfCards[str(card.zIndex)] = len(allCards)
-      allCardIndexes.append(card.zIndex)
+      map_of_cards[str(card.zIndex)] = len(all_cards)
+      all_card_indexes.append(card.zIndex)
 
       style = shortcuts['affordable'] if card.cost <= cash else shortcuts['unaffordable']
       styleReset = shortcuts['reset']
 
-      allCards += ([
+      all_cards += ([
         f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
         f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
         f"{style}{card.cost} coin{'s' if card.cost > 1 else ''}{styleReset}",
         f"Qty: {qty}",
         ],)   # <= that comma makes this a tuple, and you can add a tuple to a tuple
       
-    allCardIndexes.sort()
-    sortedCards = [allCards[mapOfCards[str(index)]] for index in allCardIndexes]
-    return sortedCards
+    all_card_indexes.sort()
+    sorted_cards = [all_cards[map_of_cards[str(index)]] for index in all_card_indexes]
+    return sorted_cards
 
   def add(self, card: Blues | Greens | Reds | Purples) -> int:
     """
@@ -86,7 +94,7 @@ class Deck:
       return card, pile, len(stack)
     raise AttributeError(f"Cannot remove a {name} card from the Deck - no pile exists for these cards.")
 
-class Hand():
+class Hand:
   """
   This is a class to hold lists representing stacks of cards.
   These stacks of cards represent a player's hand of cards, and are organised into stacks based of each colour.
@@ -99,6 +107,9 @@ class Hand():
     self.red = []
     self.purple = []
     self.landmarks = [TrainStation(), ShoppingMall(), AmusementPark(), RadioTower()]
+
+  def __len__(self) -> int:
+    return sum(card.built for card in self.landmarks) + sum(len(stack) for stack in [self.blue, self.green, self.red, self.purple])
   
   def add(self, card: Blues | Greens | Reds | Purples) -> int:
     """
@@ -127,51 +138,51 @@ class Hand():
     Returns a list of descriptions of the cards in the Deck, incl. the name, dice rolls that trigger it, description, cost and the quantity left in the pile.
     When printed to the console, the strings are colour coded depending on card colour and affordability.
     """
-    cardStacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
-    cardCounts = [[title, count] for stack in cardStacks for title, count in Counter(card.title for card in stack).items()]
+    card_stacks = [stack for stack in [getattr(self, attribute) for attribute in dir(self)] if isinstance(stack, list)]
+    card_counts = [[title, count] for stack in card_stacks for title, count in Counter(card.title for card in stack).items()]
     
-    allCards = ()       # here we will store a multiline f-string per card - tuple because immutable and indexable
-    allCardIndexes = [] # here we will store the zIndex per card
-    mapOfCards = {}     # here we will map the zIndex of a card to its position in allCards tuple
+    all_cards = ()       # here we will store a multiline f-string per card - tuple because immutable and indexable
+    all_card_indexes = [] # here we will store the zIndex per card
+    map_of_cards = {}     # here we will map the zIndex of a card to its position in allCards tuple
 
-    for title, qty in cardCounts:
-      card = [card for stack in cardStacks for card in stack if card.title == title][0]
+    for title, qty in card_counts:
+      card = [card for stack in card_stacks for card in stack if card.title == title][0]
 
-      mapOfCards[str(card.zIndex)] = len(allCards)
-      allCardIndexes.append(card.zIndex)
+      map_of_cards[str(card.zIndex)] = len(all_cards)
+      all_card_indexes.append(card.zIndex)
 
       if card.cardType == "Landmark":
         if card.built:
-          allCards += ([
+          all_cards += ([
             f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> Landmark Card <{card.reset}",
             f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
             f"{card.colorize}Built!{card.reset}",
             ],)   # <= that comma makes this a tuple, and you can add a tuple to a tuple
         else:
-          allCards += ([
+          all_cards += ([
             f"\x1b[9;2m{card.colorize}{card.title}{card.reset}\x1b[0m\n{card.colorize}> Unbuilt Landmark <{card.reset}",
             f"\x1b[9;2m{card.colorize}{card.description.splitlines()[0]}{card.reset}\x1b[0m\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
             f"{card.colorize}Not yet built...{card.reset}",
             ],)   # <= that comma makes this a tuple, and you can add a tuple to a tuple
       else:
-        allCards += ([
+        all_cards += ([
           f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> ({'-'.join(map(str, card.triggers))}) <{card.reset}",
           f"{card.colorize}{card.description.splitlines()[0]}{card.reset}\n{card.colorize}{card.description.splitlines()[1]}{card.reset}",
           f"{card.colorize}Qty: {qty}{card.reset}",
           ],)     # <= that comma makes this a tuple, and you can add a tuple to a tuple
     
-    allCardIndexes.sort()
-    sortedCards = [allCards[mapOfCards[str(index)]] for index in allCardIndexes]
-    return sortedCards
+    all_card_indexes.sort()
+    sorted_cards = [all_cards[map_of_cards[str(index)]] for index in all_card_indexes]
+    return sorted_cards
 
 def lookup(name: str) -> str | None:
   """
   This function provides a simple translation from 'card title' to 'stack name' for finding a card in the Deck.
-  It is mostly converting a string of words to a single camelCase word, but also handles the fact that majorEstablishments containing three different cards
+  It is mostly converting a string of words to a single snake_case word, but also handles the fact that major_establishments contains three different cards
   """
   match name:
     case "Wheat Field":
-      return "wheatFields"
+      return "wheat_fields"
     case "Ranch":
       return "ranches"
     case "Bakery":
@@ -179,23 +190,23 @@ def lookup(name: str) -> str | None:
     case "Cafe":
       return "cafes"
     case "Convenience Store":
-      return "convenienceStores"
+      return "convenience_stores"
     case "Forest":
       return "forests"
     case "Stadium" | "TV Station" | "Business Centre": 
-      return "majorEstablishments"
+      return "major_establishments"
     case "Cheese Factory":
-      return "cheeseFactories"
+      return "cheese_factories"
     case "Furniture Factory":
-      return "furnitureFactories"
+      return "furniture_factories"
     case "Mine":
       return "mines"
     case "Family Restaurant":
-      return "familyRestaurants"
+      return "family_restaurants"
     case "Apple Orchard":
-      return "appleOrchards"
+      return "apple_orchards"
     case "Farmers Market":
-      return "farmersMarkets"
+      return "farmers_markets"
     case _:
       print(f"Error: {name} is not one of the expected names")
       return
