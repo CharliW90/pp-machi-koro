@@ -370,5 +370,25 @@ class TestPlayer:
     assert test_one <= test_two <= test_three <= test_four  # test_two is after test_one in turn order
     assert test_four >= test_three >= test_two >= test_one  # test_three is after test_two in turn order
 
-    with pytest.raises(TypeError, match="Cannot compare Player with dict.  Player class objects may only be compared with other Player class objects."):
-      assert test_one == {'name': name}
+    class NotPlayer:
+      def __init__(self) -> None:
+        self.name = 'duplicate name'
+        self.turn_order = 2
+    
+    test_not_player = NotPlayer()
+    assert test_one.name == test_not_player.name
+    assert test_one.turn_order > test_not_player.turn_order
+    assert not test_one.turn_order < test_not_player.turn_order
+
+    with pytest.raises(TypeError, match="Cannot compare Player with NotPlayer.  Player class objects may only be compared with other Player class objects."):
+      assert test_one == test_not_player
+    with pytest.raises(TypeError, match="Cannot compare Player with NotPlayer.  Player class objects may only be compared with other Player class objects."):
+      assert test_one != test_not_player
+    with pytest.raises(TypeError, match="Cannot compare Player with NotPlayer.  Player class objects may only be compared with other Player class objects."):
+      assert test_one > test_not_player       # type: ignore
+    with pytest.raises(TypeError, match="Cannot compare Player with NotPlayer.  Player class objects may only be compared with other Player class objects."):
+      assert not test_one < test_not_player   # type: ignore
+    with pytest.raises(TypeError, match="Cannot compare Player with NotPlayer.  Player class objects may only be compared with other Player class objects."):
+      assert test_one >= test_not_player      # type: ignore
+    with pytest.raises(TypeError, match="Cannot compare Player with NotPlayer.  Player class objects may only be compared with other Player class objects."):
+      assert not test_one <= test_not_player  # type: ignore
