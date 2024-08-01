@@ -22,7 +22,7 @@ def roll_dice(game:Game, player:Player) -> None:
                   ignore=lambda x: not double_dice), # type: ignore | if double_dice is false, ignore this List
   ]
 
-  action = inquirer.prompt(options, theme=MyTheme(player))
+  action = inquirer.prompt(options, theme=MyTheme(player.colour, player.name))
   player.declare_action(f"{player.name} rolled {action['dice']} dice") # type: ignore
 
   rolls = []

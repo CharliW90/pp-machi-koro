@@ -26,7 +26,7 @@ def build_action(game: Game, player:Player, settings: dict) -> bool:
                   message=f"{player.colorize}Build an establishment?{player.reset}",
                   choices=affordable_cards)
   ]
-  action = inquirer.prompt(options, theme=MyTheme(player))
+  action = inquirer.prompt(options, theme=MyTheme(player.colour, player.name))
   choice = action['build'] # type: ignore
   return handle_building(game, player, choice, settings)
 
