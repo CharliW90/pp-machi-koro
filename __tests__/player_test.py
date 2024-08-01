@@ -3,6 +3,8 @@ import re
 import random
 from unittest.mock import patch, Mock, create_autospec, call
 from reference import reference
+from cards import WheatField, Bakery, Cafe, BusinessCentre, TrainStation
+from coins import Bank, One, Five, Ten
 
 from player import Player, reset as reset_player_names
 
@@ -331,7 +333,7 @@ class TestPlayer:
     test.turn_order = 2
 
     # Assert
-    assert repr(test) == f"Player([2] 'another name': is not the current player; is the red player; has 0 cash; has built 0 landmarks)"
+    assert repr(test) == f"another name has 0 cash remaining and has built 0 landmarks"
 
   def test_player_comparison_operators(self):
     reset_player_names()
@@ -432,7 +434,7 @@ class TestPlayer:
     assert len(console_lines) == 1
     assert console_lines[0] == text_as_colour("It is test_player's turn!", "red")
   
-  def test_player_end_turn(self):
+  def test_player_end_turn(self, capsys):
     reset_player_names()
     # Arrange
     test = Player('test_player', 0)
@@ -444,6 +446,7 @@ class TestPlayer:
     # Assert
     assert test.current == False
     assert test.build_action_taken == False
+    capsys.readouterr()
   
   def test_player_view_hand(self, capsys):
     reset_player_names()
@@ -476,25 +479,27 @@ class TestPlayer:
     reset_player_names()
     # Arrange
     test = Player('test_player', 0)
-    class MockCoin:
-      value = 3
-    
-    mock_coin = MockCoin()
+    mock_one = create_autospec(One)
+    mock_one.value = 1
+    mock_five = create_autospec(Five)
+    mock_five.value = 5
+    mock_ten = create_autospec(Ten)
+    mock_ten.value = 10
 
     # Act
     init_balance = test.get_balance()
-    test.coins.coppers.append(mock_coin)  #type: ignore
-    balance_three = test.get_balance()
-    test.coins.silvers.append(mock_coin)  #type: ignore
+    test.coins.coppers.append(mock_one)
+    balance_one = test.get_balance()
+    test.coins.silvers.append(mock_five)
     balance_six = test.get_balance()
-    test.coins.golds.append(mock_coin)  #type: ignore
-    balance_nine = test.get_balance()
+    test.coins.golds.append(mock_ten)
+    balance_sixteen = test.get_balance()
 
     # Assert
     assert init_balance == 0
-    assert balance_three == 3
+    assert balance_one == 1
     assert balance_six == 6
-    assert balance_nine == 9
+    assert balance_sixteen == 16
 
   @patch('cards.card_types.BlueCard.trigger')
   @patch('cards.card_types.GreenCard.trigger')
@@ -512,3 +517,280 @@ class TestPlayer:
     mocked_Blue_trigger.assert_called_once_with(mock_game, test, 1)
     mocked_Green_trigger.assert_called_once_with(mock_game, test, 2)
 
+  @patch('player.receiving')
+  def test_player_receive(self, mocked_receiving):
+    reset_player_names()
+    # Arrange
+    mock_one = create_autospec(One)
+    mock_one.value = 1
+    mock_five = create_autospec(Five)
+    mock_five.value = 5
+    mocked_receiving.return_value = mock_one.value + mock_five.value
+    test = Player('test_player', 0)
+
+    #  Act
+    result = test.receive([mock_one, mock_five]) #type: ignore
+
+    # Assert
+    assert result == mock_one.value + mock_five.value
+    mocked_receiving.assert_called_once_with(test, [mock_one, mock_five])
+  
+  @patch('player.giving')
+  def test_player_give(self, mocked_giving):
+    reset_player_names()
+    # Arrange
+    mock_one = create_autospec(One)
+    mock_one.value = 1
+    mocked_giving.return_value = [mock_one]
+    test = Player('test_player', 0)
+
+    #  Act
+    result = test.give(1)
+
+    # Assert
+    assert result == [mock_one]
+    mocked_giving.assert_called_once_with(test, 1)
+
+  @patch('player.giving')
+  def test_player_give_all(self, mocked_giving):
+    reset_player_names()
+    # Arrange
+    mock_one = create_autospec(One)
+    mock_one.value = 1
+    mock_five = create_autospec(Five)
+    mock_five.value = 5
+    mock_ten = create_autospec(Ten)
+    mock_ten.value = 10
+
+    mocked_giving.return_value = [mock_one, mock_five, mock_ten]
+    test = Player('test_player', 0)
+
+    # Act
+    test.coins.coppers.append(mock_one)  #type: ignore
+    test.coins.silvers.append(mock_five)  #type: ignore
+    test.coins.golds.append(mock_ten)  #type: ignore
+
+    #  Act
+    result = test.give_all()
+
+    # Assert
+    assert result == [mock_one, mock_five, mock_ten]
+    mocked_giving.assert_called_once_with(test, 16)
+  
+  @patch('player.calculate_payment')
+  @patch('player.receiving')
+  @patch('player.giving')
+  def test_player_build_affordable_Blue(self, mocked_giving, mocked_receiving, mocked_calc, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    mock_card = WheatField()
+    mock_bank = Bank()
+
+
+    mocked_calc.side_effect = lambda coins, cost: cost
+    mocked_giving.side_effect = lambda player, amount: [player.coins.coppers.pop() for _ in range(amount)]
+    return_value_from_bank = []
+    mock_bank.take_payment = lambda coins, total_to_pay: return_value_from_bank
+    inject_coins(test, mock_card.cost)
+
+    # Act
+    build_action_completed = test.build(mock_card, mock_bank)
+
+    # Assert
+    assert build_action_completed
+    mocked_calc.assert_called_once_with(test.coins, mock_card.cost)
+    mocked_giving.assert_called_once_with(test, mock_card.cost)
+    mocked_receiving.assert_called_once_with(test, return_value_from_bank)
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 2
+    assert console_lines[0] == text_as_colour("test_player has purchased Wheat Field for 1 cash", "red")
+    assert console_lines[1] == text_as_colour("test_player has 0 cash remaining and has built 0 landmarks", "red")
+
+  @patch('player.calculate_payment')
+  @patch('player.receiving')
+  @patch('player.giving')
+  def test_player_build_affordable_Green(self, mocked_giving, mocked_receiving, mocked_calc, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    mock_card = Bakery()
+    mock_bank = Bank()
+
+    mocked_calc.side_effect = lambda coins, cost: cost
+    mocked_giving.side_effect = lambda player, amount: [player.coins.coppers.pop() for _ in range(amount)]
+    return_value_from_bank = []
+    mock_bank.take_payment = lambda coins, total_to_pay: return_value_from_bank
+    inject_coins(test, mock_card.cost)
+
+    # Act
+    build_action_completed = test.build(mock_card, mock_bank)
+
+    # Assert
+    assert build_action_completed
+    mocked_calc.assert_called_once_with(test.coins, mock_card.cost)
+    mocked_giving.assert_called_once_with(test, mock_card.cost)
+    mocked_receiving.assert_called_once_with(test, return_value_from_bank)
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 2
+    assert console_lines[0] == text_as_colour("test_player has purchased Bakery for 1 cash", "red")
+    assert console_lines[1] == text_as_colour("test_player has 0 cash remaining and has built 0 landmarks", "red")
+
+  @patch('player.calculate_payment')
+  @patch('player.receiving')
+  @patch('player.giving')
+  def test_player_build_affordable_Red(self, mocked_giving, mocked_receiving, mocked_calc, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    mock_card = Cafe()
+    mock_bank = Bank()
+
+    mocked_calc.side_effect = lambda coins, cost: cost
+    mocked_giving.side_effect = lambda player, amount: [player.coins.coppers.pop() for _ in range(amount)]
+    return_value_from_bank = []
+    mock_bank.take_payment = lambda coins, total_to_pay: return_value_from_bank
+    inject_coins(test, mock_card.cost)
+
+    # Act
+    build_action_completed = test.build(mock_card, mock_bank)
+
+    # Assert
+    assert build_action_completed
+    mocked_calc.assert_called_once_with(test.coins, mock_card.cost)
+    mocked_giving.assert_called_once_with(test, mock_card.cost)
+    mocked_receiving.assert_called_once_with(test, return_value_from_bank)
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 2
+    assert console_lines[0] == text_as_colour("test_player has purchased Cafe for 2 cash", "red")
+    assert console_lines[1] == text_as_colour("test_player has 0 cash remaining and has built 0 landmarks", "red")
+  
+  @patch('player.calculate_payment')
+  @patch('player.receiving')
+  @patch('player.giving')
+  def test_player_build_affordable_Purple(self, mocked_giving, mocked_receiving, mocked_calc, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    mock_card = BusinessCentre()
+    mock_bank = Bank()
+
+    mocked_calc.side_effect = lambda coins, cost: cost
+    mocked_giving.side_effect = lambda player, amount: [player.coins.coppers.pop() for _ in range(amount)]
+    return_value_from_bank = []
+    mock_bank.take_payment = lambda coins, total_to_pay: return_value_from_bank
+    inject_coins(test, mock_card.cost)
+    assert test.get_balance() == 8
+
+    # Act
+    build_action_completed = test.build(mock_card, mock_bank)
+
+    # Assert
+    assert build_action_completed
+    mocked_calc.assert_called_once_with(test.coins, mock_card.cost)
+    mocked_giving.assert_called_once_with(test, mock_card.cost)
+    mocked_receiving.assert_called_once_with(test, return_value_from_bank)
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 2
+    assert console_lines[0] == text_as_colour("test_player has purchased Business Centre for 8 cash", "red")
+    assert console_lines[1] == text_as_colour("test_player has 0 cash remaining and has built 0 landmarks", "red")
+
+  @patch('player.calculate_payment')
+  @patch('player.receiving')
+  @patch('player.giving')
+  def test_player_build_unaffordable_Blue(self, mocked_giving, mocked_receiving, mocked_calc, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    mock_card = WheatField()
+    mock_bank = Bank()
+
+    mock_bank.take_payment = lambda coins, total_to_pay: []
+    inject_coins(test, mock_card.cost - 1)
+
+    # Act
+    build_action_completed = test.build(mock_card, mock_bank)
+
+    # Assert
+    assert not build_action_completed
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 1
+    assert console_lines[0] == f"test_player cannot afford {mock_card.title}"
+
+  @patch('player.calculate_payment')
+  @patch('player.receiving')
+  @patch('player.giving')
+  def test_player_build_unaffordable_Green(self, mocked_giving, mocked_receiving, mocked_calc, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    mock_card = Bakery()
+    mock_bank = Bank()
+
+    mock_bank.take_payment = lambda coins, total_to_pay: []
+    inject_coins(test, mock_card.cost - 1)
+
+    # Act
+    build_action_completed = test.build(mock_card, mock_bank)
+
+    # Assert
+    assert not build_action_completed
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 1
+    assert console_lines[0] == f"test_player cannot afford {mock_card.title}"
+
+  @patch('player.calculate_payment')
+  @patch('player.receiving')
+  @patch('player.giving')
+  def test_player_build_unaffordable_Red(self, mocked_giving, mocked_receiving, mocked_calc, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    mock_card = Cafe()
+    mock_bank = Bank()
+
+    mock_bank.take_payment = lambda coins, total_to_pay: []
+    inject_coins(test, mock_card.cost - 1)
+
+    # Act
+    build_action_completed = test.build(mock_card, mock_bank)
+
+    # Assert
+    assert not build_action_completed
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 1
+    assert console_lines[0] == f"test_player cannot afford {mock_card.title}"
+  
+  @patch('player.calculate_payment')
+  @patch('player.receiving')
+  @patch('player.giving')
+  def test_player_build_unaffordable_Purple(self, mocked_giving, mocked_receiving, mocked_calc, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    mock_card = TrainStation()
+    mock_bank = Bank()
+
+    mock_bank.take_payment = lambda coins, total_to_pay: []
+    inject_coins(test, mock_card.cost - 1)
+
+    # Act
+    build_action_completed = test.build(mock_card, mock_bank)
+
+    # Assert
+    assert not build_action_completed
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 1
+    assert console_lines[0] == f"test_player cannot afford {mock_card.title}"
+
+def inject_coins(player: Player, coins: int) -> None:
+  for _ in range(coins):
+    player.coins.coppers.append(One())

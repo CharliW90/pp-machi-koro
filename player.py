@@ -92,7 +92,7 @@ class Player:
   def __repr__(self) -> str:
     cash = self.coins.total()
     landmarks = sum(card.built for card in self.cards.landmarks)
-    return f"Player([{self.turn_order}] '{self.name}': {'is ' if self.current else 'is not '}the current player; is the {self.colour} player; has {cash} cash; has built {landmarks} landmarks)"
+    return f"{self.name} has {cash} cash remaining and has built {landmarks} landmarks"
   
   def __eq__(self, other: Player) -> bool:
     if not isinstance(other, Player): raise TypeError(f"Cannot compare Player with {type(other).__name__}.  Player class objects may only be compared with other Player class objects.")
@@ -122,7 +122,8 @@ class Player:
     return self.turn_order <= other.turn_order
   
   def declare_action(self, action: str) -> None:
-    print(f"{self.colorize}{action}{self.reset}")
+    for line in action.splitlines():
+      print(f"{self.colorize}{line}{self.reset}")
 
   def begin_turn(self) -> None:
     self.current = True
@@ -169,7 +170,6 @@ class Player:
       if cash < card.cost:
         print(f"{self.name} cannot afford {card.title}")
         return self.build_action_taken
-
       payment = calculate_payment(self.coins, card.cost)
       self.receive(bank.take_payment(self.give(payment), card.cost))
       if isinstance(card, Landmarks):
@@ -180,7 +180,7 @@ class Player:
         self.cards.add(card)
 
       self.build_action_taken = True
-      self.declare_action(f"{self.name} has purchased {card.title} for {card.cost} cash\n{self}")
+      self.declare_action(f"{self.name} has purchased {card.title} for {card.cost} cash\n{repr(self)}")
       return self.build_action_taken
 
   def has_won(self) -> bool:
