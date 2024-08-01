@@ -21,7 +21,7 @@ class ShoppingMall(LandmarkCard):
   def __init__(self):
     super().__init__()
     self.title = "Shopping Mall"
-    self.description = "Your Restaurant and Store establishments earn +1 coin each when activated.\n(Ability)"
+    self.description = "Your store-front establishments earn +1 coin each when activated.\n(Ability)"
     
   def ability(self) -> str:
     return "plus_one"
