@@ -60,6 +60,43 @@ class TestCoinage:
     assert test_coin_A <= test_coin_D <= test_coin_B <= test_coin_E <= test_coin_C <= test_coin_F
     assert test_coin_F >= test_coin_C >= test_coin_E >= test_coin_B >= test_coin_D >= test_coin_A
 
+  def test_coinage_mathematical_operations(self):
+    # Arrange
+    test_coin_A = One()
+    test_coin_B = Five()
+    test_coin_C = Ten()
+
+    # Act / Assert
+    assert test_coin_A + test_coin_B == 6
+    assert test_coin_A + 123 == 124
+    assert test_coin_B + test_coin_C == 15
+    assert test_coin_B + 7 == 12
+    assert test_coin_C + test_coin_A == 11
+    assert test_coin_C + 73 == 83
+
+    assert test_coin_C - test_coin_A == 9
+    assert test_coin_C - 7 == 3
+    assert test_coin_B - test_coin_C == -5
+    assert test_coin_B - 2 == 3
+    assert test_coin_A - test_coin_B == -4
+    assert test_coin_A - 0 == 1
+
+    assert test_coin_B * test_coin_C == 50
+    assert test_coin_B * 17 == 85
+    assert test_coin_C * test_coin_A == 10
+    assert test_coin_C * 4 == 40
+    assert test_coin_A * test_coin_B == 5
+    assert test_coin_A * 11 == 11
+
+    assert test_coin_C / test_coin_B == 2
+    assert test_coin_C / 2 == 5
+    assert test_coin_B / test_coin_A == 5
+    assert test_coin_B / 5 == 1
+    assert test_coin_A / 0 == 0
+
+    assert test_coin_C // 3 == 3
+    assert test_coin_B // 2 == 2
+    assert test_coin_A // 0 == 0
   
   def test_CoinPiles_x100(self):
     for _ in range(100):
