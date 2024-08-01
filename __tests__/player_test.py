@@ -79,6 +79,10 @@ def text_as_colour(text: str, colour: str) -> str:
   }
   return f"{staticColours[colour]}{text}{staticColours['clear']}"
 
+def inject_coins(player: Player, coins: int) -> None:
+  for _ in range(coins):
+    player.coins.coppers.append(One())
+
 class TestPlayer:
   @pytest.mark.parametrize(
     "valid_name,pos",
@@ -791,6 +795,34 @@ class TestPlayer:
     assert len(console_lines) == 1
     assert console_lines[0] == f"test_player cannot afford {mock_card.title}"
 
-def inject_coins(player: Player, coins: int) -> None:
-  for _ in range(coins):
-    player.coins.coppers.append(One())
+  def test_player_has_won(self):
+    reset_player_names()
+    # Arrange
+    test = Player('will win', 0)
+    player_train_station = test.cards.landmarks[0]
+    player_shopping_mall = test.cards.landmarks[1]
+    player_amusement_park = test.cards.landmarks[2]
+    player_radio_tower = test.cards.landmarks[3]
+
+    # Act / Assert
+    assert player_train_station.title == "Train Station"
+    assert player_shopping_mall.title == "Shopping Mall"
+    assert player_amusement_park.title == "Amusement Park"
+    assert player_radio_tower.title == "Radio Tower"
+    assert test.has_won() == False
+
+    first_ability = player_train_station.build(test)
+    assert first_ability == "double_dice"
+    assert test.has_won() == False
+
+    second_ability = player_shopping_mall.build(test)
+    assert second_ability == "plus_one"
+    assert test.has_won() == False
+
+    third_ability = player_amusement_park.build(test)
+    assert third_ability == "double_turn"
+    assert test.has_won() == False
+
+    fourth_ability = player_radio_tower.build(test)
+    assert fourth_ability == "reroll"
+    assert test.has_won() == True
