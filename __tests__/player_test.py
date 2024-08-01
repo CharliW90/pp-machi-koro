@@ -163,12 +163,12 @@ class TestPlayer:
       print(f"{player.colorize}this output {player.name}{player.reset}")
     
     console = capsys.readouterr()
-    consoleLines = console.out.splitlines()
-    assert len(consoleLines) == len(players)
-    assert consoleLines[0] == text_as_colour('this output should be red', 'red')
-    assert consoleLines[1] == text_as_colour('this output should be green', 'green')
-    assert consoleLines[2] == text_as_colour('this output should be blue', 'blue')
-    assert consoleLines[3] == text_as_colour('this output should be purple', 'purple')
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == len(players)
+    assert console_lines[0] == text_as_colour('this output should be red', 'red')
+    assert console_lines[1] == text_as_colour('this output should be green', 'green')
+    assert console_lines[2] == text_as_colour('this output should be blue', 'blue')
+    assert console_lines[3] == text_as_colour('this output should be purple', 'purple')
 
   @pytest.mark.parametrize(
     "invalid_colour",
@@ -232,12 +232,12 @@ class TestPlayer:
       print(player)
     
     console = capsys.readouterr()
-    consoleLines = console.out.splitlines()
-    assert len(consoleLines) == len(players)
-    assert consoleLines[0] == "Player 1: Three"
-    assert consoleLines[1] == "Player 2: Four"
-    assert consoleLines[2] == "Player 3: Two"
-    assert consoleLines[3] == "Player 4: One"
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == len(players)
+    assert console_lines[0] == "Player 1: Three"
+    assert console_lines[1] == "Player 2: Four"
+    assert console_lines[2] == "Player 3: Two"
+    assert console_lines[3] == "Player 4: One"
 
   @pytest.mark.parametrize(
     "invalid_i",
@@ -259,7 +259,7 @@ class TestPlayer:
     with pytest.raises(ValueError, match=expected_message):
       test.turn_order = invalid_i
 
-  def test_initialised_locks_player_edits(self):
+  def test_player_initialisation_locks_edits(self):
     reset_player_names()
     # Arrange
     test = Player('red', 0)
@@ -392,3 +392,123 @@ class TestPlayer:
       assert test_one >= test_not_player      # type: ignore
     with pytest.raises(TypeError, match="Cannot compare Player with NotPlayer.  Player class objects may only be compared with other Player class objects."):
       assert not test_one <= test_not_player  # type: ignore
+
+  def test_player_declare_action(self, capsys):
+    reset_player_names()
+    # Arrange
+    test_red = Player('one', 0)
+    test_green = Player('two', 1)
+    test_blue = Player('three', 2)
+    test_purple = Player('four', 3)
+
+    # Act
+    test_red.declare_action("Hello Red World!")
+    test_green.declare_action("Hello Green World!")
+    test_blue.declare_action("Hello Blue World!")
+    test_purple.declare_action("Hello Purple World!")
+
+    # Assert
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 4
+    assert console_lines[0] == text_as_colour("Hello Red World!", "red")
+    assert console_lines[1] == text_as_colour("Hello Green World!", "green")
+    assert console_lines[2] == text_as_colour("Hello Blue World!", "blue")
+    assert console_lines[3] == text_as_colour("Hello Purple World!", "purple")
+
+  def test_player_begin_turn(self, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+
+    # Act
+    test.begin_turn()
+
+    # Assert
+    assert test.current == True
+    assert test.build_action_taken == False
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 1
+    assert console_lines[0] == text_as_colour("It is test_player's turn!", "red")
+  
+  def test_player_end_turn(self):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    test.begin_turn()
+
+    # Act
+    test.end_turn()
+
+    # Assert
+    assert test.current == False
+    assert test.build_action_taken == False
+  
+  def test_player_view_hand(self, capsys):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+
+    # Act
+    test.view_hand()
+
+    # Assert
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 14
+    assert re.search(r"^\s*Name\s*Action\s*Owned\s*$", console_lines[0])
+    assert re.search(r"^\s*-*\s*-*\s*-*$", console_lines[1])
+    assert re.search(r"^\S*Wheat Field\S*\s*\S*Get 1 coin from the bank.\S*\s*\S*Qty: 1\S*", console_lines[2])
+    assert re.search(r"^\S*> \(1\) <\S*\s*\S*\(anyone's turn\)\S*", console_lines[3])
+    assert re.search(r"^\S*Bakery\S*\s*\S*Get 1 coin from the bank.\S*\s*\S*Qty: 1\S*", console_lines[4])
+    assert re.search(r"^\S*> \(2-3\) <\S*\s*\S*\(your turn only\)\S*", console_lines[5])
+    assert re.search(r"^\S*Train Station\S*\s*\S*You may roll 1 or 2 dice.\S*\s*\S*Not yet built...\S*", console_lines[6])
+    assert re.search(r"^\S*> Unbuilt Landmark <\S*\s*\S*\(Ability\)\S*", console_lines[7])
+    assert re.search(r"^\S*Shopping Mall\S*\s*\S*Your store-front establishments earn \+1 coin each when activated.\S*\s*\S*Not yet built...\S*", console_lines[8])
+    assert re.search(r"^\S*> Unbuilt Landmark <\S*\s*\S*\(Ability\)\S*", console_lines[9])
+    assert re.search(r"^\S*Amusement Park\S*\s*\S*If you roll a double, take another turn after this one.\S*\s*\S*Not yet built...\S*", console_lines[10])
+    assert re.search(r"^\S*> Unbuilt Landmark <\S*\s*\S*\(Ability\)\S*", console_lines[11])
+    assert re.search(r"^\S*Radio Tower\S*\s*\S*Once per turn, you may choose to reroll the dice.\S*\s*\S*Not yet built...\S*", console_lines[12])
+    assert re.search(r"^\S*> Unbuilt Landmark <\S*\s*\S*\(Ability\)\S*", console_lines[13])
+
+  def test_player_get_balance(self):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    class MockCoin:
+      value = 3
+    
+    mock_coin = MockCoin()
+
+    # Act
+    init_balance = test.get_balance()
+    test.coins.coppers.append(mock_coin)  #type: ignore
+    balance_three = test.get_balance()
+    test.coins.silvers.append(mock_coin)  #type: ignore
+    balance_six = test.get_balance()
+    test.coins.golds.append(mock_coin)  #type: ignore
+    balance_nine = test.get_balance()
+
+    # Assert
+    assert init_balance == 0
+    assert balance_three == 3
+    assert balance_six == 6
+    assert balance_nine == 9
+
+  @patch('cards.card_types.BlueCard.trigger')
+  @patch('cards.card_types.GreenCard.trigger')
+  def test_player_activate(self, mocked_Green_trigger, mocked_Blue_trigger):
+    reset_player_names()
+    # Arrange
+    test = Player('test_player', 0)
+    mock_game = 'this'
+
+    # Act
+    test.activate(mock_game, 'blue', 1)   #type: ignore
+    test.activate(mock_game, 'green', 2)  #type: ignore
+
+    # Assert
+    mocked_Blue_trigger.assert_called_once_with(mock_game, test, 1)
+    mocked_Green_trigger.assert_called_once_with(mock_game, test, 2)
+
