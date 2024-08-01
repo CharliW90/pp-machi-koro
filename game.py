@@ -1,19 +1,20 @@
 import time
 from tabulate import tabulate
-from reference import shortcuts
+from reference import reference
 from coins.bank import Bank
-from player import Player, reset as reset_players
+from player import Player, reset as reset_player_names
 from cards import Deck
 from actions.dice import roll_dice
 from actions.build import build_action
+from setup import determine_player_one, set_turn_orders
 
 class Game:
   name = "Machi Koro"
 
-  def __init__(self, playernames: list[str], rounds: int | None = None):
+  def __init__(self, player_names: list[str], rounds: int | None = None):
     self.initialised = False
-    self.players = playernames
-    self.player_count = len(playernames)
+    self.players = player_names
+    self.player_count = len(player_names)
     self.bank: Bank = Bank()
     self.deck: Deck = Deck(self.player_count)
     self.round: int = 0
@@ -78,7 +79,7 @@ class Game:
 
   def notify(self, message: str) -> None:
     for line in message.splitlines():
-      print(f"{shortcuts['notificationStart']}{line}{shortcuts['notificationEnd']}")
+      print(f"{reference['shortcuts']['notification_start']}{line}{reference['shortcuts']['notification_end']}")
 
   def list_affordable_cards(self, player: Player) -> list[tuple[str, str]]:
     available_cards = self.deck.contents()
@@ -124,6 +125,9 @@ class Game:
   def start(self) -> str:
     self.notify(f"{self}")
     time.sleep(0.5)
+    player_one = determine_player_one(self.players)
+    set_turn_orders(self.players, player_one)
+    self.players.sort(reverse=True)
     for player in self.players:
       player.receive(self.bank.give_player(3))
       player.initialised = True
@@ -161,7 +165,7 @@ class Game:
 
   def end_game(self):
     self.notify("Ending game...")
-    self.notify(reset_players())
+    self.notify(reset_player_names())
 
   def summary(self) -> list[str]:
     return [f"Game Summary:"]
