@@ -3,12 +3,12 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
   from coins import Coin
   from game import Game
+  from player import Player
 
 import time
 from reference import reference
-from .coinage import CoinPiles, Coin
+from .coinage import CoinPiles
 from .transactions import giving, receiving
-
 
 class Bank:
   def __init__(self) -> None:
@@ -36,9 +36,12 @@ class Bank:
   def give_player(self, total: int) -> list[Coin]:
     return giving(self, total)
 
-  def take_payment(self, coins: list[Coin], totalToPay: int) -> list[Coin]:
+  def take_payment(self, coins: list[Coin], total_to_pay: int) -> list[Coin]:
+    """Takes in a payment in the form of a list of one or more Coin objects, and a total amount to be paid.
+    Returns any change due, in the form of a list of one or more Coin objects."""
     payment = receiving(self, coins) # put payment into bank's coin pile
-    return giving(self, payment-totalToPay) # give change, if any
+    change = payment - total_to_pay
+    return giving(self, change) # give change
 
   def check(self, game: Game) -> None:
     ones = len(self.coins.coppers)
@@ -59,5 +62,14 @@ class Bank:
 
   def exchange(self, coins: list[Coin]) -> list[Coin]:
     intake = receiving(self, coins) # put all coins into the bank's coin pile
-    return self.give_player(intake) # give back the same value in coins, starting with highest denomination
-
+    return giving(self, intake)     # give back the same value in coins, starting with highest denomination
+  
+  def handle_transfer(self, payor: Player, amount: int, payee: Player) -> None:
+    payor_balance = payor.get_balance()                                 # get the payor's initial balance
+    payee_balance = payee.get_balance()                                 # get the payee's initial balance
+    receiving(self, payor.give_all(), True)                             # empty the payor's cash into the bank
+    receiving(self, payee.give_all(), True)                             # empty the payee's cash into the bank
+    payor.receive(giving(self, payor_balance - amount, True))           # return the payor's cash, less the amount paid
+    payee.receive(giving(self, payee_balance + amount, True))           # return the payee's cash, plus the amount paid
+    payor.declare_action(f"{payor.name} is giving {amount} coins ==>")
+    payee.declare_action(f"==> {payee.name} received {amount} coins")
