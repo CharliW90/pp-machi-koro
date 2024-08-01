@@ -36,6 +36,31 @@ class TestCoinage:
     assert coin.value == 10
     assert str(coin) == "A single Gold coin, with a value of 10"
   
+  def test_coinage_comparisons(self):
+    # Arrange
+    test_coin_A = One()
+    test_coin_B = Five()
+    test_coin_C = Ten()
+    test_coin_D = One()
+    test_coin_E = Five()
+    test_coin_F = Ten()
+
+    # Act / Assert
+    assert test_coin_A == test_coin_D    # value: 1
+    assert test_coin_B == test_coin_E    # value: 5
+    assert test_coin_C == test_coin_F   # value: 10
+
+    assert test_coin_A != test_coin_E
+    assert test_coin_B != test_coin_F
+    assert test_coin_C != test_coin_D
+    
+    assert test_coin_A < test_coin_B < test_coin_C
+    assert test_coin_F > test_coin_E > test_coin_D
+
+    assert test_coin_A <= test_coin_D <= test_coin_B <= test_coin_E <= test_coin_C <= test_coin_F
+    assert test_coin_F >= test_coin_C >= test_coin_E >= test_coin_B >= test_coin_D >= test_coin_A
+
+  
   def test_CoinPiles_x100(self):
     for _ in range(100):
       # Arrange

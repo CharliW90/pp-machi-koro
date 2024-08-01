@@ -1,6 +1,59 @@
+from __future__ import annotations
+
 from typing import Union
 
-class One:
+class Coinage:
+  value = 0
+
+  def __eq__(self, value: int | Coinage) -> bool:
+    if not isinstance(value, int | Coinage):
+      raise TypeError(f"Cannot compare Coinage with {type(value).__name__} - can only compare with int or other Coinage")
+    if isinstance(value, int):
+      return self.value == value
+    else:
+      return self.value == value.value
+  
+  def __ne__(self, value: int | Coinage) -> bool:
+    if not isinstance(value, int | Coinage):
+      raise TypeError(f"Cannot compare Coinage with {type(value).__name__} - can only compare with int or other Coinage")
+    if isinstance(value, int):
+      return self.value != value
+    else:
+      return self.value != value.value
+  
+  def __lt__(self, value: int | Coinage) -> bool:
+    if not isinstance(value, int | Coinage):
+      raise TypeError(f"Cannot compare Coinage with {type(value).__name__} - can only compare with int or other Coinage")
+    if isinstance(value, int):
+      return self.value < value
+    else:
+      return self.value < value.value
+  
+  def __gt__(self, value: int | Coinage) -> bool:
+    if not isinstance(value, int | Coinage):
+      raise TypeError(f"Cannot compare Coinage with {type(value).__name__} - can only compare with int or other Coinage")
+    if isinstance(value, int):
+      return self.value > value
+    else:
+      return self.value > value.value
+  
+  def __le__(self, value: int | Coinage) -> bool:
+    if not isinstance(value, int | Coinage):
+      raise TypeError(f"Cannot compare Coinage with {type(value).__name__} - can only compare with int or other Coinage")
+    if isinstance(value, int):
+      return self.value <= value
+    else:
+      return self.value <= value.value
+  
+  def __ge__(self, value: int | Coinage) -> bool:
+    if not isinstance(value, int | Coinage):
+      raise TypeError(f"Cannot compare Coinage with {type(value).__name__} - can only compare with int or other Coinage")
+    if isinstance(value, int):
+      return self.value >= value
+    else:
+      return self.value >= value.value
+
+class One(Coinage):
   def __init__(self):
     self.value = 1
     self.colour = "Copper"
@@ -8,7 +61,7 @@ class One:
   def __str__(self) -> str:
     return f"A single {self.colour} coin, with a value of {self.value}"
 
-class Five:
+class Five(Coinage):
   def __init__(self):
     self.value = 5
     self.colour = "Silver"
@@ -16,7 +69,7 @@ class Five:
   def __str__(self) -> str:
     return f"A single {self.colour} coin, with a value of {self.value}"
 
-class Ten:
+class Ten(Coinage):
   def __init__(self):
     self.value = 10
     self.colour = "Gold"
