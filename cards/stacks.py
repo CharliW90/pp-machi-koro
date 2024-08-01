@@ -160,7 +160,7 @@ class Hand:
       map_of_cards[str(card.z_index)] = len(all_cards)
       all_card_indexes.append(card.z_index)
 
-      if card.cardType == "Landmark":
+      if card.card_type == "Landmark":
         if card.built:
           all_cards += ([
             f"{card.colorize}{card.title}{card.reset}\n{card.colorize}> Landmark Card <{card.reset}",
