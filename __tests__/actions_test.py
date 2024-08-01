@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, Mock, create_autospec, call
 import inquirer.questions
-from game import Game, reset_players
+from game import Game, reset_player_names
 from reference import MyTheme
 from cards import WheatField
 
@@ -14,7 +14,7 @@ affordable_cards = [
 ]
 
 def prep_game_and_player():
-  reset_players()
+  reset_player_names()
   mock_game = Game(['PlayerOne', 'PlayerTwo'])
 
   mock_game.list_affordable_cards = lambda player: affordable_cards.copy()
@@ -37,7 +37,7 @@ class TestBuildActions:
     mock_game, mock_player = prep_game_and_player()
     mocked_handle_building.return_value = False
     mocked_time.sleep = lambda x: None
-    mock_theme = MyTheme(mock_player)
+    mock_theme = MyTheme(mock_player.colour, mock_player.name)
     mocked_theme.return_value = mock_theme
     mocked_prompt.return_value = {'build': "nothing"}
 
@@ -84,7 +84,7 @@ class TestBuildActions:
     mock_game, mock_player = prep_game_and_player()
     mocked_handle_building.return_value = False
     mocked_time.sleep = lambda x: None
-    mock_theme = MyTheme(mock_player)
+    mock_theme = MyTheme(mock_player.colour, mock_player.name)
     mocked_theme.return_value = mock_theme
     mocked_prompt.return_value = {'build': "nothing"}
 
@@ -130,7 +130,7 @@ class TestBuildActions:
     mock_game, mock_player = prep_game_and_player()
     mocked_handle_building.return_value = False
     mocked_time.sleep = lambda x: None
-    mock_theme = MyTheme(mock_player)
+    mock_theme = MyTheme(mock_player.colour, mock_player.name)
     mocked_theme.return_value = mock_theme
     mocked_prompt.return_value = {'build': "nothing"}
 
@@ -176,7 +176,7 @@ class TestBuildActions:
     mock_game, mock_player = prep_game_and_player()
     mocked_handle_building.return_value = False
     mocked_time.sleep = lambda x: None
-    mock_theme = MyTheme(mock_player)
+    mock_theme = MyTheme(mock_player.colour, mock_player.name)
     mocked_theme.return_value = mock_theme
     mocked_prompt.return_value = {'build': "nothing"}
 
@@ -221,7 +221,7 @@ class TestBuildActions:
     mock_game, mock_player = prep_game_and_player()
     mocked_handle_building.return_value = False
     mocked_time.sleep = lambda x: None
-    mock_theme = MyTheme(mock_player)
+    mock_theme = MyTheme(mock_player.colour, mock_player.name)
     mocked_theme.return_value = mock_theme
     mocked_prompt.return_value = {'build': "cardTitleHere"}
 
