@@ -48,7 +48,7 @@ shortcuts = {
   'blink_end': "\033[0m"
 }
 
-reference = {"rgb_colours": rgb_colours, "ansi_colours": ansi_colours, "hex_colours": hex_colours, "shortcuts": shortcuts}
+reference: dict[str, dict[str, str]] = {"ansi_colours": ansi_colours, "hex_colours": hex_colours, "shortcuts": shortcuts}
 
 class MyTheme(Default):
   def __init__(self, colour: str, name: str):
