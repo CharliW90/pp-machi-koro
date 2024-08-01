@@ -114,3 +114,17 @@ help_text_turn_taking = (
 )
 
 help_text = [help_text_card_activation, help_text_game_start, help_text_cards, help_text_turn_taking]
+
+credits = [
+  "This python-plays game is based on the Pandasaurus board game Machi Koro (5th Anniversary Edition)",
+  "Pandasaurus Machi Koro (5th Anniversary Edition) Credits:",
+  "Game Design: Masao Suganuma",
+  "Development: Nathan McNair and Molly Wardlow",
+  "Illustration: Noboru Hotta",
+  "Graphic Design: Taro Hino and Jason D. Kingsley",
+  "Editing: Dustin Schwartz",
+  "Special Thanks: Nobuaki Takerube, Simon Lundström, and the tens of thousands of fans who have made Machi Koro a smash hit over the past five years!",
+  "This python-plays game was written by Charli Williams as a challenge to learn the python programming language",
+  "Charli came from a javascript background, and this may be reflected in the coding here, but they tried their best to be pythonic",
+  "https://github.com/CharliW90"
+]

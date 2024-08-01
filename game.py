@@ -1,6 +1,6 @@
 import time
 from tabulate import tabulate
-from reference import reference
+from reference import reference, credits
 from coins.bank import Bank
 from player import Player, reset as reset_player_names
 from cards import Deck
@@ -166,6 +166,9 @@ class Game:
   def end_game(self):
     self.notify("Ending game...")
     self.notify(reset_player_names())
+    for line in credits:
+      time.sleep(0.8)
+      print(line)
 
   def summary(self) -> list[str]:
     return [f"Game Summary:"]
