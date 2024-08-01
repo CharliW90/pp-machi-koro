@@ -608,8 +608,8 @@ class TestLandmarks:
     assert test_card.cost == 10
     assert test_card.z_index == card_order.index(test_card.title)
     assert test_card.title == "Shopping Mall"
-    assert test_card.description == "Your Restaurant and Store establishments earn +1 coin each when activated.\n(Ability)"
-    assert str(test_card) == f"{reference['ansi_colours']['orange']}Shopping Mall (unbuilt) - building this will grant:{reference['ansi_colours']['reset']}\n{reference['ansi_colours']['orange']}Your Restaurant and Store establishments earn +1 coin each when activated.\n(Ability){reference['ansi_colours']['reset']}"
+    assert test_card.description == "Your store-front establishments earn +1 coin each when activated.\n(Ability)"
+    assert str(test_card) == f"{reference['ansi_colours']['orange']}Shopping Mall (unbuilt) - building this will grant:{reference['ansi_colours']['reset']}\n{reference['ansi_colours']['orange']}Your store-front establishments earn +1 coin each when activated.\n(Ability){reference['ansi_colours']['reset']}"
 
     assert len(test_card.triggers) == 0
     assert test_card.built == False
@@ -627,7 +627,7 @@ class TestLandmarks:
     assert console_lines[0] == f"PlayerNameHere has built their Shopping Mall"
 
     assert test_card.built == True
-    assert str(test_card) == f"{reference['ansi_colours']['orange']}Shopping Mall{reference['ansi_colours']['reset']}\n{reference['ansi_colours']['orange']}Your Restaurant and Store establishments earn +1 coin each when activated.\n(Ability){reference['ansi_colours']['reset']}"
+    assert str(test_card) == f"{reference['ansi_colours']['orange']}Shopping Mall{reference['ansi_colours']['reset']}\n{reference['ansi_colours']['orange']}Your store-front establishments earn +1 coin each when activated.\n(Ability){reference['ansi_colours']['reset']}"
 
   def test_AmusementPark(self, capsys):
     # Arrange
