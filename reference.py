@@ -31,6 +31,13 @@ ansi_colours['reset'] = f"\033[39m"
 
 hex_colours = {colour: '#%02x%02x%02x' % (*rgb_colours[colour],) for colour in rgb_colours}
 
+def colorize(text: str, colour: str | None = None) -> str:
+  if not colour:
+    colour = text.lower()
+  if colour in ansi_colours:
+    return f"{ansi_colours[colour]}{text}{ansi_colours['reset']}"
+  return f"COLORIZE_ERROR: {colour} not a colour"
+
 shortcuts = {
   'notification_start': f"{ansi_colours['yellow']}==> ",
   'notification_end': f"{ansi_colours['reset']}\n",
@@ -44,10 +51,66 @@ shortcuts = {
 reference = {"rgb_colours": rgb_colours, "ansi_colours": ansi_colours, "hex_colours": hex_colours, "shortcuts": shortcuts}
 
 class MyTheme(Default):
-  def __init__(self, player):
+  def __init__(self, colour: str, name: str):
     super().__init__()
-    self.Question.mark_color = term.color_rgb(*rgb_colours[player.colour]) # type: ignore
-    self.Question.brackets_color = term.color_rgb(*rgb_colours[player.colour]) # type: ignore
-    self.Question.default_color = term.on_color_rgb(*rgb_colours[player.colour]) # type: ignore
-    self.List.selection_color = term.on_color_rgb(*rgb_colours[player.colour]) # type: ignore
-    self.List.selection_cursor = f"{player.name} =>" # type: ignore
+    self.Question.mark_color = term.color_rgb(*rgb_colours[colour]) # type: ignore
+    self.Question.brackets_color = term.color_rgb(*rgb_colours[colour]) # type: ignore
+    self.Question.default_color = term.on_color_rgb(*rgb_colours[colour]) # type: ignore
+    self.List.selection_color = term.on_color_rgb(*rgb_colours[colour]) # type: ignore
+    self.List.selection_cursor = f"{name} =>" # type: ignore
+
+welcome = (
+  "WELCOME TO THE CITY OF MACHI KORO!\nCongratulations!  You've just been elected Mayor."
+  "\n\tBut don't get too comfortable - the citizens have some pretty big demands: jobs, a "
+  "new stadium, a couple of cheese factories, maybe even an amusement park."
+)
+
+full_description = (
+  "It's going to be a tough proposition, since the city currently consists of a wheat field, a bakery, "
+  "blueprints for a few landmarks, and a single die.\n\nArmed only with your trusty die and a dream "
+  "you must grow Machi Koro into the largest city in the region.  You will need to earn income from "
+  "establishments, build landmarks, and take your neighbours' business.\n\nThey say Rome wasn't built "
+  "in a day, but Machi Koro will rise in less than 30 minutes!"
+)
+
+help_text_card_activation = (
+  "In Machi Koro each roll of the die has a chance for establishments to earn income for all players, "
+  f"regardless of whose turn it is.  {colorize('Blue')} cards trigger for everyone, for example any time "
+  f"a player rolls a '1' all players earn income from their Wheat Fields.  {colorize('Green')} cards "
+  "trigger only for the active player, for example any time a player rolls a '2' they earn income from "
+  f"their Bakery cards but no one else does.  {colorize('Red')} cards trigger only for other players, and "
+  "act against the player who rolled, for example any time a player rolls a '3' the player must pay any "
+  f"other players who own Cafe cards.  {colorize('Purple')} cards trigger only for the active player - "
+  "these Major Establishments take coins/cards from other players and trigger on a roll of a '6', but "
+  "each player may only own one of each of these cards."
+)
+
+help_text_game_start = (
+  "Each player starts with 3 coins, a Wheat Field and a Bakery.  The Wheat Field will trigger on a roll of "
+  "'1' when any player rolls, whereas the Bakery will trigger on a roll of '2' only for the player who rolled."
+  "\nEach player also starts with 4 Landmark cards - Train Station, Shopping Mall, Amusement Park, Radio Tower "
+  "- which are 'unbuilt'.  Players must build these landmarks to get the abilities they grant, but also to win "
+  "the game by building all 4.  The first player to build all 4 of their Landmark cards wins"
+)
+
+help_text_cards = (
+  "There are 15 types of establishment card (ignoring the 4 Landmark cards players need to build from their hand). "
+  f"These cards are {colorize('Blue')}, {colorize('Green')}, {colorize('Red')}, or {colorize('Purple')}.  There are "
+  f"6 of each card to be bought, except for {colorize('Purple')} which players may only own one of each.  Most cards "
+  f"{colorize('Blue')} and {colorize('Green')} cards earn income from the Bank, whereas {colorize('Red')}, and "
+  f"{colorize('Purple')} cards take from other players.  Some {colorize('Green')} cards earn income based on how many "
+  f"of another type of card the player has, for example the '{colorize('Cheese Factory', 'green')}' card earns 3 coins "
+  f"for each '{colorize('Ranch', 'blue')}' card that the player owns."
+)
+
+help_text_turn_taking = (
+  "On a player's turn, the first thing they must do is roll the dice.  Once the dice roll is known, cards that are "
+  f"triggered by that number must be handled.  Multiple cards may trigger - if {colorize('Red')} cards trigger (i.e. "
+  "on a roll of 3, 9 or 10) then these must be handled before anything else.  If the player does not have enough money "
+  f"to pay the players with {colorize('Red')} cards then they stop paying - they are then allowed to earn income on "
+  "their other establishments without having to pay this to those players that they had failed to pay previously.\n"
+  "Once the player has rolled the dice, and handled the outcome of that, they may spend any remaining coins they have "
+  "purchasing new establishments from the Deck."
+)
+
+help_text = [help_text_card_activation, help_text_game_start, help_text_cards, help_text_turn_taking]
