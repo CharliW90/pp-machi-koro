@@ -69,7 +69,8 @@ class Bank:
     payee_balance = payee.get_balance()                                 # get the payee's initial balance
     receiving(self, payor.give_all(), True)                             # empty the payor's cash into the bank
     receiving(self, payee.give_all(), True)                             # empty the payee's cash into the bank
-    payor.receive(giving(self, payor_balance - amount, True))           # return the payor's cash, less the amount paid
-    payee.receive(giving(self, payee_balance + amount, True))           # return the payee's cash, plus the amount paid
-    payor.declare_action(f"{payor.name} is giving {amount} coins ==>")
-    payee.declare_action(f"==> {payee.name} received {amount} coins")
+    payment = amount if payor_balance >= amount else payor_balance      # make sure we only pay what the payor can afford
+    payor.receive(giving(self, payor_balance - payment, True))           # return the payor's cash, less the amount paid
+    payee.receive(giving(self, payee_balance + payment, True))           # return the payee's cash, plus the amount paid
+    payor.declare_action(f"{payor.name} is giving {payment if payment == amount else f'all {payment} of their'} coins ==>")
+    payee.declare_action(f"==> {payee.name} received {payment} coins")
