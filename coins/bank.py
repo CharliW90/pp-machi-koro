@@ -65,12 +65,21 @@ class Bank:
     return giving(self, intake, silent)     # give back the same value in coins, starting with highest denomination
   
   def handle_transfer(self, payor: Player, amount: int, payee: Player) -> None:
-    payor_balance = payor.get_balance()                                 # get the payor's initial balance
-    payee_balance = payee.get_balance()                                 # get the payee's initial balance
-    receiving(self, payor.give_all(True), True)                         # empty the payor's cash into the bank
-    receiving(self, payee.give_all(True), True)                         # empty the payee's cash into the bank
-    payment = amount if payor_balance >= amount else payor_balance      # make sure we only pay what the payor can afford
+    bank_balance: int = self.total
+    payor_balance: int = payor.get_balance()                                  # get the payor's initial balance
+    payee_balance: int = payee.get_balance()                                  # get the payee's initial balance
+    receiving(self, payor.give_all(True), True)                               # empty the payor's cash into the bank
+    receiving(self, payee.give_all(True), True)                               # empty the payee's cash into the bank
+    payment: int = amount if payor_balance >= amount else payor_balance       # make sure we only pay what the payor can afford
     payor.receive(giving(self, payor_balance - payment, True), True)          # return the payor's cash, less the amount paid
     payee.receive(giving(self, payee_balance + payment, True), True)          # return the payee's cash, plus the amount paid
-    payor.declare_action(f"{payor.name} is giving {payment if payment == amount else f'all {payment} of their'} coins ==>")
-    payee.declare_action(f"==> {payee.name} received {payment} coins")
+    if (payor_balance + payee_balance) == (payor.get_balance() + payee.get_balance()) and (bank_balance == self.total):
+      # the bank's balance should not have been affected, and the two players should have the same amount of money between them
+      payor.declare_action(f"{payor.name} is giving {payment if payment == amount else f'all {payment} of their'} coins ==>")
+      payee.declare_action(f"==> {payee.name} received {payment} coins")
+    else:
+      new_payor_balance: int = payor.get_balance()
+      new_payee_balance: int = payee.get_balance()
+      new_bank_balance: int = self.total
+      raise ArithmeticError(f"Payment calculation incorrect: \n{payor_balance=}{payee_balance=}:{(payor_balance + payee_balance)}\n{new_payor_balance=}{new_payee_balance=}:{(new_payor_balance + new_payee_balance)}\n{bank_balance=}:{new_bank_balance}")
+    
