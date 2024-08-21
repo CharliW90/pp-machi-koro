@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch, Mock, create_autospec, call
 import random
 from reference import reference
-from player import Player
+from player import Player, reset as reset_player_names
 from game import Game
 
 from coins.coinage import One, Five, Ten, CoinPiles, Coin
@@ -319,6 +319,75 @@ class TestBank:
     assert output == for_that
     mocked_receiving.assert_called_once_with(test, swap_this, False)
     mocked_giving.assert_called_once_with(test, sum(coin.value for coin in swap_this), False)
+
+  @patch("coins.bank.giving", wraps=giving)
+  @patch("coins.bank.receiving", wraps=receiving)
+  def test_Bank_functions_handle_transfer_balance_gt_payment(self, mocked_receiving, mocked_giving, capsys):
+    reset_player_names()
+    # Arrange
+    test_payor: Player = Player("payor", 0)
+    test_payee: Player = Player("payee", 1)
+    test_bank: Bank = Bank()
+    payment_amount: int = 8
+    payor_balance: int = 10
+    payee_balance: int = 3
+
+    test_payor.receive(test_bank.give_player(payor_balance, True), True)
+    test_payor.initialised = True
+    test_payee.receive(test_bank.give_player(payee_balance, True), True)
+    test_payee.initialised = True
+
+    # Act
+    test_bank.handle_transfer(test_payor, payment_amount, test_payee)
+
+    # Assert
+    assert payor_balance > payment_amount
+    assert test_payor.coins.total() == payor_balance - payment_amount
+    assert test_payee.coins.total() == payee_balance + payment_amount
+    assert test_bank.total == 282
+    assert mocked_receiving.call_count == 2
+    assert mocked_giving.call_count == 4
+
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 2
+    assert console_lines[0] == f"{reference['ansi_colours']['red']}{test_payor.name} is giving {payment_amount} coins ==>{reference['ansi_colours']['reset']}"
+    assert console_lines[1] == f"{reference['ansi_colours']['green']}==> {test_payee.name} received {payment_amount} coins{reference['ansi_colours']['reset']}"
+
+  @patch("coins.bank.giving", wraps=giving)
+  @patch("coins.bank.receiving", wraps=receiving)
+  def test_Bank_functions_handle_transfer_balance_lt_payment(self, mocked_receiving, mocked_giving, capsys):
+    reset_player_names()
+
+    # Arrange
+    test_payor: Player = Player("payor", 0)
+    test_payee: Player = Player("payee", 1)
+    test_bank: Bank = Bank()
+    payment_amount: int = 8
+    payor_balance: int = 3
+    payee_balance: int = 3
+
+    test_payor.receive(test_bank.give_player(payor_balance, True), True)
+    test_payor.initialised = True
+    test_payee.receive(test_bank.give_player(payee_balance, True), True)
+    test_payee.initialised = True
+
+    # Act
+    test_bank.handle_transfer(test_payor, payment_amount, test_payee)
+
+    # Assert
+    assert payor_balance < payment_amount
+    assert test_payor.coins.total() == 0
+    assert test_payee.coins.total() == payee_balance + payor_balance
+    assert test_bank.total == 282
+    assert mocked_receiving.call_count == 2
+    assert mocked_giving.call_count == 4
+
+    console = capsys.readouterr()
+    console_lines = console.out.splitlines()
+    assert len(console_lines) == 2
+    assert console_lines[0] == f"{reference['ansi_colours']['red']}{test_payor.name} is giving all {payor_balance} of their coins ==>{reference['ansi_colours']['reset']}"
+    assert console_lines[1] == f"{reference['ansi_colours']['green']}==> {test_payee.name} received {payor_balance} coins{reference['ansi_colours']['reset']}"
 
 def random_coins() -> list[Coin]:
   ones = [One() for _ in range(random.randint(0,12))]
