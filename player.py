@@ -145,14 +145,14 @@ class Player:
     for card in stack:
       card.trigger(game, self, dice_roll)
 
-  def receive(self, coins: list[Coin]) -> int:
-    return receiving(self, coins)
+  def receive(self, coins: list[Coin], silent=False) -> int:
+    return receiving(self, coins, silent)
   
-  def give(self, total: int) -> list[Coin]:
-    return giving(self, total)
+  def give(self, total: int, silent=False) -> list[Coin]:
+    return giving(self, total, silent)
   
-  def give_all(self) -> list[Coin]:
-    return giving(self, self.get_balance())
+  def give_all(self, silent=False) -> list[Coin]:
+    return giving(self, self.get_balance(), silent)
   
   def build(self, card: Blues | Greens | Reds | Purples | Landmarks, bank: Bank) -> bool:
     if self.build_action_taken:

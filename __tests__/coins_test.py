@@ -7,6 +7,7 @@ from game import Game
 
 from coins.coinage import One, Five, Ten, CoinPiles, Coin
 from coins.bank import Bank
+from coins.transactions import giving, receiving, calculate_payment
 
 class TestCoinage:
   def test_One(self):
@@ -172,7 +173,7 @@ class TestBank:
     assert len(console_lines) == 1
     assert console_lines[0] == expectedMessage
 
-  @patch("coins.bank.giving")
+  @patch("coins.bank.giving", wraps=giving)
   def test_Bank_functions_give_player(self, mocked_giving):
     # Arrange
     mockCoins = random_coins()
@@ -185,10 +186,10 @@ class TestBank:
 
     # Assert
     assert output == mockCoins
-    mocked_giving.assert_called_once_with(test, give)
+    mocked_giving.assert_called_once_with(test, give, False)
   
-  @patch("coins.bank.giving")
-  @patch("coins.bank.receiving")
+  @patch("coins.bank.giving", wraps=giving)
+  @patch("coins.bank.receiving", wraps=receiving)
   def test_Bank_functions_take_payment(self, mocked_receiving, mocked_giving):
     # Arrange
     mockCoins = random_coins()
@@ -204,11 +205,11 @@ class TestBank:
 
     # Assert
     assert output == mockCoins
-    mocked_receiving.assert_called_once_with(test, mock_payment)
-    mocked_giving.assert_called_once_with(test, mock_pay_value-receive)
+    mocked_receiving.assert_called_once_with(test, mock_payment, False)
+    mocked_giving.assert_called_once_with(test, mock_pay_value-receive, False)
 
-  @patch("coins.bank.giving")
-  @patch("coins.bank.receiving")
+  @patch("coins.bank.giving", wraps=giving)
+  @patch("coins.bank.receiving", wraps=receiving)
   @patch("coins.bank.time")
   def test_Bank_functions_check_need_nothing(self, mocked_time, mocked_receiving, mocked_giving, capsys):
     # Arrange
@@ -235,8 +236,8 @@ class TestBank:
     console_lines = console.out.splitlines()
     assert len(console_lines) == 0
 
-  @patch("coins.bank.giving")
-  @patch("coins.bank.receiving")
+  @patch("coins.bank.giving", wraps=giving)
+  @patch("coins.bank.receiving", wraps=receiving)
   @patch("coins.bank.time")
   def test_Bank_functions_check_need_Ones(self, mocked_time, mocked_receiving, mocked_giving, capsys):
     # Arrange
@@ -268,8 +269,8 @@ class TestBank:
     assert len(console_lines) == 1
     assert console_lines[0] == f"{reference['ansi_colours']['cyan']}The Bank has {coppers} copper One coin{'' if coppers == 1 else 's'} remaining - exchanging up with players...{reference['ansi_colours']['reset']}"
 
-  @patch("coins.bank.giving")
-  @patch("coins.bank.receiving")
+  @patch("coins.bank.giving", wraps=giving)
+  @patch("coins.bank.receiving", wraps=receiving)
   @patch("coins.bank.time")
   def test_Bank_functions_check_need_Fives(self, mocked_time, mocked_receiving, mocked_giving, capsys):
     # Arrange
@@ -301,8 +302,8 @@ class TestBank:
     assert len(console_lines) == 1
     assert console_lines[0] == f"{reference['ansi_colours']['cyan']}The Bank has {silvers} silver Five coin{'' if silvers == 1 else 's'} remaining - exchanging up with players...{reference['ansi_colours']['reset']}"
 
-  @patch("coins.bank.giving")
-  @patch("coins.bank.receiving")
+  @patch("coins.bank.giving", wraps=giving)
+  @patch("coins.bank.receiving", wraps=receiving)
   def test_Bank_functions_exchange(self, mocked_receiving, mocked_giving):
     # Arrange
     swap_this = random_coins()
@@ -316,11 +317,24 @@ class TestBank:
 
     # Assert
     assert output == for_that
-    mocked_receiving.assert_called_once_with(test, swap_this)
-    mocked_giving.assert_called_once_with(test, sum(coin.value for coin in swap_this))
+    mocked_receiving.assert_called_once_with(test, swap_this, False)
+    mocked_giving.assert_called_once_with(test, sum(coin.value for coin in swap_this), False)
 
 def random_coins() -> list[Coin]:
   ones = [One() for _ in range(random.randint(0,12))]
   fives = [Five() for _ in range(random.randint(0,12))]
   tens = [Ten() for _ in range(random.randint(0,12))]
   return ones + fives + tens
+
+class TestTransactions:
+  @pytest.mark.xfail(reason = "ToDo: transactions tests")
+  def test_transactions_giving(self):
+    assert False
+
+  @pytest.mark.xfail(reason = "ToDo: transactions tests")
+  def test_transactions_receiving(self):
+    assert False
+
+  @pytest.mark.xfail(reason = "ToDo: transactions tests")
+  def test_transactions_calculate_payment(self):
+    assert False

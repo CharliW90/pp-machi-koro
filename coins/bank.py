@@ -33,15 +33,15 @@ class Bank:
   def declare_action(self, action: str) -> None:
     print(f"{self.colorize}{action}{self.reset}")
 
-  def give_player(self, total: int) -> list[Coin]:
-    return giving(self, total)
+  def give_player(self, total: int, silent=False) -> list[Coin]:
+    return giving(self, total, silent)
 
-  def take_payment(self, coins: list[Coin], total_to_pay: int) -> list[Coin]:
+  def take_payment(self, coins: list[Coin], total_to_pay: int, silent=False) -> list[Coin]:
     """Takes in a payment in the form of a list of one or more Coin objects, and a total amount to be paid.
     Returns any change due, in the form of a list of one or more Coin objects."""
-    payment = receiving(self, coins) # put payment into bank's coin pile
+    payment = receiving(self, coins, silent) # put payment into bank's coin pile
     change = payment - total_to_pay
-    return giving(self, change) # give change
+    return giving(self, change, silent) # give change
 
   def check(self, game: Game) -> None:
     ones = len(self.coins.coppers)
@@ -60,17 +60,17 @@ class Bank:
         player.receive(self.exchange(coins))
         time.sleep(0.3)
 
-  def exchange(self, coins: list[Coin]) -> list[Coin]:
-    intake = receiving(self, coins) # put all coins into the bank's coin pile
-    return giving(self, intake)     # give back the same value in coins, starting with highest denomination
+  def exchange(self, coins: list[Coin], silent=False) -> list[Coin]:
+    intake = receiving(self, coins, silent) # put all coins into the bank's coin pile
+    return giving(self, intake, silent)     # give back the same value in coins, starting with highest denomination
   
   def handle_transfer(self, payor: Player, amount: int, payee: Player) -> None:
     payor_balance = payor.get_balance()                                 # get the payor's initial balance
     payee_balance = payee.get_balance()                                 # get the payee's initial balance
-    receiving(self, payor.give_all(), True)                             # empty the payor's cash into the bank
-    receiving(self, payee.give_all(), True)                             # empty the payee's cash into the bank
+    receiving(self, payor.give_all(True), True)                         # empty the payor's cash into the bank
+    receiving(self, payee.give_all(True), True)                         # empty the payee's cash into the bank
     payment = amount if payor_balance >= amount else payor_balance      # make sure we only pay what the payor can afford
-    payor.receive(giving(self, payor_balance - payment, True))           # return the payor's cash, less the amount paid
-    payee.receive(giving(self, payee_balance + payment, True))           # return the payee's cash, plus the amount paid
+    payor.receive(giving(self, payor_balance - payment, True), True)          # return the payor's cash, less the amount paid
+    payee.receive(giving(self, payee_balance + payment, True), True)          # return the payee's cash, plus the amount paid
     payor.declare_action(f"{payor.name} is giving {payment if payment == amount else f'all {payment} of their'} coins ==>")
     payee.declare_action(f"==> {payee.name} received {payment} coins")
