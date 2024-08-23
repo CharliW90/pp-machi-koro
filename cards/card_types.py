@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
   from player import Player
   from game import Game
+  from coins import Coin
 
 from reference import reference
 
@@ -25,9 +26,9 @@ class BlueCard:
   def trigger(self, game: Game, player: Player, dice_roll: int) -> None:   # These cards trigger for all players
     if dice_roll in self.triggers:   # so we only need to check that the dice_roll is one that triggers this card
       player.declare_action(f"Triggered {self.title} for {player.name}")
-      self.activate(game, dice_roll)
+      self.activate(game, player, dice_roll)
 
-  def activate(self, game: Game, dice_roll: int) -> None:
+  def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
     raise NotImplementedError("This is a template for cards to be built from - the activate function should be implemented on the child Class")
 
@@ -49,9 +50,9 @@ class GreenCard:
   def trigger(self, game: Game, player: Player, dice_roll: int) -> None:   # These cards trigger only for the current player
     if player.current and dice_roll in self.triggers:  # so we check that they are, and that the dice_roll is one that triggers this card
       player.declare_action(f"Triggered {self.title} for {player.name}")
-      self.activate(game, dice_roll)
+      self.activate(game, player, dice_roll)
 
-  def activate(self, game: Game, dice_roll: int) -> None:
+  def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
     raise NotImplementedError("This is a template for cards to be built from - the activate function should be implemented on the child Class")
 
@@ -73,9 +74,9 @@ class RedCard:
   def trigger(self, game: Game, player: Player, dice_roll: int) -> None:   # These cards trigger for everyone except the current player
     if not player.current and dice_roll in self.triggers:  # so we check that they aren't, and that the dice_roll is one that triggers this card
       player.declare_action(f"Triggered {self.title} for {player.name}")
-      self.activate(game, dice_roll)
+      self.activate(game, player, dice_roll)
 
-  def activate(self, game: Game, dice_roll: int) -> None:
+  def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
     raise NotImplementedError("This is a template for cards to be built from - the activate function should be implemented on the child Class")
 
@@ -97,9 +98,9 @@ class PurpleCard:
   def trigger(self, game: Game, player: Player, dice_roll: int) -> None:   # These cards trigger only for the current player
     if player.current and dice_roll in self.triggers:  # so we check that they are, and that the dice_roll is one that triggers this card
       player.declare_action(f"Triggered {self.title} for {player.name}")
-      self.activate(game, dice_roll)
+      self.activate(game, player, dice_roll)
 
-  def activate(self, game: Game, dice_roll: int) -> None:
+  def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
     raise NotImplementedError("This is a template for cards to be built from - the activate function should be implemented on the child Class")
 

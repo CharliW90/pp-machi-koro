@@ -2,9 +2,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
   from game import Game
+  from player import Player
+  from coins import Coin
 
 from typing import Union
-from .card_types import BlueCard
+from card_types import BlueCard
 
 class WheatField(BlueCard):
   cost = 1
@@ -17,7 +19,7 @@ class WheatField(BlueCard):
     self.industry = "field"
     self.triggers = [1]
 
-  def activate(self, game: Game, dice_roll: int) -> None:
+  def activate(self, game: Game, player: Player, dice_roll: int) -> list[Coin]:
     print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
@@ -32,7 +34,7 @@ class Ranch(BlueCard):
     self.industry = "farm"
     self.triggers = [2]
 
-  def activate(self, game: Game, dice_roll: int) -> None:
+  def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
@@ -47,7 +49,7 @@ class Forest(BlueCard):
     self.industry = "industrial"
     self.triggers = [5]
 
-  def activate(self, game: Game, dice_roll: int) -> None:
+  def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
@@ -62,7 +64,7 @@ class Mine(BlueCard):
     self.industry = "industrial"
     self.triggers = [9]
 
-  def activate(self, game: Game, dice_roll: int) -> None:
+  def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
@@ -77,7 +79,7 @@ class AppleOrchard(BlueCard):
     self.industry = "field"
     self.triggers = [10]
 
-  def activate(self, game: Game, dice_roll: int) -> None:
+  def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"{self.title}: triggered on Dice roll: {dice_roll}")
     raise NotImplementedError("Not yet implemented the logic here")
 
