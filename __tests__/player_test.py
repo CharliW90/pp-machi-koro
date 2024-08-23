@@ -1,7 +1,6 @@
 import pytest
 import re
-import random
-from unittest.mock import patch, Mock, create_autospec, call
+from unittest.mock import patch, create_autospec
 from reference import reference
 from cards import WheatField, Bakery, Cafe, BusinessCentre, TrainStation
 from coins import Bank, One, Five, Ten
@@ -537,7 +536,7 @@ class TestPlayer:
 
     # Assert
     assert result == mock_one.value + mock_five.value
-    mocked_receiving.assert_called_once_with(test, [mock_one, mock_five])
+    mocked_receiving.assert_called_once_with(test, [mock_one, mock_five], False)
   
   @patch('player.giving')
   def test_player_give(self, mocked_giving):
@@ -553,7 +552,7 @@ class TestPlayer:
 
     # Assert
     assert result == [mock_one]
-    mocked_giving.assert_called_once_with(test, 1)
+    mocked_giving.assert_called_once_with(test, 1, False)
 
   @patch('player.giving')
   def test_player_give_all(self, mocked_giving):
@@ -579,7 +578,7 @@ class TestPlayer:
 
     # Assert
     assert result == [mock_one, mock_five, mock_ten]
-    mocked_giving.assert_called_once_with(test, 16)
+    mocked_giving.assert_called_once_with(test, 16, False)
   
   @patch('player.calculate_payment')
   @patch('player.receiving')
@@ -591,11 +590,10 @@ class TestPlayer:
     mock_card = WheatField()
     mock_bank = Bank()
 
-
     mocked_calc.side_effect = lambda coins, cost: cost
-    mocked_giving.side_effect = lambda player, amount: [player.coins.coppers.pop() for _ in range(amount)]
+    mocked_giving.side_effect = lambda player, amount, silent=False: [player.coins.coppers.pop() for _ in range(amount)]
     return_value_from_bank = []
-    mock_bank.take_payment = lambda coins, total_to_pay: return_value_from_bank
+    mock_bank.take_payment = lambda coins, total_to_pay, silent=False: return_value_from_bank
     inject_coins(test, mock_card.cost)
 
     # Act
@@ -604,8 +602,8 @@ class TestPlayer:
     # Assert
     assert build_action_completed
     mocked_calc.assert_called_once_with(test.coins, mock_card.cost)
-    mocked_giving.assert_called_once_with(test, mock_card.cost)
-    mocked_receiving.assert_called_once_with(test, return_value_from_bank)
+    mocked_giving.assert_called_once_with(test, mock_card.cost, False)
+    mocked_receiving.assert_called_once_with(test, return_value_from_bank, False)
     console = capsys.readouterr()
     console_lines = console.out.splitlines()
     assert len(console_lines) == 2
@@ -623,9 +621,9 @@ class TestPlayer:
     mock_bank = Bank()
 
     mocked_calc.side_effect = lambda coins, cost: cost
-    mocked_giving.side_effect = lambda player, amount: [player.coins.coppers.pop() for _ in range(amount)]
+    mocked_giving.side_effect = lambda player, amount, silent=False: [player.coins.coppers.pop() for _ in range(amount)]
     return_value_from_bank = []
-    mock_bank.take_payment = lambda coins, total_to_pay: return_value_from_bank
+    mock_bank.take_payment = lambda coins, total_to_pay, silent=False: return_value_from_bank
     inject_coins(test, mock_card.cost)
 
     # Act
@@ -634,8 +632,8 @@ class TestPlayer:
     # Assert
     assert build_action_completed
     mocked_calc.assert_called_once_with(test.coins, mock_card.cost)
-    mocked_giving.assert_called_once_with(test, mock_card.cost)
-    mocked_receiving.assert_called_once_with(test, return_value_from_bank)
+    mocked_giving.assert_called_once_with(test, mock_card.cost, False)
+    mocked_receiving.assert_called_once_with(test, return_value_from_bank, False)
     console = capsys.readouterr()
     console_lines = console.out.splitlines()
     assert len(console_lines) == 2
@@ -653,9 +651,9 @@ class TestPlayer:
     mock_bank = Bank()
 
     mocked_calc.side_effect = lambda coins, cost: cost
-    mocked_giving.side_effect = lambda player, amount: [player.coins.coppers.pop() for _ in range(amount)]
+    mocked_giving.side_effect = lambda player, amount, silent=False: [player.coins.coppers.pop() for _ in range(amount)]
     return_value_from_bank = []
-    mock_bank.take_payment = lambda coins, total_to_pay: return_value_from_bank
+    mock_bank.take_payment = lambda coins, total_to_pay, silent=False: return_value_from_bank
     inject_coins(test, mock_card.cost)
 
     # Act
@@ -664,8 +662,8 @@ class TestPlayer:
     # Assert
     assert build_action_completed
     mocked_calc.assert_called_once_with(test.coins, mock_card.cost)
-    mocked_giving.assert_called_once_with(test, mock_card.cost)
-    mocked_receiving.assert_called_once_with(test, return_value_from_bank)
+    mocked_giving.assert_called_once_with(test, mock_card.cost, False)
+    mocked_receiving.assert_called_once_with(test, return_value_from_bank, False)
     console = capsys.readouterr()
     console_lines = console.out.splitlines()
     assert len(console_lines) == 2
@@ -683,9 +681,9 @@ class TestPlayer:
     mock_bank = Bank()
 
     mocked_calc.side_effect = lambda coins, cost: cost
-    mocked_giving.side_effect = lambda player, amount: [player.coins.coppers.pop() for _ in range(amount)]
+    mocked_giving.side_effect = lambda player, amount, silent=False: [player.coins.coppers.pop() for _ in range(amount)]
     return_value_from_bank = []
-    mock_bank.take_payment = lambda coins, total_to_pay: return_value_from_bank
+    mock_bank.take_payment = lambda coins, total_to_pay, silent=False: return_value_from_bank
     inject_coins(test, mock_card.cost)
     assert test.get_balance() == 8
 
@@ -695,8 +693,8 @@ class TestPlayer:
     # Assert
     assert build_action_completed
     mocked_calc.assert_called_once_with(test.coins, mock_card.cost)
-    mocked_giving.assert_called_once_with(test, mock_card.cost)
-    mocked_receiving.assert_called_once_with(test, return_value_from_bank)
+    mocked_giving.assert_called_once_with(test, mock_card.cost, False)
+    mocked_receiving.assert_called_once_with(test, return_value_from_bank, False)
     console = capsys.readouterr()
     console_lines = console.out.splitlines()
     assert len(console_lines) == 2
@@ -713,7 +711,7 @@ class TestPlayer:
     mock_card = WheatField()
     mock_bank = Bank()
 
-    mock_bank.take_payment = lambda coins, total_to_pay: []
+    mock_bank.take_payment = lambda coins, total_to_pay, silent=False: []
     inject_coins(test, mock_card.cost - 1)
 
     # Act
@@ -736,7 +734,7 @@ class TestPlayer:
     mock_card = Bakery()
     mock_bank = Bank()
 
-    mock_bank.take_payment = lambda coins, total_to_pay: []
+    mock_bank.take_payment = lambda coins, total_to_pay, silent=False: []
     inject_coins(test, mock_card.cost - 1)
 
     # Act
@@ -759,7 +757,7 @@ class TestPlayer:
     mock_card = Cafe()
     mock_bank = Bank()
 
-    mock_bank.take_payment = lambda coins, total_to_pay: []
+    mock_bank.take_payment = lambda coins, total_to_pay, silent=False: []
     inject_coins(test, mock_card.cost - 1)
 
     # Act
@@ -782,7 +780,7 @@ class TestPlayer:
     mock_card = TrainStation()
     mock_bank = Bank()
 
-    mock_bank.take_payment = lambda coins, total_to_pay: []
+    mock_bank.take_payment = lambda coins, total_to_pay, silent=False: []
     inject_coins(test, mock_card.cost - 1)
 
     # Act
