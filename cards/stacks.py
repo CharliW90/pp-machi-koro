@@ -7,6 +7,7 @@ if TYPE_CHECKING:
   from .purple import Purples
   from .landmark import Landmarks
 
+from typing import Union
 from collections import Counter
 from reference import reference
 from .blue import WheatField, Ranch, Forest, Mine, AppleOrchard
@@ -14,6 +15,8 @@ from .green import Bakery, ConvenienceStore, CheeseFactory, FurnitureFactory, Fa
 from .red import Cafe, FamilyRestaurant
 from .purple import Stadium, TVStation, BusinessCentre
 from .landmark import TrainStation, ShoppingMall, AmusementPark, RadioTower
+
+cardTypes = Union[WheatField, Ranch, Forest, Mine, AppleOrchard, Bakery, ConvenienceStore, CheeseFactory, FurnitureFactory, FarmersMarket, Cafe, FamilyRestaurant, Stadium, TVStation, BusinessCentre]
 
 class Deck:
   """
@@ -119,6 +122,17 @@ class Hand:
 
   def __len__(self) -> int:
     return sum(card.built for card in self.landmarks) + sum(len(stack) for stack in [self.blue, self.green, self.red, self.purple])
+  
+  def count(self, card_type: type[cardTypes]) -> int:
+    """
+    Returns the number of cards of a given card type in the players hand, as an int
+    """
+    stack = getattr(self, card_type.colour, [])
+    count = 0
+    for card in stack:
+      if isinstance(card, card_type):
+        count += 1
+    return count
   
   def add(self, card: Blues | Greens | Reds | Purples) -> int:
     """
