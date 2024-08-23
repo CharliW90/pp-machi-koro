@@ -37,7 +37,7 @@ mock_player = MockPlayer()
 
 mock_game = create_autospec(Game)
 
-def mock_activation(game, dice_roll: int) -> None: # Mock the .activate() function of the card, to test that .trigger() calls this function
+def mock_activation(game, player, dice_roll: int) -> None: # Mock the .activate() function of the card, to test that .trigger() calls this function
   print(f"Card Activated on a roll of {dice_roll}.")
 
 def assess_card_triggers(card: BlueCard|GreenCard|RedCard|PurpleCard, name: str, triggers: list[int], capsys) -> None:
@@ -117,7 +117,7 @@ class TestBlueCards:
     console_lines = captured.out.splitlines()
     assert len(console_lines) == 0
     with pytest.raises(RuntimeError) as error:
-      test_card.activate(mock_game, 1)
+      test_card.activate(mock_game, mock_player, 1)
       assert error.type is NotImplementedError
       captured = capsys.readouterr()
       console_lines = captured.out.splitlines()
@@ -245,7 +245,7 @@ class TestGreenCards:
     assert len(console_lines) == 0
 
     with pytest.raises(RuntimeError) as error:
-      test_card.activate(mock_game, 1)
+      test_card.activate(mock_game, mock_player, 1)
       assert error.type is NotImplementedError
       captured = capsys.readouterr()
       console_lines = captured.out.splitlines()
@@ -372,7 +372,7 @@ class TestRedCards:
     assert len(console_lines) == 0
 
     with pytest.raises(RuntimeError) as error:
-      test_card.activate(mock_game, 1)
+      test_card.activate(mock_game, mock_player, 1)
       assert error.type is NotImplementedError
       captured = capsys.readouterr()
       console_lines = captured.out.splitlines()
@@ -454,7 +454,7 @@ class TestPurpleCards:
     assert len(console_lines) == 0
 
     with pytest.raises(RuntimeError) as error:
-      test_card.activate(mock_game, 1)
+      test_card.activate(mock_game, mock_player, 1)
       assert error.type is NotImplementedError
       captured = capsys.readouterr()
       console_lines = captured.out.splitlines()
@@ -766,7 +766,6 @@ class TestDeck:
             assert statements[1] == f"there are now {6+n+1} cards in this pile"
           line += 1
 
-    
   def test_Deck_remove_func(self):
     # Arrange
     player_count = 4
@@ -792,3 +791,49 @@ class TestDeck:
     with pytest.raises(AttributeError, match="Cannot remove a Radio Tower card from the Deck - no pile exists for these cards."):
       test.remove('Radio Tower')
 
+class TestHand:
+  @pytest.mark.xfail(reason = "ToDo: Hand tests")
+  def test_Hand_len(self):
+    assert False
+  
+  def test_Hand_count(self):
+    # Arrange
+    test = Hand()
+    wheat_field_count = 4
+    bakery_count = 2
+    cafe_count = 3
+    forest_count = 2
+    furniture_factory_count = 1
+    apple_orchard_count = 3
+    farmers_market_count = 2
+
+    # Act
+    for _ in range(wheat_field_count): test.add(WheatField())
+    for _ in range(bakery_count): test.add(Bakery())
+    for _ in range(cafe_count): test.add(Cafe())
+    for _ in range(forest_count): test.add(Forest())
+    for _ in range(furniture_factory_count): test.add(FurnitureFactory())
+    for _ in range(apple_orchard_count): test.add(AppleOrchard())
+    for _ in range(farmers_market_count): test.add(FarmersMarket())
+
+    # Assert
+    assert test.count(WheatField) == wheat_field_count + 1  # incl. the starting wheat field
+    assert test.count(Bakery) == bakery_count + 1           # incl. the starting bakery
+    assert test.count(Cafe) == cafe_count
+    assert test.count(Forest) == forest_count
+    assert test.count(FurnitureFactory) == furniture_factory_count
+    assert test.count(AppleOrchard) == apple_orchard_count
+    assert test.count(FarmersMarket) == farmers_market_count
+  
+  @pytest.mark.xfail(reason = "ToDo: Hand tests")
+  def test_Hand_add(self):
+    assert False
+  
+  @pytest.mark.xfail(reason = "ToDo: Hand tests")
+  def test_Hand_remove(self):
+    assert False
+  
+  @pytest.mark.xfail(reason = "ToDo: Hand tests")
+  def test_Hand_contents(self):
+    assert False
+  
