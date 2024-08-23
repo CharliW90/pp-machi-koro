@@ -154,7 +154,7 @@ class Player:
   def give_all(self, silent=False) -> list[Coin]:
     return giving(self, self.get_balance(), silent)
   
-  def build(self, card: Blues | Greens | Reds | Purples | Landmarks, bank: Bank) -> bool:
+  def build(self, card: Blues | Greens | Reds | Purples | Landmarks, bank: Bank, silent=False) -> bool:
     if self.build_action_taken:
       print(f"You can only take one build action per turn!")
       return self.build_action_taken
@@ -171,7 +171,7 @@ class Player:
         print(f"{self.name} cannot afford {card.title}")
         return self.build_action_taken
       payment = calculate_payment(self.coins, card.cost)
-      self.receive(bank.take_payment(self.give(payment), card.cost))
+      self.receive(bank.take_payment(self.give(payment), card.cost), silent)
       if isinstance(card, Landmarks):
         stack = getattr(self.cards, 'landmarks')
         ability = card.build(self)
