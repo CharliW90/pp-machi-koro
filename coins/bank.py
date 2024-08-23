@@ -81,5 +81,5 @@ class Bank:
       new_payor_balance: int = payor.get_balance()
       new_payee_balance: int = payee.get_balance()
       new_bank_balance: int = self.total
-      raise ArithmeticError(f"Payment calculation incorrect: \n{payor_balance=}{payee_balance=}:{(payor_balance + payee_balance)}\n{new_payor_balance=}{new_payee_balance=}:{(new_payor_balance + new_payee_balance)}\n{bank_balance=}:{new_bank_balance}")
+      raise ArithmeticError(f"Payment calculation incorrect:\n{payor_balance=}, {payee_balance=}: {(payor_balance + payee_balance)}\n{new_payor_balance=}, {new_payee_balance=}: {(new_payor_balance + new_payee_balance)}\n{bank_balance=}, {new_bank_balance=}")
     

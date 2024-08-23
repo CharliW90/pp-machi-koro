@@ -347,6 +347,7 @@ class TestBank:
     assert test_bank.total == 282
     assert mocked_receiving.call_count == 2
     assert mocked_giving.call_count == 4
+    # assert player_receiving.call_count == 2
 
     console = capsys.readouterr()
     console_lines = console.out.splitlines()
@@ -358,7 +359,6 @@ class TestBank:
   @patch("coins.bank.receiving", wraps=receiving)
   def test_Bank_functions_handle_transfer_balance_lt_payment(self, mocked_receiving, mocked_giving, capsys):
     reset_player_names()
-
     # Arrange
     test_payor: Player = Player("payor", 0)
     test_payee: Player = Player("payee", 1)
@@ -388,6 +388,42 @@ class TestBank:
     assert len(console_lines) == 2
     assert console_lines[0] == f"{reference['ansi_colours']['red']}{test_payor.name} is giving all {payor_balance} of their coins ==>{reference['ansi_colours']['reset']}"
     assert console_lines[1] == f"{reference['ansi_colours']['green']}==> {test_payee.name} received {payor_balance} coins{reference['ansi_colours']['reset']}"
+
+  @patch("coins.bank.giving", wraps=giving)
+  @patch("coins.bank.receiving", wraps=receiving)
+  def test_Bank_functions_handle_transfer_balance_error_handling(self, mocked_receiving, mocked_giving, capsys):
+    reset_player_names()
+
+    # Arrange
+    test_payor: Player = Player("payor", 0)
+    test_payee: Player = Player("payee", 1)
+    test_bank: Bank = Bank()
+    payment_amount: int = 3
+    payor_balance: int = 3
+    payee_balance: int = 3
+    secret_payment_amount: int = 5
+
+    test_payor.receive(test_bank.give_player(payor_balance, True), True)
+    test_payor.initialised = True
+    test_payee.receive(test_bank.give_player(payee_balance, True), True)
+    test_payee.initialised = True
+
+    assert test_payor.get_balance() == payor_balance
+    assert test_payee.get_balance() == payee_balance
+
+      # Act
+    with patch.object(Player, "receive", autospec=True) as player_receive:
+      def secret_payment(player, coins, silent):
+        receiving(player, coins, silent)
+        if player.name == "payor":
+          for _ in range(secret_payment_amount): player.coins.coppers.append(One())
+      
+      player_receive.side_effect = secret_payment
+
+      with pytest.raises(ArithmeticError) as error:
+        test_bank.handle_transfer(test_payor, payment_amount, test_payee)
+
+      assert error.value.args[0] == f"Payment calculation incorrect:\npayor_balance={payor_balance}, payee_balance={payee_balance}: {payor_balance + payee_balance}\nnew_payor_balance={secret_payment_amount}, new_payee_balance={payor_balance + payment_amount}: {secret_payment_amount + payor_balance +  payee_balance}\nbank_balance=282, new_bank_balance=282"
 
 def random_coins() -> list[Coin]:
   ones = [One() for _ in range(random.randint(0,12))]
