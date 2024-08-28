@@ -72,6 +72,8 @@ class Game:
     if value:
       if value > 50: raise ValueError(f"{value} rounds is too high - if you don't want to limit the number of rounds playable, simply omit this parameter.")
       self.__rounds = value
+    else:
+      self.__rounds = None
   
   def __str__(self):
     players = [f"{player.colorize}{player.name}{player.reset}" for player in self.__players]
@@ -122,10 +124,19 @@ class Game:
     self.notify(f"Took a {card.title} from the {pile} pile - there are now {qty} cards remaining in this pile")
     return card
 
+  def current_player(self) -> Player:
+    if self.in_progress:
+      for player in self.players:
+        if player.current:
+          return player
+      raise LookupError(f"Game is in progress, but does not have a current player - something has gone wrong.\n{self.players=}")
+    else:
+      raise RuntimeError(f"Game has not begun - no current player available.\n{self}")
+
   def start(self) -> str:
     self.notify(f"{self}")
     time.sleep(0.5)
-    player_one = determine_player_one(self.players)
+    player_one = determine_player_one(self.players, self)
     set_turn_orders(self.players, player_one)
     self.players.sort(reverse=True)
     for player in self.players:
