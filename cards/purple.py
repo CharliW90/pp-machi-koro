@@ -58,7 +58,7 @@ class BusinessCentre(PurpleCard):
     for opponent in opponents:
       unique_cards = set(opponent.cards.blue + opponent.cards.red + opponent.cards.green)
       game.notify(f"Here are the cards that {opponent.name} has")
-      print(f"{card.title} - Qty: {opponent.cards.count(type(card))}" for card in unique_cards)
+      print(f"{card.colorize}{card.title} - Qty: {opponent.cards.count(type(card))}{card.reset}" for card in unique_cards)
     opponent_choices: list[tuple[str, str]] = [(f"{opponent.name}", opponent.name) for opponent in opponents]
     opponent_choices.append(('No swap', 'cancel'))
 
