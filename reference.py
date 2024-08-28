@@ -62,7 +62,7 @@ class MyTheme(Default):
 welcome = (
   "WELCOME TO THE CITY OF MACHI KORO!\nCongratulations!  You've just been elected Mayor.\n"
   "\nBut don't get too comfortable - the citizens have some pretty big demands: \n"
-  "jobs, a new stadium, a couple of cheese factories, maybe even an amusement park."
+  "jobs, a new stadium, a couple of cheese factories, maybe even an amusement park.\n"
 )
 
 full_description = (
@@ -70,7 +70,7 @@ full_description = (
   "blueprints for a few landmarks, and a single die.\n\nArmed only with your trusty die and a dream "
   "you must grow Machi Koro into the largest city in the region.  You will need to earn income from "
   "establishments, build landmarks, and take your neighbours' business.\n\nThey say Rome wasn't built "
-  "in a day, but Machi Koro will rise in less than 30 minutes!"
+  "in a day, but Machi Koro will rise in less than 30 minutes!\n"
 )
 
 help_text_card_activation = (
@@ -82,7 +82,7 @@ help_text_card_activation = (
   "act against the player who rolled, for example any time a player rolls a '3' the player must pay any "
   f"other players who own Cafe cards.  {colorize('Purple')} cards trigger only for the active player - "
   "these Major Establishments take coins/cards from other players and trigger on a roll of a '6', but "
-  "each player may only own one of each of these cards."
+  "each player may only own one of each of these cards.\n"
 )
 
 help_text_game_start = (
@@ -90,7 +90,7 @@ help_text_game_start = (
   "'1' when any player rolls, whereas the Bakery will trigger on a roll of '2' only for the player who rolled."
   "\nEach player also starts with 4 Landmark cards - Train Station, Shopping Mall, Amusement Park, Radio Tower "
   "- which are 'unbuilt'.  Players must build these landmarks to get the abilities they grant, but also to win "
-  "the game by building all 4.  The first player to build all 4 of their Landmark cards wins"
+  "the game by building all 4.  The first player to build all 4 of their Landmark cards wins!!\n"
 )
 
 help_text_cards = (
@@ -100,7 +100,7 @@ help_text_cards = (
   f"{colorize('Blue')} and {colorize('Green')} cards earn income from the Bank, whereas {colorize('Red')}, and "
   f"{colorize('Purple')} cards take from other players.  Some {colorize('Green')} cards earn income based on how many "
   f"of another type of card the player has, for example the '{colorize('Cheese Factory', 'green')}' card earns 3 coins "
-  f"for each '{colorize('Ranch', 'blue')}' card that the player owns."
+  f"for each '{colorize('Ranch', 'blue')}' card that the player owns.\n"
 )
 
 help_text_turn_taking = (
@@ -110,7 +110,7 @@ help_text_turn_taking = (
   f"to pay the players with {colorize('Red')} cards then they stop paying - they are then allowed to earn income on "
   "their other establishments without having to pay this to those players that they had failed to pay previously.\n"
   "Once the player has rolled the dice, and handled the outcome of that, they may spend any remaining coins they have "
-  "purchasing new establishments from the Deck."
+  "purchasing new establishments from the Deck.\n"
 )
 
 help_text = [help_text_card_activation, help_text_game_start, help_text_cards, help_text_turn_taking]
