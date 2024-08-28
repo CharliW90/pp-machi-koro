@@ -114,11 +114,11 @@ class Hand:
   The stacks can be added to and removed from, or their contents can be described.
   """
   def __init__(self):
-    self.blue = [WheatField()]  # this card is not drawn from the Deck, it is in addition to the 6 in the Deck
-    self.green = [Bakery()]     # this card is not drawn from the Deck, it is in addition to the 6 in the Deck
-    self.red = []
-    self.purple = []
-    self.landmarks = [TrainStation(), ShoppingMall(), AmusementPark(), RadioTower()]
+    self.blue: list[Blues] = [WheatField()]  # this card is not drawn from the Deck, it is in addition to the 6 in the Deck
+    self.green: list[Greens] = [Bakery()]     # this card is not drawn from the Deck, it is in addition to the 6 in the Deck
+    self.red: list[Reds] = []
+    self.purple: list[Purples] = []
+    self.landmarks: list[Landmarks] = [TrainStation(), ShoppingMall(), AmusementPark(), RadioTower()]
 
   def __len__(self) -> int:
     return sum(card.built for card in self.landmarks) + sum(len(stack) for stack in [self.blue, self.green, self.red, self.purple])
@@ -127,11 +127,12 @@ class Hand:
     """
     Returns the number of cards of a given card type in the players hand, as an int
     """
-    stack = getattr(self, card_type.colour, [])
     count = 0
-    for card in stack:
-      if isinstance(card, card_type):
-        count += 1
+    stack = getattr(self, card_type.colour, None)
+    if stack is not None:
+      for card in stack:
+        if isinstance(card, card_type):
+          count += 1
     return count
   
   def add(self, card: Blues | Greens | Reds | Purples) -> int:
