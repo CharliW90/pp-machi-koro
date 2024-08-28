@@ -27,6 +27,7 @@ def assess_game_class(game):
   assert hasattr(game, 'list_affordable_cards')
   assert hasattr(game, 'display_cards_to_player')
   assert hasattr(game, 'take_card_from_stack')
+  assert hasattr(game, 'current_player')
   assert hasattr(game, 'start')
   assert hasattr(game, 'play')
   assert hasattr(game, 'end_game')
