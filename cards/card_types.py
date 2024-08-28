@@ -3,10 +3,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
   from player import Player
   from game import Game
-  from coins import Coin
 
+import time
 from reference import reference
-
 
 class BlueCard:
   colour = "blue"
@@ -25,8 +24,9 @@ class BlueCard:
 
   def trigger(self, game: Game, player: Player, dice_roll: int) -> None:   # These cards trigger for all players
     if dice_roll in self.triggers:   # so we only need to check that the dice_roll is one that triggers this card
-      player.declare_action(f"Triggered {self.title} for {player.name}")
+      player.declare_action(f"\nTriggered {self.title} for {player.name}")
       self.activate(game, player, dice_roll)
+      time.sleep(0.5)
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
@@ -49,8 +49,9 @@ class GreenCard:
 
   def trigger(self, game: Game, player: Player, dice_roll: int) -> None:   # These cards trigger only for the current player
     if player.current and dice_roll in self.triggers:  # so we check that they are, and that the dice_roll is one that triggers this card
-      player.declare_action(f"Triggered {self.title} for {player.name}")
+      player.declare_action(f"\nTriggered {self.title} for {player.name}")
       self.activate(game, player, dice_roll)
+      time.sleep(0.5)
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
@@ -73,8 +74,9 @@ class RedCard:
 
   def trigger(self, game: Game, player: Player, dice_roll: int) -> None:   # These cards trigger for everyone except the current player
     if not player.current and dice_roll in self.triggers:  # so we check that they aren't, and that the dice_roll is one that triggers this card
-      player.declare_action(f"Triggered {self.title} for {player.name}")
+      player.declare_action(f"\nTriggered {self.title} for {player.name}")
       self.activate(game, player, dice_roll)
+      time.sleep(0.5)
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
@@ -97,8 +99,9 @@ class PurpleCard:
 
   def trigger(self, game: Game, player: Player, dice_roll: int) -> None:   # These cards trigger only for the current player
     if player.current and dice_roll in self.triggers:  # so we check that they are, and that the dice_roll is one that triggers this card
-      player.declare_action(f"Triggered {self.title} for {player.name}")
+      player.declare_action(f"\nTriggered {self.title} for {player.name}")
       self.activate(game, player, dice_roll)
+      time.sleep(0.5)
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
     print(f"This is {'; '.join(str(self).splitlines())}\nit has not been used to create an actual card yet.")
@@ -125,7 +128,8 @@ class LandmarkCard:
 
   def build(self, player: Player) -> str:
     self.built = True
-    player.declare_action(f"{player.name} has built their {self.title}")
+    player.declare_action(f"\n{player.name} has built their {self.title}")
+    time.sleep(0.5)
     return self.ability()
 
   def ability(self) -> str:
