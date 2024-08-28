@@ -88,7 +88,6 @@ class Deck:
     if pile:
       stack = getattr(self, str(pile))
       stack.append(card)
-      print(f"Added {card.title} to the {pile} pile - there are now {len(stack)} cards in this pile")
       return len(stack)
     raise ValueError(f"Cannot add a {card.title} card to the Deck")
   
@@ -102,7 +101,6 @@ class Deck:
       if len(stack) == 0:
         raise ValueError(f"Cannot remove a {name} card from the {pile} pile - there are none left!")
       card = stack.pop()
-      print(f"Removed {card.title} from the {pile} pile - there are now {len(stack)} cards in this pile")
       return card, pile, len(stack)
     raise AttributeError(f"Cannot remove a {name} card from the Deck - no pile exists for these cards.")
 
