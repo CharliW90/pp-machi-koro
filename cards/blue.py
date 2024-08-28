@@ -6,7 +6,7 @@ if TYPE_CHECKING:
   from coins import Coin
 
 from typing import Union
-from card_types import BlueCard
+from .card_types import BlueCard
 
 class WheatField(BlueCard):
   cost = 1
@@ -19,9 +19,8 @@ class WheatField(BlueCard):
     self.industry = "field"
     self.triggers = [1]
 
-  def activate(self, game: Game, player: Player, dice_roll: int) -> list[Coin]:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+  def activate(self, game: Game, player: Player, dice_roll: int) -> None:
+    player.receive(game.bank.give_player(1))
 
 class Ranch(BlueCard):
   cost = 1
@@ -35,8 +34,7 @@ class Ranch(BlueCard):
     self.triggers = [2]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    player.receive(game.bank.give_player(1))
 
 class Forest(BlueCard):
   cost = 3
@@ -50,8 +48,7 @@ class Forest(BlueCard):
     self.triggers = [5]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    player.receive(game.bank.give_player(1))
 
 class Mine(BlueCard):
   cost = 6
@@ -65,8 +62,7 @@ class Mine(BlueCard):
     self.triggers = [9]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    player.receive(game.bank.give_player(5))
 
 class AppleOrchard(BlueCard):
   cost = 3
@@ -80,7 +76,6 @@ class AppleOrchard(BlueCard):
     self.triggers = [10]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    player.receive(game.bank.give_player(1))
 
 Blues = Union[WheatField, Ranch, Forest, Mine, AppleOrchard]

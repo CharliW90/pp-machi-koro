@@ -5,7 +5,8 @@ if TYPE_CHECKING:
   from player import Player
 
 from typing import Union
-from card_types import GreenCard
+from .card_types import GreenCard
+from .blue import WheatField, Ranch, Forest, Mine, AppleOrchard
 
 class Bakery(GreenCard):
   cost = 1
@@ -19,8 +20,7 @@ class Bakery(GreenCard):
     self.triggers = [2, 3]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    player.receive(game.bank.give_player(2 if player.abilities.plus_one else 1))
 
 class ConvenienceStore(GreenCard):
   cost = 2
@@ -34,8 +34,7 @@ class ConvenienceStore(GreenCard):
     self.triggers = [4]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    player.receive(game.bank.give_player(4 if player.abilities.plus_one else 3))
 
 class CheeseFactory(GreenCard):
   cost = 5
@@ -49,8 +48,11 @@ class CheeseFactory(GreenCard):
     self.triggers = [7]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    players_ranches = player.cards.count(Ranch)
+    if players_ranches > 0:
+      player.receive(game.bank.give_player(3 * players_ranches))
+    else:
+      print(f"{player.name} has no Ranches - no income received.")
 
 class FurnitureFactory(GreenCard):
   cost = 3
@@ -64,8 +66,13 @@ class FurnitureFactory(GreenCard):
     self.triggers = [8]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    players_forests = player.cards.count(Forest)
+    players_mines = player.cards.count(Mine)
+    if players_forests > 0 or players_mines > 0:
+      player.receive(game.bank.give_player(3 * (players_forests + players_mines)))
+    else:
+      print(f"{player.name} has no Forests or Mines - no income received.")
+
 
 class FarmersMarket(GreenCard):
   cost = 2
@@ -79,7 +86,11 @@ class FarmersMarket(GreenCard):
     self.triggers = [11, 12]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    players_wheat_fields = player.cards.count(WheatField)
+    players_apple_orchards = player.cards.count(AppleOrchard)
+    if players_wheat_fields > 0 or players_apple_orchards > 0:
+      player.receive(game.bank.give_player(3 * (players_wheat_fields + players_apple_orchards)))
+    else:
+      print(f"{player.name} has no Wheat Fields or Apple Orchards - no income received.")
 
 Greens = Union[Bakery, ConvenienceStore, CheeseFactory, FurnitureFactory, FarmersMarket]

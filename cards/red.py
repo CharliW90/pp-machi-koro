@@ -5,7 +5,7 @@ if TYPE_CHECKING:
   from player import Player
 
 from typing import Union
-from card_types import RedCard
+from .card_types import RedCard
 
 class Cafe(RedCard):
   cost = 2
@@ -19,8 +19,8 @@ class Cafe(RedCard):
     self.triggers = [3]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    current_player: Player = game.current_player()
+    game.bank.handle_transfer(current_player, 2 if player.abilities.plus_one else 1, player)
 
 class FamilyRestaurant(RedCard):
   cost = 3
@@ -34,7 +34,7 @@ class FamilyRestaurant(RedCard):
     self.triggers = [9, 10]
 
   def activate(self, game: Game, player: Player, dice_roll: int) -> None:
-    print(f"{self.title}: triggered on Dice roll: {dice_roll}")
-    raise NotImplementedError("Not yet implemented the logic here")
+    current_player: Player = game.current_player()
+    game.bank.handle_transfer(current_player, 3 if player.abilities.plus_one else 2, player)
 
 Reds = Union[Cafe, FamilyRestaurant]
