@@ -145,18 +145,18 @@ class Player:
     for card in stack:
       card.trigger(game, self, dice_roll)
 
-  def receive(self, coins: list[Coin], silent=False) -> int:
+  def receive(self, coins: list[Coin], silent: bool = False) -> int:
     return receiving(self, coins, silent)
   
-  def give(self, total: int, silent=False) -> list[Coin]:
+  def give(self, total: int, silent: bool = False) -> list[Coin]:
     return giving(self, total, silent)
   
-  def give_all(self, silent=False) -> list[Coin]:
+  def give_all(self, silent: bool = False) -> list[Coin]:
     return giving(self, self.get_balance(), silent)
   
-  def build(self, card: Blues | Greens | Reds | Purples | Landmarks, bank: Bank, silent=False) -> bool:
+  def build(self, card: Blues | Greens | Reds | Purples | Landmarks, bank: Bank, silent: bool = False) -> bool:
     if self.build_action_taken:
-      print(f"You can only take one build action per turn!")
+      if not silent: self.declare_action(f"You can only take one build action per turn!")
       return self.build_action_taken
     else:
       cash = self.coins.total()
@@ -168,7 +168,7 @@ class Player:
             return self.build_action_taken
 
       if cash < card.cost:
-        print(f"{self.name} cannot afford {card.title}")
+        if not silent: self.declare_action(f"{self.name} cannot afford {card.title}")
         return self.build_action_taken
       payment = calculate_payment(self.coins, card.cost)
       self.receive(bank.take_payment(self.give(payment), card.cost), silent)
