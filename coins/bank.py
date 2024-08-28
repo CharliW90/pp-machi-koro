@@ -33,10 +33,10 @@ class Bank:
   def declare_action(self, action: str) -> None:
     print(f"{self.colorize}{action}{self.reset}")
 
-  def give_player(self, total: int, silent=False) -> list[Coin]:
+  def give_player(self, total: int, silent: bool = False) -> list[Coin]:
     return giving(self, total, silent)
 
-  def take_payment(self, coins: list[Coin], total_to_pay: int, silent=False) -> list[Coin]:
+  def take_payment(self, coins: list[Coin], total_to_pay: int, silent: bool = False) -> list[Coin]:
     """Takes in a payment in the form of a list of one or more Coin objects, and a total amount to be paid.
     Returns any change due, in the form of a list of one or more Coin objects."""
     payment = receiving(self, coins, silent) # put payment into bank's coin pile
@@ -60,7 +60,7 @@ class Bank:
         player.receive(self.exchange(coins))
         time.sleep(0.3)
 
-  def exchange(self, coins: list[Coin], silent=False) -> list[Coin]:
+  def exchange(self, coins: list[Coin], silent: bool = False) -> list[Coin]:
     intake = receiving(self, coins, silent) # put all coins into the bank's coin pile
     return giving(self, intake, silent)     # give back the same value in coins, starting with highest denomination
   
