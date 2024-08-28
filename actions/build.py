@@ -18,8 +18,10 @@ def build_action(game: Game, player:Player, settings: dict) -> bool:
   if show_hand:
     affordable_cards.insert(0,(f"[?] {player.colorize}Look at your cards{player.reset}", "look"))
   if show_deck and show_hand:
+    print() # Insert blank line to console
     game.notify(f"Time to build an establishment, {player.name}!  You have {player.get_balance()} coins")
   else:
+    print() # Insert blank line to console
     game.notify(f"Time to make a decision, {player.name}!  You have {player.get_balance()} coins")
   options = [
     inquirer.List('build',
