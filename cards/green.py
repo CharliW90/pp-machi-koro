@@ -52,7 +52,7 @@ class CheeseFactory(GreenCard):
     if players_ranches > 0:
       player.receive(game.bank.give_player(3 * players_ranches))
     else:
-      print(f"{player.name} has no Ranches - no income received.")
+      player.declare_action(f"{player.name} has no Ranches - no income received.")
 
 class FurnitureFactory(GreenCard):
   cost = 3
@@ -71,7 +71,7 @@ class FurnitureFactory(GreenCard):
     if players_forests > 0 or players_mines > 0:
       player.receive(game.bank.give_player(3 * (players_forests + players_mines)))
     else:
-      print(f"{player.name} has no Forests or Mines - no income received.")
+      player.declare_action(f"{player.name} has no Forests or Mines - no income received.")
 
 
 class FarmersMarket(GreenCard):
@@ -91,6 +91,6 @@ class FarmersMarket(GreenCard):
     if players_wheat_fields > 0 or players_apple_orchards > 0:
       player.receive(game.bank.give_player(3 * (players_wheat_fields + players_apple_orchards)))
     else:
-      print(f"{player.name} has no Wheat Fields or Apple Orchards - no income received.")
+      player.declare_action(f"{player.name} has no Wheat Fields or Apple Orchards - no income received.")
 
 Greens = Union[Bakery, ConvenienceStore, CheeseFactory, FurnitureFactory, FarmersMarket]
