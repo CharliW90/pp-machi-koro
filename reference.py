@@ -60,9 +60,9 @@ class MyTheme(Default):
     self.List.selection_cursor = f"{name} =>" # type: ignore
 
 welcome = (
-  "WELCOME TO THE CITY OF MACHI KORO!\nCongratulations!  You've just been elected Mayor."
-  "\n\tBut don't get too comfortable - the citizens have some pretty big demands: jobs, a "
-  "new stadium, a couple of cheese factories, maybe even an amusement park."
+  "WELCOME TO THE CITY OF MACHI KORO!\nCongratulations!  You've just been elected Mayor.\n"
+  "\nBut don't get too comfortable - the citizens have some pretty big demands: \n"
+  "jobs, a new stadium, a couple of cheese factories, maybe even an amusement park."
 )
 
 full_description = (
@@ -74,7 +74,7 @@ full_description = (
 )
 
 help_text_card_activation = (
-  "In Machi Koro each roll of the die has a chance for establishments to earn income for all players, "
+  "\nIn Machi Koro each roll of the die has a chance for establishments to earn income for all players, "
   f"regardless of whose turn it is.  {colorize('Blue')} cards trigger for everyone, for example any time "
   f"a player rolls a '1' all players earn income from their Wheat Fields.  {colorize('Green')} cards "
   "trigger only for the active player, for example any time a player rolls a '2' they earn income from "
@@ -86,7 +86,7 @@ help_text_card_activation = (
 )
 
 help_text_game_start = (
-  "Each player starts with 3 coins, a Wheat Field and a Bakery.  The Wheat Field will trigger on a roll of "
+  "\nEach player starts with 3 coins, a Wheat Field and a Bakery.  The Wheat Field will trigger on a roll of "
   "'1' when any player rolls, whereas the Bakery will trigger on a roll of '2' only for the player who rolled."
   "\nEach player also starts with 4 Landmark cards - Train Station, Shopping Mall, Amusement Park, Radio Tower "
   "- which are 'unbuilt'.  Players must build these landmarks to get the abilities they grant, but also to win "
@@ -94,7 +94,7 @@ help_text_game_start = (
 )
 
 help_text_cards = (
-  "There are 15 types of establishment card (ignoring the 4 Landmark cards players need to build from their hand). "
+  "\nThere are 15 types of establishment card (ignoring the 4 Landmark cards players need to build from their hand). "
   f"These cards are {colorize('Blue')}, {colorize('Green')}, {colorize('Red')}, or {colorize('Purple')}.  There are "
   f"6 of each card to be bought, except for {colorize('Purple')} which players may only own one of each.  Most cards "
   f"{colorize('Blue')} and {colorize('Green')} cards earn income from the Bank, whereas {colorize('Red')}, and "
@@ -104,7 +104,7 @@ help_text_cards = (
 )
 
 help_text_turn_taking = (
-  "On a player's turn, the first thing they must do is roll the dice.  Once the dice roll is known, cards that are "
+  "\nOn a player's turn, the first thing they must do is roll the dice.  Once the dice roll is known, cards that are "
   f"triggered by that number must be handled.  Multiple cards may trigger - if {colorize('Red')} cards trigger (i.e. "
   "on a roll of 3, 9 or 10) then these must be handled before anything else.  If the player does not have enough money "
   f"to pay the players with {colorize('Red')} cards then they stop paying - they are then allowed to earn income on "
