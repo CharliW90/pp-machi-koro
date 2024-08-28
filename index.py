@@ -28,8 +28,6 @@ if __name__ == "__main__":
   players = query_players()
   if players == 1:
     raise NotImplementedError("Not yet implemented Bot logic to play against PC")
-  names = []
-  for n in range(players):
-    names.append(get_player_name(n))
+  names = [get_player_name(n) for n in range(players)]
   if len(names) == players:
     run_game(names)
