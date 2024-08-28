@@ -4,12 +4,14 @@ if TYPE_CHECKING:
   from game import Game
   from player import Player
 
+import time
 import random
 import inquirer
 from reference import MyTheme
 
 def roll_dice(game:Game, player:Player) -> None:
   double_dice = player.abilities.double_dice
+  print() # Insert blank line to console
   game.notify(f"Time to roll the dice, {player.name}!")
   options = [
     inquirer.List('dice',
@@ -50,10 +52,15 @@ def dice_face(die: int) -> str:  # credit: https://codegolf.stackexchange.com/a/
 
 def handle_dice_result(game: Game, dice_result: int) -> None:
   for player in game.players:
-    if not player.current: player.activate(game, "red", dice_result)
+    if not player.current:
+      player.activate(game, "red", dice_result)
+      time.sleep(0.2)
   for player in game.players:
     player.activate(game, "blue", dice_result)
     if player.current: player.activate(game, "green", dice_result)
+    time.sleep(0.2)
   for player in game.players:
-    if player.current: player.activate(game, "purple", dice_result)
+    if player.current:
+      player.activate(game, "purple", dice_result)
+      time.sleep(0.2)
   return
