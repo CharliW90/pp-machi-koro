@@ -35,7 +35,7 @@ def determine_player_one(players: list[Player], game: Game) -> Player:
           if player.name == player_roll['name']:
             roll_again.append(player)
     names = [player.name for player in roll_again]
-    print(f"Players {' and '.join(names)} rolled a {highest_roll} and need to roll again!")
+    game.notify(f"Players {' and '.join(names)} rolled a {highest_roll} and need to roll again!")
     time.sleep(0.5)
     return determine_player_one(roll_again, game)
   
